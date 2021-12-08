@@ -1,0 +1,160 @@
+@mixin scroll-bar($thumb-color: #999, $track-background: #fff, $width: 5px) {
+  &::-webkit-scrollbar {
+    z-index: 11;
+    width: $width;
+
+    &:horizontal {
+      height: $width;
+    }
+
+    &-thumb {
+      border-radius: 5px;
+      width: $width;
+      background: $thumb-color;
+    }
+
+    &-corner {
+      background: $track-background;
+    }
+
+    &-track {
+      background: $track-background;
+
+      &-piece {
+        background: $track-background;
+        width: $width;
+      }
+    }
+  }
+}
+
+/* trim
+.foo{ 
+  @include trim;  // will use the ellipsis = else result
+}
+.bar{
+  @include trim(3); // will use the line-clamp = if result
+}
+-------------------------- */
+
+@mixin trim($numLines: null) {
+  @if $numLines != null {
+    display: -webkit-box;
+    -webkit-line-clamp: $numLines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  } @else {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+  }
+}
+
+/* margin & padding
+-------------------------- */
+
+$gapIncs: (10, 20, 30, 40, 50, 60, 80, 100);
+$dirs: (top, bottom, left, right);
+
+@each $inc in $gapIncs {
+  @each $dir in $dirs {
+    .m#{str-slice($dir, 0, 1)}-#{$inc} {
+      margin-#{$dir}: #{$inc}px;
+    }
+
+    .p#{str-slice($dir, 0, 1)}-#{$inc} {
+      padding-#{$dir}: #{$inc}px;
+    }
+  }
+
+  .m-#{$inc} {
+    margin: #{$inc}px;
+  }
+
+  .p-#{$inc} {
+    padding: #{$inc}px;
+  }
+}
+
+/* text
+-------------------------- */
+$fontSizeIncs: (12, 14, 16, 18, 20, 24, 32, 36, 40, 48);
+
+@each $inc in $fontSizeIncs {
+  .f-#{$inc} {
+    font-size: #{$inc}px;
+  }
+}
+
+.f-b {
+  font-weight: 500;
+}
+
+.f-n {
+  font-weight: 400;
+}
+
+.t-r {
+  text-align: right;
+}
+
+.t-c {
+  text-align: center;
+}
+
+.t-d {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.c-primary {
+  color: $--color-primary;
+}
+
+.c-grey {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.c-danger {
+  color: $--color-danger;
+}
+
+.c-succ {
+  color: $--color-success;
+}
+/* layout
+-------------------------- */
+.block {
+  width: 100%;
+}
+
+.m-h {
+  min-height: calc(100vh - 120px);
+}
+
+$heightIncs: (40, 60);
+
+@each $inc in $heightIncs {
+  .h-#{$inc} {
+    height: #{$inc}px;
+  }
+}
+
+$widthIncs: (100, 120, 140, 180, 300);
+
+@each $inc in $widthIncs {
+  .w-#{$inc} {
+    width: #{$inc}px;
+  }
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.common-btn {
+  width: 180px;
+  height: 48px;
+  font-size: 14px;
+}

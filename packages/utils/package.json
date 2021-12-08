@@ -1,0 +1,11 @@
+{
+  "name": "@dna2.0/utils",
+  "version": "0.1.0",
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "module": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "big.js": "^6.1.1"
+  }
+}

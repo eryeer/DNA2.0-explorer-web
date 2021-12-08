@@ -1,0 +1,15 @@
+{
+  "name": "DNA2.0-explorer-web",
+  "private": true,
+  "description": "DNA2.0-explorer-web",
+  "version": "0.1.0",
+  "scripts": {
+    "serve": "pnpm run serve --filter @dna2.0/blockchain-explorer",
+    "build": "pnpm run serve --filter @dna2.0/blockchain-explorer",
+    "pretty": "pnpm run pretty  --filter \"@dna2.0/*\""
+  },
+  "dependencies": {
+    "module": "^1.2.5",
+    "require-from-string": "^2.0.2"
+  }
+}

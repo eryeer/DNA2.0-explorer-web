@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+    <link
+      rel="preload"
+      as="font"
+      href="<%= require('element-ui/lib/theme-chalk/fonts/element-icons.woff') %>"
+      crossorigin="anonymous"
+    />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta name="description" content="<%= htmlWebpackPlugin.options.title %>" />
+    <meta name="keyword" content="<%= htmlWebpackPlugin.options.title %>" />
+    <link rel="preconnect" href="//cdn.jsdelivr.net" />
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
+  </head>
+  <body>
+    <noscript>
+      <strong
+        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without
+        JavaScript enabled. Please enable it to continue.</strong
+      >
+    </noscript>
+    <style>
+      .sk-pulse {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(0, 120, 250, 0.86);
+        border-radius: 100%;
+        animation: sk-pulse 1.2s infinite cubic-bezier(0.455, 0.03, 0.515, 0.955);
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+      }
+
+      @keyframes sk-pulse {
+        0% {
+          transform: scale(0);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 0;
+        }
+      }
+    </style>
+    <div id="app"><div class="sk-pulse"></div></div>
+  </body>
+</html>

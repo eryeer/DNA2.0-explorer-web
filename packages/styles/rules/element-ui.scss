@@ -1,0 +1,11 @@
+@import "~element-ui/packages/theme-chalk/src/index.scss";
+
+.v-modal {
+  backdrop-filter: blur(10px);
+  opacity: 1;
+  background: rgba(#000000, 0.5);
+}
+
+@include b(popover) {
+  border: none;
+}
