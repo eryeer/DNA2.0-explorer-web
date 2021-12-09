@@ -2,14 +2,14 @@ import request from './request';
 
 export function getTotalSummary() {
   return request({
-    url: '/explorer/summary/getTotalSummary',
+    url: '/summary/getTotalSummary',
     method: 'get',
   });
 }
 
 export function getAddressSummary(params) {
   return request({
-    url: '/explorer/summary/getAddressSummary',
+    url: '/summary/getAddressSummary',
     method: 'get',
     params,
   });
@@ -17,7 +17,7 @@ export function getAddressSummary(params) {
 
 export function getBlockSummary(params) {
   return request({
-    url: '/explorer/summary/getBlockSummary',
+    url: '/summary/getBlockSummary',
     method: 'get',
     params,
   });
@@ -25,7 +25,7 @@ export function getBlockSummary(params) {
 
 export function getTransactionSummary(params) {
   return request({
-    url: '/explorer/summary/getTransactionSummary',
+    url: '/summary/getTransactionSummary',
     method: 'get',
     params,
   });

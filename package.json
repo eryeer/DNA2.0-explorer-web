@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "scripts": {
     "serve": "pnpm run serve --filter @dna2.0/blockchain-explorer",
-    "build": "pnpm run serve --filter @dna2.0/blockchain-explorer",
+    "build": "pnpm run build --filter @dna2.0/blockchain-explorer",
     "pretty": "pnpm run pretty  --filter \"@dna2.0/*\""
   },
   "dependencies": {

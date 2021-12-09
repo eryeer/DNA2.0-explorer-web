@@ -2,7 +2,7 @@ import request from '@/api/request';
 
 export function getBlockList(params) {
   return request({
-    url: `${process.env.VUE_APP_EXPLORER_API}/block/getBlockList`,
+    url: `/block/getBlockList`,
     method: 'get',
     params
   });
@@ -10,7 +10,7 @@ export function getBlockList(params) {
 
 export function getBlock(params) {
   return request({
-    url: `${process.env.VUE_APP_EXPLORER_API}/block/getBlock`,
+    url: `/block/getBlock`,
     method: 'get',
     params
   });
@@ -18,7 +18,7 @@ export function getBlock(params) {
 
 export function getTransactionList(params) {
   return request({
-    url: `${process.env.VUE_APP_EXPLORER_API}/transaction/getTransactionList`,
+    url: `/transaction/getTransactionList`,
     method: 'get',
     params
   });
@@ -27,7 +27,7 @@ export function getTransactionList(params) {
 
 export function getTransaction(params) {
   return request({
-    url: `${process.env.VUE_APP_EXPLORER_API}/transaction/getTransaction`,
+    url: `/transaction/getTransaction`,
     method: 'get',
     params
   });
@@ -35,7 +35,7 @@ export function getTransaction(params) {
 
 export function getAddressList(params) {
   return request({
-    url: `${process.env.VUE_APP_EXPLORER_API}/address/getAddressList`,
+    url: `/address/getAddressList`,
     method: 'get',
     params
   });
@@ -43,7 +43,7 @@ export function getAddressList(params) {
 
 export function getAddress(params) {
   return request({
-    url: `${process.env.VUE_APP_EXPLORER_API}/address/getAddress`,
+    url: `/address/getAddress`,
     method: 'get',
     params
   });
@@ -52,7 +52,7 @@ export function getAddress(params) {
 
 export function getTransactionListByAddress(params) {
   return request({
-    url: `${process.env.VUE_APP_EXPLORER_API}/address/getTransactionListByAddress`,
+    url: `/address/getTransactionListByAddress`,
     method: 'get',
     params
   });
