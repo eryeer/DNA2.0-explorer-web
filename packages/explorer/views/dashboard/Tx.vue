@@ -15,14 +15,15 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="60" prop="txStatus">
+      <el-table-column label="状态" prop="txStatus">
         <template slot-scope="scope">
           <el-tag :type="scope.row.txStatus === '0x1' ? 'success' : 'danger'" size="mini">
             {{ scope.row.txStatus === '0x1' ? '成功' : '失败' }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="区块高度" width="100">
+      <el-table-column label="方法名" prop="methodName"> </el-table-column>
+      <el-table-column label="区块高度">
         <template slot-scope="scope">
           <router-link
             :to="{
@@ -52,6 +53,9 @@
       </el-table-column>
       <el-table-column label="接收地址">
         <template slot-scope="scope">
+          <el-tooltip content="合约" placement="top" v-if="true">
+            <i class="el-icon-document mr-5"></i>
+          </el-tooltip>
           <router-link
             :to="{
               name: 'explorerAddress',
@@ -64,14 +68,15 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="消耗燃料" width="80">
+      <el-table-column label="数量（Ether）" prop="gasAmount"> </el-table-column>
+      <el-table-column label="消耗燃料（Wei）">
         <template slot-scope="scope">
           <div>
             {{ scope.row.gasUsed | filterCount }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="生成时间" width="150">
+      <el-table-column label="生成时间">
         <template slot-scope="scope">
           <div>
             {{ scope.row.blockTime | filterDate }}

@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white pt-40 pb-40 pl-20 pr-20" v-loading="loading.value">
     <el-table :data="list" style="width: 100%">
-      <el-table-column label="地址" :show-overflow-tooltip="true">
+      <el-table-column label="地址" width="400">
         <template slot-scope="scope">
           <div class="white tb-link">
             <router-link
@@ -17,19 +17,19 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="地址类型" width="80">
+      <el-table-column label="地址类型">
         <template slot-scope="scope">
           {{ scope.row.type === 0 ? '用户' : '合约' }}
         </template>
       </el-table-column>
-      <el-table-column prop="txCount" label="交易数量" width="100">
+      <el-table-column prop="txCount" label="交易数量">
         <template slot-scope="scope">
           <div>
             {{ scope.row.txCount | filterCount }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="生成时间" width="150">
+      <el-table-column label="生成时间">
         <template slot-scope="scope">
           <div>
             {{ scope.row.blockTime | filterDate }}

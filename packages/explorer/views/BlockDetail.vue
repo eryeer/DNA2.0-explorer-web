@@ -115,9 +115,10 @@ export default {
 .col-2 {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 .list {
-  width: 50%;
+  width: 45%;
   > li {
     display: flex;
     > span:first-child {
