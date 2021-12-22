@@ -49,6 +49,7 @@ import Clipboard from 'clipboard';
 const DEFAULT_HEIGHT = 400;
 
 export default {
+  name: 'SourceCode',
   components: {
     PrismEditor,
   },
@@ -59,7 +60,7 @@ export default {
     },
     lang: {
       type: String,
-      default: 'solidity',
+      default: 'json',
     },
     showLineNumber: {
       type: Boolean,
