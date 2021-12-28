@@ -1,21 +1,23 @@
 <template>
   <section>
-    <div class="search-bar">
-      <heading-1>区块链浏览器</heading-1>
-      <div>
-        <el-input
-          class="search-input mr-10"
-          placeholder="输入地址/交易哈希/区块高度"
-          prefix-icon="el-icon-search"
-          @keyup.enter.native="toSearch"
-          v-model="searchContent"
-          style="width: 400px"
-          clearable
-        ></el-input>
-        <el-button type="primary" @click="toSearch">搜索</el-button>
+    <div class="search-bar-wrapper">
+      <div class="search-bar m-u">
+        <router-link to="/" class="h2" tag="h2"> 区块链浏览器 </router-link>
+        <div>
+          <el-input
+            class="search-input mr-10"
+            placeholder="输入地址/交易哈希/区块高度"
+            prefix-icon="el-icon-search"
+            @keyup.enter.native="toSearch"
+            v-model="searchContent"
+            style="width: 550px"
+            clearable
+          ></el-input>
+          <el-button type="primary" @click="toSearch">搜索</el-button>
+        </div>
       </div>
     </div>
-    <ul class="info-list bg-white p-40 mb-20" v-loading="loading.value">
+    <ul class="info-list bg-white p-40 mb-20 m-u" v-loading="loading.value">
       <li>
         <span>区块高度</span>
         <span> {{ info.blockNumber | filterCount }} </span>
@@ -33,7 +35,9 @@
         <span> {{ info.netStatus ? '正常' : '异常' }} </span>
       </li>
     </ul>
-    <router-view />
+    <div class="m-u">
+      <router-view :key="$route.fullPath" />
+    </div>
   </section>
 </template>
 
@@ -49,7 +53,7 @@ export default {
     return {
       searchContent: '',
       loading: new Loading(),
-      info: {}
+      info: {},
     };
   },
   methods: {
@@ -133,12 +137,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.search-bar-wrapper {
+  box-shadow: 0px 1px 10px rgba(6, 8, 69, 0.06);
+  background-color: #fff;
+}
+
 .search-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  height: 40px;
+  height: 100px;
+
+  .h2 {
+    font-family: PingFang SC;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 34px;
+    cursor: pointer;
+  }
 
   ::v-deep {
     .el-input__inner {
@@ -185,5 +203,11 @@ export default {
       font-family: DINPro-Medium, DINPro;
     }
   }
+}
+
+.m-u {
+  width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

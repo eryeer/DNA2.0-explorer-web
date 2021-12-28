@@ -171,8 +171,9 @@ $--checkbox-font-color: #000;
   background-color: transparent;
 }
 
-.el-table--small .el-table__cell.el-table__cell {
-  padding: 12px 0;
+.el-table--small .el-table__body .el-table__cell.el-table__cell {
+  padding: 20px 0;
+  font-size: 14px;
 }
 
 .el-table td.el-table__cell .cell {
@@ -211,7 +212,7 @@ $--border-lighter: $--border-width-base $--border-style-base
 .el-dialog__header.el-dialog__header {
   padding: 30px;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .el-dialog__headerbtn .el-dialog__close {

@@ -32,36 +32,38 @@
       <ol class="list" v-if="isContract">
         <li>
           <span>合约创建者:</span>
-          <span>
+          <span v-if="info.contractInfo">
             <router-link
               :to="{
                 name: 'explorerAddress',
                 params: {
-                  address: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
+                  address: info.contractInfo.creator,
                 },
               }"
             >
-              <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
+              <short-hash :hash="info.contractInfo.creator"></short-hash>
             </router-link>
             <span class="ml-10 mr-10">于交易</span>
             <router-link
               :to="{
                 name: 'explorerTx',
                 params: {
-                  txHash: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
+                  txHash: info.contractInfo.createTxHash,
                 },
               }"
             >
-              <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
+              <short-hash :hash="info.contractInfo.createTxHash"></short-hash>
             </router-link>
             <span class="ml-10">中创建</span>
           </span>
         </li>
-        <li>
+        <li v-if="abiHasUpload">
           <span>Token标识:</span>
           <span>
-            Binance-Peg BUSD Token (BUSD)
-            <el-tag size="mini" effect="dark" class="ml-10">ERC-20</el-tag>
+            {{ info.contractInfo.tokenName }} ({{ info.contractInfo.tokenSymbol }})
+            <el-tag size="mini" effect="dark" class="ml-10">{{
+              info.contractInfo.contractType
+            }}</el-tag>
           </span>
         </li>
       </ol>
@@ -72,64 +74,76 @@
       </el-tab-pane>
       <el-tab-pane label="合约" v-if="isContract">
         <div class="un-upload bg-white p-30">
-          <div class="mt-60 mt-60">该合约还未上传ABI文件，点击上传ABI文件</div>
-          <div class="mt-30 mt-30">
-            <el-button
-              type="primary"
-              @click="createContract.dialogVisible = true"
-              class="common-btn"
-              >上传</el-button
-            >
-          </div>
-        </div>
-        <div class="uploaded bg-white p-30">
-          <source-code :code="sourceCode" />
+          <template v-if="!abiHasUpload">
+            <div class="mt-100">
+              <img src="@/assets/images/abi_upload.png" width="64" />
+            </div>
+            <div class="mt-20 mb-20">该合约还未上传ABI文件，点击上传ABI文件</div>
+            <div class="mb-100">
+              <el-button
+                type="primary"
+                @click="createContract.dialogVisible = true"
+                class="medium-btn w-100 f-14"
+                >上传</el-button
+              >
+            </div>
+          </template>
+          <template v-else>
+            <source-code :code="sourceCode" />
+            <div class="mt-40">
+              <el-button
+                type="primary"
+                class="medium-btn w-140 f-14"
+                @click="createContract.dialogVisible = true"
+                >重新上传
+              </el-button>
+            </div>
+          </template>
         </div>
       </el-tab-pane>
     </el-tabs>
-    <el-dialog :visible.sync="createContract.dialogVisible" width="860px">
-      <div slot="title">上传ABI文件</div>
+    <el-dialog :visible.sync="createContract.dialogVisible" width="720px">
+      <div slot="title">上传ABI</div>
       <div class="dialog-bd">
-        <div class="app-form">
-          <div class="f-12 mt-15 mb-15">请输入ABI对应的合约地址</div>
-          <el-input
-            v-model.trim="createContract.params.addr"
-            type="text"
-            size="medium"
-            autocomplete="off"
-            clearable
-            class="create-btn"
-            style="width: 400px"
-          ></el-input>
-          <div class="f-12 mt-15 mb-15">在下面粘贴ABI文件内容</div>
-          <el-input
-            v-model.trim="createContract.params.abi"
-            type="textarea"
-            :rows="20"
-            placeholder="请ABI文件内容"
-            size="medium"
-            autocomplete="off"
-            clearable
-            class="create-btn"
-          ></el-input>
-          <div class="f-12 mt-15 mb-15">请输入上传口令</div>
-          <el-input
-            v-model.trim="createContract.params.pass"
-            type="password"
-            size="medium"
-            autocomplete="off"
-            clearable
-            show-password
-            class="create-btn"
-            style="width: 400px"
-          ></el-input>
+        <div class="app-form" @dragover.prevent @drop.prevent>
+          <el-form :model="createContract.params" :rules="rules" ref="form">
+            <div class="f-14 mt-40 mb-15 c-grey">ABI对应的合约地址:</div>
+            <div>{{ address }}</div>
+            <div class="f-14 mt-30 mb-10 c-grey">ABI文件内容:</div>
+            <el-form-item prop="abi">
+              <div @drop="drop">
+                <el-input
+                  v-model.trim="createContract.params.abi"
+                  type="textarea"
+                  :rows="10"
+                  size="medium"
+                  autocomplete="off"
+                  class="create-btn"
+                  placeholder="可粘贴ABI文件内容或拖拽ABI文件到此输入框"
+                ></el-input>
+              </div>
+            </el-form-item>
+            <div class="f-14 mt-30 mb-10 c-grey">请输入上传口令:</div>
+            <el-form-item prop="uploadKey">
+              <el-input
+                v-model.trim="createContract.params.uploadKey"
+                type="password"
+                size="medium"
+                autocomplete="off"
+                show-password
+                class="create-btn"
+              ></el-input>
+            </el-form-item>
+          </el-form>
         </div>
       </div>
       <div slot="footer" class="dialog-footer mb-20 mt-40 t-c">
         <el-button
           type="primary"
           @click="createNewContract"
+          style="width: 100px"
           class="common-btn"
+          v-loading="uploading"
           :disabled="createNewContractDisabled"
           >上传</el-button
         >
@@ -140,11 +154,9 @@
 <script>
 import Loading from '@dna2.0/utils/loading';
 import Txs from './dashboard/Tx';
-import { getAddress } from '../api';
+import { getAddress, uploadAbi } from '../api';
 import SourceCode from './SourceCode.vue';
-
-const mock = `[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"amount","type":"uint256"}],"name":"withdrawEther","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"burn","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"unfreeze","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"freezeOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"freeze","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"initialSupply","type":"uint256"},{"name":"tokenName","type":"string"},{"name":"decimalUnits","type":"uint8"},{"name":"tokenSymbol","type":"string"}],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Freeze","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Unfreeze","type":"event"}]
-`;
+import { isValidAbi } from '@dna2.0/utils';
 
 export default {
   name: 'AddressDetail',
@@ -158,13 +170,27 @@ export default {
       info: {},
       list: [],
       sourceCode: '',
+      uploading: false,
       createContract: {
         dialogVisible: false,
         params: {
-          name: '',
           abi: '',
-          pass: '',
+          uploadKey: '',
         },
+      },
+      rules: {
+        abi: [
+          {
+            required: true,
+            message: '请输入ABI',
+            trigger: 'blur',
+          },
+          {
+            validator: (rule, val, cb) => (isValidAbi(val) ? cb() : cb(new Error('ABI格式错误'))),
+            trigger: 'blur',
+          },
+        ],
+        uploadKey: [{ required: true, message: '请输入上传口令', trigger: 'blur' }],
       },
     };
   },
@@ -175,10 +201,13 @@ export default {
     isContract() {
       return this.info.type === 1;
     },
-      createNewContractDisabled() {
-        const p = this.createContract.params
-        return Object.keys(p).some((key) => !p[key]);
-      },
+    abiHasUpload() {
+      return !!this.info.contractInfo;
+    },
+    createNewContractDisabled() {
+      const p = this.createContract.params;
+      return Object.keys(p).some((key) => !p[key]);
+    },
   },
   watch: {
     blockHeight() {
@@ -193,13 +222,54 @@ export default {
         });
       });
       this.info = res;
+      if (this.info.contractInfo) {
+        this.createContract.params.address = this.info.contractInfo.address;
+        this.createContract.params.abi = this.info.contractInfo.abi;
+      }
     },
     tabHandler(tab) {
-      this.sourceCode = tab.index === '1' ? mock : '';
+      if (!this.info.contractInfo) {
+        return;
+      }
+      this.sourceCode = tab.index === '1' ? this.info.contractInfo.abi : '';
+    },
+    drop(e) {
+      const files = e.target.files || e.dataTransfer.files;
+      if (!files.length) {
+        return;
+      }
+      const fr = new FileReader();
+      fr.onload = () => {
+        this.createContract.params.abi = fr.result;
+      };
+      fr.readAsText(files[0]);
     },
     createNewContract() {
-      
-    }
+      this.$refs['form'].validate(async (valid) => {
+        if (valid) {
+          try {
+            this.uploading = true;
+            await uploadAbi({
+              ...this.createContract.params,
+              address: this.address,
+            });
+            this.$notify({
+              message: '上传成功',
+              type: 'success',
+            });
+            this.createContract.dialogVisible = false;
+            this.uploading = false;
+            this.query();
+          } catch (error) {
+            this.uploading = false;
+            this.$message({
+              message: error,
+              type: 'error',
+            });
+          }
+        }
+      });
+    },
   },
   mounted() {
     this.query();
@@ -248,10 +318,22 @@ export default {
 .create-btn {
   ::v-deep {
     .el-input__inner {
-      height: 40px;
-      line-height: 40px;
-      border-color: rgba(0, 0, 0, 0.19);
-      background-color: white;
+      height: 60px;
+      line-height: 60px;
+      background: rgba(238, 238, 238, 0.2);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 2px;
+      font-size: 14px;
+
+      &:focus {
+        border-color: var(--color-primary);
+        box-shadow: rgb(230 240 255) 0px 0px 0px 4px;
+      }
+    }
+    .el-textarea__inner {
+      background: rgba(238, 238, 238, 0.2);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      font-size: 14px;
       border-radius: 2px;
 
       &:focus {
@@ -260,5 +342,9 @@ export default {
       }
     }
   }
+}
+.app-form {
+  border-top: 1px solid #eeeeee;
+  margin-top: -20px;
 }
 </style>

@@ -16,11 +16,15 @@ service.interceptors.request.use(
   },
 );
 
-
 service.interceptors.response.use(
   (response) => {
-    return response.data.data;
-
+    const { returnCode, returnDesc, data } = response.data;
+    if (returnCode !== 17000) {
+      console.log('returnDesc:', returnDesc);
+      return Promise.reject(returnDesc);
+    } else {
+      return data;
+    }
   },
   (err) => {
     return Promise.reject(err);

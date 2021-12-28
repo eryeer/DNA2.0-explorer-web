@@ -1,11 +1,11 @@
 <template>
-    <prism-editor
-      class="editor"
-      v-model="code"
-      :highlight="highlighter"
-      :line-numbers="false"
-      readonly
-    ></prism-editor>
+  <prism-editor
+    class="editor"
+    v-model="code"
+    :highlight="highlighter"
+    :line-numbers="false"
+    readonly
+  ></prism-editor>
 </template>
 
 <script>
@@ -19,11 +19,8 @@ import 'prismjs/components/prism-solidity';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism-coy.css'; // import syntax highlighting styles
 
-
-
 export default {
-    name: 'CodeHighlight',
-
+  name: 'CodeHighlight',
   components: {
     PrismEditor,
   },
@@ -37,11 +34,11 @@ export default {
       default: 'solidity',
     },
   },
-  
+
   methods: {
     highlighter(code) {
       return highlight(code, languages[this.lang]);
-    }
+    },
   },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white pt-40 pb-40 pl-20 pr-20" v-loading="loading.value">
+  <div class="bg-white p-20" v-loading="loading.value">
     <el-table :data="list" style="width: 100%">
-      <el-table-column label="交易哈希">
+      <el-table-column label="交易哈希" width="150">
         <template slot-scope="scope">
           <router-link
             :to="{
@@ -15,14 +15,14 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="状态" prop="txStatus">
+      <el-table-column label="状态" prop="txStatus" width="60">
         <template slot-scope="scope">
           <el-tag :type="scope.row.txStatus === '0x1' ? 'success' : 'danger'" size="mini">
             {{ scope.row.txStatus === '0x1' ? '成功' : '失败' }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="方法名" prop="methodName"> </el-table-column>
+      <el-table-column label="方法名" prop="method"></el-table-column>
       <el-table-column label="区块高度">
         <template slot-scope="scope">
           <router-link
@@ -37,7 +37,7 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="发起地址">
+      <el-table-column label="发起地址" width="150">
         <template slot-scope="scope">
           <router-link
             :to="{
@@ -51,32 +51,38 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="接收地址">
+      <el-table-column label="接收地址" width="150">
         <template slot-scope="scope">
-          <el-tooltip content="合约" placement="top" v-if="true">
-            <i class="el-icon-document mr-5"></i>
+          <el-tooltip content="合约" placement="top" v-if="scope.row.txType == 1">
+            <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
           </el-tooltip>
           <router-link
             :to="{
               name: 'explorerAddress',
               params: {
-                address: scope.row.toAddress,
+                address: scope.row.toAddress || scope.row.contractAddress,
               },
             }"
           >
-            <short-hash :hash="scope.row.toAddress"></short-hash>
+            <short-hash :hash="scope.row.toAddress || scope.row.contractAddress"></short-hash>
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="数量（Ether）" prop="gasAmount"> </el-table-column>
-      <el-table-column label="消耗燃料（Wei）">
+      <el-table-column label="数量（Ether）">
         <template slot-scope="scope">
           <div>
-            {{ scope.row.gasUsed | filterCount }}
+            {{ gwei2ether(scope.row.txValue) }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="生成时间">
+      <el-table-column label="消耗燃料（Gwei）">
+        <template slot-scope="scope">
+          <div>
+            {{ getGasAmount(scope.row.gasUsed, scope.row.gasPrice) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="生成时间" width="180">
         <template slot-scope="scope">
           <div>
             {{ scope.row.blockTime | filterDate }}
@@ -101,6 +107,7 @@
 <script>
 import Loading from '@dna2.0/utils/loading';
 import { getTransactionList, getTransactionListByAddress } from '../../api';
+import { gwei2ether, getGasAmount } from '@dna2.0/utils';
 
 export default {
   name: 'Txs',
@@ -151,10 +158,20 @@ export default {
       this.params.pageSize = pageSize;
       this.query();
     },
+    gwei2ether(val) {
+      return gwei2ether(val);
+    },
+    getGasAmount(gasUsed, gasPrice) {
+      return getGasAmount(gasUsed, gasPrice);
+    },
   },
   created() {
     this.query();
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.contract-icon {
+  vertical-align: -2px;
+}
+</style>

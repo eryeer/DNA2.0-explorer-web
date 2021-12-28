@@ -1,7 +1,10 @@
 <template>
-  <div class="editor-wrapper">
+  <div class="editor-wrapper" style="width: 100%">
     <div class="info-bar">
-      <span class="info-bar__file">合约ABI</span>
+      <span class="info-bar__file">
+        <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
+        合约ABI</span
+      >
       <span class="info-bar__btn">
         <el-tooltip content="将源代码复制到剪贴板" placement="bottom">
           <img
@@ -64,7 +67,7 @@ export default {
     },
     showLineNumber: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   data: () => ({
@@ -95,8 +98,10 @@ export default {
       clipboard.on('success', function (e) {
         e.clearSelection();
       });
-
-      this.$toast.top(this.$t('error.copied'));
+      this.$notify({
+        message: '复制成功',
+        type: 'success',
+      });
     },
     toggleFullscreen() {
       this.editorHeight = this.editorHeight === DEFAULT_HEIGHT ? this.scrollHeight : DEFAULT_HEIGHT;
@@ -118,10 +123,9 @@ export default {
 <style lang="scss" scoped>
 .editor {
   background-color: #fafafa;
-  color: #ccc;
   font-size: 14px;
-  line-height: 1.5;
-  padding: 5px;
+  line-height: 20px;
+  padding: 20px;
 
   ::v-deep .prism-editor__textarea::selection {
     background: #e6e6e6;
@@ -139,7 +143,7 @@ export default {
 .info-bar {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .info-bar__file {
@@ -159,5 +163,9 @@ export default {
     opacity: 0.5;
     transition: all ease 0.3s;
   }
+}
+
+.contract-icon {
+  vertical-align: -2px;
 }
 </style>

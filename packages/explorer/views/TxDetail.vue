@@ -16,7 +16,7 @@
     </div>
     <el-tabs>
       <el-tab-pane label="总览">
-        <div class="bg-white p-40">
+        <div class="bg-white p-40" v-if="info.txHash">
           <ol class="list">
             <li>
               <span>生成时间:</span>
@@ -61,8 +61,8 @@
             <li>
               <span>接收地址:</span>
               <span>
-                <el-tooltip content="合约" placement="top" v-if="info.toAddressType === 1">
-                  <i class="el-icon-document"></i>
+                <el-tooltip content="合约" placement="top" v-if="info.txType === 1">
+                  <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
                 </el-tooltip>
                 <router-link
                   :to="{
@@ -77,133 +77,112 @@
               >
             </li>
             <li><divider /></li>
-            <li>
-              <span>Token转账:</span>
+            <template v-if="ERC20Transfers.length">
+              <li>
+                <span>Token转账:</span>
+                <span>
+                  <div class="mb-10" v-for="(transfer, index) in ERC20Transfers" :key="index">
+                    <span class="c-grey">从 </span>
+                    <router-link
+                      :to="{
+                        name: 'explorerAddress',
+                        params: {
+                          address: transfer.fromAddress,
+                        },
+                      }"
+                    >
+                      <short-hash :hash="transfer.fromAddress"></short-hash>
+                    </router-link>
+                    <span class="c-grey"> 到 </span>
+                    <router-link
+                      :to="{
+                        name: 'explorerAddress',
+                        params: {
+                          address: transfer.toAddress,
+                        },
+                      }"
+                    >
+                      <short-hash :hash="transfer.toAddress"></short-hash>
+                    </router-link>
+                    <span class="c-grey"> 转 </span><span class="f-b">{{ transfer.amount }}</span>
+                    <span v-if="transfer.tokenName">
+                      {{ transfer.tokenName }}({{ transfer.tokenName }})
+                    </span>
+                    <template v-else>
+                      Token
+                      <router-link
+                        :to="{
+                          name: 'explorerAddress',
+                          params: {
+                            address: transfer.address,
+                          },
+                        }"
+                      >
+                        <short-hash :hash="transfer.address"></short-hash>
+                      </router-link>
+                    </template>
+                  </div>
+                </span>
+              </li>
+              <li><divider /></li>
+            </template>
+            <li v-for="(transfer, index) in ERC721Transfers" :key="index">
+              <span>NFT Token转账:</span>
               <span>
                 <div class="mb-10">
-                  <span class="mr-10">从</span>
+                  <span class="c-grey">从 </span>
                   <router-link
                     :to="{
                       name: 'explorerAddress',
                       params: {
-                        address: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
+                        address: transfer.fromAddress,
                       },
                     }"
                   >
-                    <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
+                    <short-hash :hash="transfer.fromAddress"></short-hash>
                   </router-link>
-                  <span class="ml-10 mr-10">到</span>
+                  <span class="c-grey"> 到 </span>
                   <router-link
                     :to="{
                       name: 'explorerAddress',
                       params: {
-                        address: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
+                        address: transfer.toAddress,
                       },
                     }"
                   >
-                    <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
+                    <short-hash :hash="transfer.toAddress"></short-hash>
                   </router-link>
-                  <span class="ml-10 mr-10">转 <span class="f-b">22.2221</span> Token</span>
-                  <router-link
-                    :to="{
-                      name: 'explorerTx',
-                      params: {
-                        txHash: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
-                      },
-                    }"
-                  >
-                    <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
-                  </router-link>
-                </div>
-                <div>
-                  <span class="mr-10">从</span>
-                  <router-link
-                    :to="{
-                      name: 'explorerAddress',
-                      params: {
-                        address: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
-                      },
-                    }"
-                  >
-                    <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
-                  </router-link>
-                  <span class="ml-10 mr-10">到</span>
-                  <router-link
-                    :to="{
-                      name: 'explorerAddress',
-                      params: {
-                        address: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
-                      },
-                    }"
-                  >
-                    <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
-                  </router-link>
-                  <span class="ml-10 mr-10">转 <span class="f-b">22.2221</span> Token</span>
-                  <router-link
-                    :to="{
-                      name: 'explorerTx',
-                      params: {
-                        txHash: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
-                      },
-                    }"
-                  >
-                    <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
-                  </router-link>
+                  <span class="c-grey"> 转 </span><span class="f-b">ERC-721 TokenID [{{transfer.tokenId}}] </span>
+                    <span v-if="transfer.tokenName">
+                      {{ transfer.tokenName }}({{ transfer.tokenName }})
+                    </span>
+                    <template v-else>
+                      <router-link
+                        :to="{
+                          name: 'explorerAddress',
+                          params: {
+                            address: transfer.address,
+                          },
+                        }"
+                      >
+                        <short-hash :hash="transfer.address"></short-hash>
+                      </router-link>
+                    </template>
                 </div>
               </span>
             </li>
-            <li><divider /></li>
-            <li>
-              <span>NFT Token转账:</span>
-              <span>
-                <div>
-                  <span class="mr-10">从</span>
-                  <router-link
-                    :to="{
-                      name: 'explorerAddress',
-                      params: {
-                        address: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
-                      },
-                    }"
-                  >
-                    <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
-                  </router-link>
-                  <span class="ml-10 mr-10">到</span>
-                  <router-link
-                    :to="{
-                      name: 'explorerAddress',
-                      params: {
-                        address: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
-                      },
-                    }"
-                  >
-                    <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
-                  </router-link>
-                  <span class="ml-10 mr-10">转 <span class="f-b">ERC-721 TokenID [6]</span></span>
-                  <router-link
-                    :to="{
-                      name: 'explorerTx',
-                      params: {
-                        txHash: '0xba2ad566f880a1796bdedc256dc8da25bb484baf',
-                      },
-                    }"
-                  >
-                    <short-hash :hash="'0xba2ad566f880a1796bdedc256dc8da25bb484baf'"></short-hash>
-                  </router-link></div
-              ></span>
-            </li>
-            <li><divider /></li>
+            <li v-if="ERC721Transfers.length"><divider /></li>
             <li>
               <span>数量:</span>
-              <span>1 Ether</span>
+              <span> {{ gwei2ether(info.txValue) }} Ether</span>
             </li>
             <li>
               <span>交易费:</span>
-              <span>10,051 Wei</span>
+              <span>{{ getGasAmount(info.gasUsed, info.gasPrice) }} Gwei</span>
             </li>
             <li>
               <span>燃料价格:</span>
-              <span>1 Wei</span>
+              <span>{{ gwei2ether(info.gasPrice) }} Gwei</span>
             </li>
             <li>
               <span>消耗燃料:</span>
@@ -215,12 +194,12 @@
             </li>
             <li>
               <span>燃料使用率:</span>
-              <span>20.25%</span>
+              <span>{{ (info.gasUsed / info.gasLimit) | filterPercentage }}</span>
             </li>
             <li><divider /></li>
             <li>
               <span>Nonce:</span>
-              <span>123</span>
+              <span>{{ info.nonce }}</span>
             </li>
             <li>
               <span>输入数据:</span>
@@ -228,7 +207,7 @@
                 <el-input
                   type="textarea"
                   :rows="5"
-                  value="010101141497bd436691c00e9cf776b415029ac95488ce44f853c106757365724f70671724b474aa9328b28d3b60fd8b345e5a2615e2ca"
+                  :value="info.data"
                   size="medium"
                   autocomplete="off"
                   readonly
@@ -265,12 +244,9 @@
                 </router-link>
               </span>
             </li>
-            <li>
+            <li v-if="log.eventName">
               <span>名称：</span>
-              <span>
-                <code-highlight
-                  code="Transfer (index_topic_1 address from, index_topic_2 address to, uint256 value)"
-              /></span>
+              <span> <code-highlight :code="log.eventName" /></span>
             </li>
             <li>
               <span>主题:</span>
@@ -300,6 +276,7 @@ import Loading from '@dna2.0/utils/loading';
 import { getTransaction, getAddress } from '../api';
 import Divider from './Divider';
 import CodeHighlight from './CodeHighlight';
+import { gwei2ether, getGasAmount } from '@dna2.0/utils';
 
 export default {
   name: 'TxDetail',
@@ -311,6 +288,7 @@ export default {
     return {
       info: {
         logList: [],
+        ercTransferLog: [],
       },
       loading: new Loading(),
     };
@@ -318,6 +296,18 @@ export default {
   computed: {
     txHash() {
       return this.$route.params.txHash;
+    },
+    ERC20Transfers() {
+      if (!this.info.ercTransferLog.length) {
+        return [];
+      }
+      return this.info.ercTransferLog.filter((item) => item.contractType === 'ERC20');
+    },
+    ERC721Transfers() {
+      if (!this.info.ercTransferLog.length) {
+        return [];
+      }
+      return this.info.ercTransferLog.filter((item) => item.contractType === 'ERC721');
     },
   },
   watch: {
@@ -348,6 +338,12 @@ export default {
         ...info,
         toAddressType,
       };
+    },
+    gwei2ether(val) {
+      return gwei2ether(val);
+    },
+    getGasAmount(gasUsed, gasPrice) {
+      return getGasAmount(gasUsed, gasPrice);
     },
   },
   mounted() {
@@ -385,5 +381,9 @@ export default {
       margin-bottom: 30px;
     }
   }
+}
+
+.contract-icon {
+  vertical-align: -2px;
 }
 </style>

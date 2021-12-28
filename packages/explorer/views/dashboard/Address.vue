@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white pt-40 pb-40 pl-20 pr-20" v-loading="loading.value">
+  <div class="bg-white p-20" v-loading="loading.value">
     <el-table :data="list" style="width: 100%">
       <el-table-column label="地址" width="400">
         <template slot-scope="scope">
