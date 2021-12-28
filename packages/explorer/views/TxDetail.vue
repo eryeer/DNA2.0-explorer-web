@@ -152,22 +152,23 @@
                   >
                     <short-hash :hash="transfer.toAddress"></short-hash>
                   </router-link>
-                  <span class="c-grey"> 转 </span><span class="f-b">ERC-721 TokenID [{{transfer.tokenId}}] </span>
-                    <span v-if="transfer.tokenName">
-                      {{ transfer.tokenName }}({{ transfer.tokenName }})
-                    </span>
-                    <template v-else>
-                      <router-link
-                        :to="{
-                          name: 'explorerAddress',
-                          params: {
-                            address: transfer.address,
-                          },
-                        }"
-                      >
-                        <short-hash :hash="transfer.address"></short-hash>
-                      </router-link>
-                    </template>
+                  <span class="c-grey"> 转 </span
+                  ><span class="f-b">ERC-721 TokenID [{{ transfer.tokenId }}] </span>
+                  <span v-if="transfer.tokenName">
+                    {{ transfer.tokenName }}({{ transfer.tokenName }})
+                  </span>
+                  <template v-else>
+                    <router-link
+                      :to="{
+                        name: 'explorerAddress',
+                        params: {
+                          address: transfer.address,
+                        },
+                      }"
+                    >
+                      <short-hash :hash="transfer.address"></short-hash>
+                    </router-link>
+                  </template>
                 </div>
               </span>
             </li>
@@ -206,8 +207,8 @@
               <span>
                 <el-input
                   type="textarea"
-                  :rows="5"
-                  :value="info.data"
+                  :rows="6"
+                  :value="inputData"
                   size="medium"
                   autocomplete="off"
                   readonly
@@ -272,6 +273,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import Loading from '@dna2.0/utils/loading';
 import { getTransaction, getAddress } from '../api';
 import Divider from './Divider';
@@ -291,6 +293,7 @@ export default {
         ercTransferLog: [],
       },
       loading: new Loading(),
+      inputData: '0x'
     };
   },
   computed: {
@@ -314,6 +317,9 @@ export default {
     txHash() {
       this.query();
     },
+    'info.data'(val) {
+      this.genInputData(val)
+    }
   },
   methods: {
     query() {
@@ -344,6 +350,33 @@ export default {
     },
     getGasAmount(gasUsed, gasPrice) {
       return getGasAmount(gasUsed, gasPrice);
+    },
+    async genInputData(result) {
+      if (!result || result === '0x' || result.slice(0, 2) !== '0x') {
+        this.inputData = result;
+      } else {
+        const signHash = result.slice(2, 10);
+
+        const signatures = await axios({
+          url: `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${signHash}`,
+          method: 'get',
+        });
+
+      
+        let str = `Function: ${signatures.data} ***
+
+MethodID: ${result.slice(0, 10)}`;
+
+        let i = 0;
+
+        while (i < Math.floor(result.length / 64)) {
+          str += `\n[${i}]:  ${result.slice(i * 64 + 10, (i + 1) * 64 + 10)}`;
+
+          i++;
+        }
+
+        this.inputData = str;
+      }
     },
   },
   mounted() {
