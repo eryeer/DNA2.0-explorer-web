@@ -108,7 +108,7 @@ export default {
     },
     adjustEditorHeight() {
       this.$editor = this.$el.querySelector('.prism-editor__textarea');
-      this.scrollHeight = this.$editor.scrollHeight + 10;
+      this.scrollHeight = this.$editor.scrollHeight + 40;
       this.canToggleFullscreen = this.scrollHeight > this.editorHeight;
       if (!this.canToggleFullscreen) {
         this.toggleFullscreen();
