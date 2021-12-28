@@ -51,3 +51,16 @@ export default {
   }
 }
 </style>
+
+<style>
+.token.function {
+  color: #0078fa;
+}
+.token.builtin {
+  color: #00c9a7;
+}
+
+.token.keyword {
+  color: #000;
+}
+</style>

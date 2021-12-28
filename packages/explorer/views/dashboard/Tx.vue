@@ -17,9 +17,9 @@
       </el-table-column>
       <el-table-column label="状态" prop="txStatus" width="60">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.txStatus === '0x1' ? 'success' : 'danger'" size="mini">
-            {{ scope.row.txStatus === '0x1' ? '成功' : '失败' }}
-          </el-tag>
+          <span :class="{ 'c-danger': scope.row.txStatus !== '0x1' }">
+            {{ scope.row.txStatus === '0x1' ? '成功' : '失败' }}</span
+          >
         </template>
       </el-table-column>
       <el-table-column label="方法名" prop="method"></el-table-column>

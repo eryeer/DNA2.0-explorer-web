@@ -32,10 +32,8 @@
             </li>
             <li>
               <span>状态:</span>
-              <span>
-                <el-tag :type="info.txStatus === '0x1' ? 'success' : 'danger'" size="mini">
-                  {{ info.txStatus === '0x1' ? '成功' : '失败' }}
-                </el-tag></span
+              <span :class="{ 'c-danger': info.txStatus !== '0x1' }">
+                {{ info.txStatus === '0x1' ? '成功' : '失败' }}</span
               >
             </li>
             <li>
@@ -293,7 +291,7 @@ export default {
         ercTransferLog: [],
       },
       loading: new Loading(),
-      inputData: '0x'
+      inputData: '0x',
     };
   },
   computed: {
@@ -318,8 +316,8 @@ export default {
       this.query();
     },
     'info.data'(val) {
-      this.genInputData(val)
-    }
+      this.genInputData(val);
+    },
   },
   methods: {
     query() {
@@ -362,7 +360,6 @@ export default {
           method: 'get',
         });
 
-      
         let str = `Function: ${signatures.data} ***
 
 MethodID: ${result.slice(0, 10)}`;

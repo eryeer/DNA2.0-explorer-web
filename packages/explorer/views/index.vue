@@ -162,8 +162,9 @@ export default {
     .el-input__inner {
       height: 40px;
       line-height: 40px;
-      border-color: #999999;
+      border-color: #d8d8d8;
       background-color: white;
+      border-radius: 4px;
 
       &:focus {
         border-color: var(--color-primary);
@@ -194,7 +195,7 @@ export default {
     flex-direction: column;
 
     > span:first-child {
-      font-size: 12px;
+      font-size: 14px;
       opacity: 0.6;
       margin-bottom: 10px;
     }
