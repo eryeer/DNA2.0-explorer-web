@@ -53,7 +53,7 @@
       </el-table-column>
       <el-table-column label="接收地址" width="150">
         <template slot-scope="scope">
-          <el-tooltip content="合约" placement="top" v-if="scope.row.txType == 1">
+          <el-tooltip content="合约" placement="top" v-if="scope.row.toAddressType == 1">
             <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
           </el-tooltip>
           <router-link

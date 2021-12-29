@@ -30,9 +30,9 @@
         </li>
       </ol>
       <ol class="list" v-if="isContract">
-        <li>
+        <li v-if="info.contractInfo && info.contractInfo.creator">
           <span>合约创建者:</span>
-          <span v-if="info.contractInfo">
+          <span>
             <router-link
               :to="{
                 name: 'explorerAddress',
@@ -57,11 +57,11 @@
             <span class="ml-10">中创建</span>
           </span>
         </li>
-        <li v-if="abiHasUpload">
+        <li v-if="abiHasUpload && info.contractInfo.tokenName">
           <span>Token标识:</span>
           <span>
             {{ info.contractInfo.tokenName }} ({{ info.contractInfo.tokenSymbol }})
-            <el-tag size="mini" effect="dark" class="ml-10">{{
+            <el-tag size="mini" effect="dark" class="ml-10" v-if="info.contractInfo.contractType">{{
               info.contractInfo.contractType
             }}</el-tag>
           </span>
@@ -123,7 +123,7 @@
                 ></el-input>
               </div>
             </el-form-item>
-            <div class="f-14 mt-30 mb-10 c-grey">请输入上传口令:</div>
+            <div class="f-14 mt-30 mb-10 c-grey">上传口令:</div>
             <el-form-item prop="uploadKey">
               <el-input
                 v-model.trim="createContract.params.uploadKey"
@@ -294,6 +294,7 @@ export default {
   width: 45%;
   > li {
     display: flex;
+    align-items: center;
     > span:first-child {
       opacity: 0.6;
       min-width: 90px;

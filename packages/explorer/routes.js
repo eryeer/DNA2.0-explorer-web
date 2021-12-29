@@ -1,8 +1,8 @@
 export default {
-  path: 'explorer',
+  path: '/',
   name: 'explorer',
   component: () => import(/* webpackChunkName: "explorer" */ './views'),
-  redirect: 'explorer/blocks',
+  redirect: 'blocks',
   meta: { title: '区块链浏览器', showInMenu: true, icon: 'explorer' },
   children: [
     {

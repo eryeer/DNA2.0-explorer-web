@@ -59,7 +59,7 @@
             <li>
               <span>接收地址:</span>
               <span>
-                <el-tooltip content="合约" placement="top" v-if="info.txType === 1">
+                <el-tooltip content="合约" placement="top" v-if="info.toAddressType === 1">
                   <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
                 </el-tooltip>
                 <router-link
@@ -203,15 +203,29 @@
             <li>
               <span>输入数据:</span>
               <span>
-                <el-input
-                  type="textarea"
-                  :rows="6"
-                  :value="inputData"
-                  size="medium"
-                  autocomplete="off"
-                  readonly
-                ></el-input
-              ></span>
+                <div class="mb-15">
+                  <el-input
+                    class="inputData"
+                    type="textarea"
+                    :rows="6"
+                    :value="showInputData"
+                    size="medium"
+                    autocomplete="off"
+                    readonly
+                  ></el-input>
+                </div>
+                <div class="t-r">
+                  <el-button
+                    type="info"
+                    size="mini"
+                    plain
+                    @click="showAsOriginal = !showAsOriginal"
+                  >
+                    <svg-icon icon-class="back2" class="s-n" />
+                    {{ !showAsOriginal ? '展示原始数据' : '展示默认视图' }}</el-button
+                  >
+                </div>
+              </span>
             </li>
           </ol>
         </div>
@@ -292,6 +306,7 @@ export default {
       },
       loading: new Loading(),
       inputData: '0x',
+      showAsOriginal: false,
     };
   },
   computed: {
@@ -309,6 +324,9 @@ export default {
         return [];
       }
       return this.info.ercTransferLog.filter((item) => item.contractType === 'ERC721');
+    },
+    showInputData() {
+      return this.showAsOriginal ? this.info.data : this.inputData;
     },
   },
   watch: {
@@ -415,5 +433,19 @@ MethodID: ${result.slice(0, 10)}`;
 
 .contract-icon {
   vertical-align: -2px;
+}
+
+.s-n {
+  stroke: none;
+}
+
+.inputData {
+  ::v-deep {
+    .el-textarea__inner {
+      padding: 20px;
+      color: rgb(119, 131, 143);
+      font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    }
+  }
 }
 </style>

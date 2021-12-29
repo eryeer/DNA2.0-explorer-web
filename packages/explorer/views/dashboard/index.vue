@@ -26,7 +26,12 @@ export default {
   },
   computed: {
     activeName() {
-      const { type } = this.$route.params;
+      let { type } = this.$route.params;
+      if (!['blocks', 'txs', 'addresses'].includes(type)) {
+        this.$router.push({
+          name: 'notfound',
+        });
+      }
       return type.charAt(0).toUpperCase() + type.slice(1);
     },
   },

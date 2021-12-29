@@ -13,6 +13,7 @@ export default {
 <style lang="scss" scoped>
 .box {
   display: flex;
+  height: 100vh;
 
   .not-found {
     margin: auto;

@@ -6,32 +6,28 @@
         合约ABI</span
       >
       <span class="info-bar__btn">
-        <el-tooltip content="将源代码复制到剪贴板" placement="bottom">
-          <img
-            src="@/assets/images/copy.svg"
-            width="14"
-            height="14"
-            @click="copy"
-            class="copy-btn"
-          />
+        <copyable :raw="showCode" :size="22"></copyable>
+        <el-tooltip content="格式化ABI" placement="bottom">
+          <svg-icon icon-class="formatter" class="f-20 c-p" @click="formatter" />
         </el-tooltip>
         <el-tooltip v-if="canToggleFullscreen" content="切换全屏" placement="bottom">
           <img
             src="@/assets/images/expand_arrows.svg"
             width="13"
-            height="14"
             @click="toggleFullscreen"
+            class="c-p"
           />
         </el-tooltip>
       </span>
     </div>
     <prism-editor
       class="editor"
-      v-model="code"
+      v-model="showCode"
       :highlight="highlighter"
       :style="{ height: `${editorHeight}px` }"
-      :line-numbers="showLineNumber"
+      :line-numbers="showAsFormatter"
       readonly
+      ref="editor"
     ></prism-editor>
   </div>
 </template>
@@ -46,8 +42,6 @@ import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-solidity';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism-coy.css'; // import syntax highlighting styles
-
-import Clipboard from 'clipboard';
 
 const DEFAULT_HEIGHT = 400;
 
@@ -70,38 +64,29 @@ export default {
       default: false,
     },
   },
-  data: () => ({
-    editorHeight: DEFAULT_HEIGHT,
-    canToggleFullscreen: true,
-  }),
+  data() {
+    return {
+      editorHeight: DEFAULT_HEIGHT,
+      canToggleFullscreen: true,
+      showAsFormatter: false,
+      showCode: this.code,
+    };
+  },
   watch: {
     code: {
-      handler() {
-        setTimeout(this.adjustEditorHeight.bind(this));
+      handler(val) {
+        this.showCode = val;
       },
-      immediate: true,
+    },
+    showCode: {
+      handler() {
+        this.$nextTick(this.adjustEditorHeight);
+      },
     },
   },
   methods: {
     highlighter(code) {
       return highlight(code, languages[this.lang]);
-    },
-    copy() {
-      const self = this;
-
-      const clipboard = new Clipboard('.copy-btn', {
-        target: function () {
-          return self.$editor;
-        },
-      });
-
-      clipboard.on('success', function (e) {
-        e.clearSelection();
-      });
-      this.$notify({
-        message: '复制成功',
-        type: 'success',
-      });
     },
     toggleFullscreen() {
       this.editorHeight = this.editorHeight === DEFAULT_HEIGHT ? this.scrollHeight : DEFAULT_HEIGHT;
@@ -116,6 +101,16 @@ export default {
         this.editorHeight = DEFAULT_HEIGHT;
       }
     },
+    formatter() {
+      if (!this.showAsFormatter) {
+        try {
+          this.showCode = JSON.stringify(JSON.parse(this.code), null, 2);
+        } catch (error) {}
+      } else {
+        this.showCode = this.code;
+      }
+      this.showAsFormatter = !this.showAsFormatter;
+    },
   },
 };
 </script>
@@ -126,6 +121,7 @@ export default {
   font-size: 14px;
   line-height: 20px;
   padding: 20px;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
 
   ::v-deep .prism-editor__textarea::selection {
     background: #e6e6e6;
@@ -152,17 +148,9 @@ export default {
 }
 
 .info-bar__btn {
-  > img {
-    margin-left: 10px;
-    width: 14px;
-    transform: translateY(2px);
-    cursor: pointer;
-    transition: all ease 0.3s;
-  }
-  > img:hover {
-    opacity: 0.5;
-    transition: all ease 0.3s;
-  }
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .contract-icon {

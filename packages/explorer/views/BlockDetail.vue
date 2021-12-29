@@ -121,6 +121,7 @@ export default {
   width: 45%;
   > li {
     display: flex;
+
     > span:first-child {
       opacity: 0.6;
       min-width: 90px;

@@ -1,16 +1,14 @@
-import Layout from '@/views/Layout';
 import explorerRoutes from '@dna2.0/explorer/routes';
 
 export default [
   {
-    path: '/',
-    component: Layout,
-    redirect: '/explorer',
-    children: [
-      {
-        ...explorerRoutes,
-      },
-    ],
+    ...explorerRoutes,
+  },
+  {
+    path: '404',
+    name: 'notfound',
+    component: () => import(/* webpackChunkName: "404" */ '@/views/404.vue'),
+    meta: { title: '404' },
   },
   { path: '*', redirect: { path: '/404' } },
 ];

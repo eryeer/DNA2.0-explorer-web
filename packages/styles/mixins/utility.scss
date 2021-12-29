@@ -79,7 +79,7 @@ $dirs: (top, bottom, left, right);
 
 /* text
 -------------------------- */
-$fontSizeIncs: (12, 14, 16, 18, 20, 24, 32, 36, 40, 48);
+$fontSizeIncs: (12, 14, 16, 18, 20, 22, 24, 32, 36, 40, 48);
 
 @each $inc in $fontSizeIncs {
   .f-#{$inc} {
@@ -161,4 +161,8 @@ $widthIncs: (100, 120, 140, 180, 300);
 
 .medium-btn {
   height: 40px;
+}
+
+.c-p {
+  cursor: pointer;
 }

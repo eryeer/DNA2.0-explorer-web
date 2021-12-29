@@ -58,6 +58,7 @@ export default {
   fill: currentColor;
   stroke: currentColor;
   overflow: hidden;
+  outline: none;
 }
 
 .svg-external-icon {

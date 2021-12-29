@@ -18,22 +18,24 @@
       </div>
     </div>
     <ul class="info-list bg-white p-40 mb-20 m-u" v-loading="loading.value">
-      <li>
-        <span>区块高度</span>
-        <span> {{ info.blockNumber | filterCount }} </span>
-      </li>
-      <li>
-        <span>交易总数</span>
-        <span> {{ info.txCount | filterCount }} </span>
-      </li>
-      <li>
-        <span>正常/节点数</span>
-        <span> {{ info.activeCount }}/{{ info.nodeCount }} </span>
-      </li>
-      <li>
-        <span>网络状态</span>
-        <span> {{ info.netStatus ? '正常' : '异常' }} </span>
-      </li>
+      <template v-if="!!Object.keys(info).length">
+        <li>
+          <span>区块高度</span>
+          <span> {{ info.blockNumber | filterCount }} </span>
+        </li>
+        <li>
+          <span>交易总数</span>
+          <span> {{ info.txCount | filterCount }} </span>
+        </li>
+        <li>
+          <span>正常/节点数</span>
+          <span> {{ info.activeCount }}/{{ info.nodeCount }} </span>
+        </li>
+        <li>
+          <span>网络状态</span>
+          <span> {{ info.netStatus ? '正常' : '异常' }} </span>
+        </li>
+      </template>
     </ul>
     <div class="m-u">
       <router-view :key="$route.fullPath" />

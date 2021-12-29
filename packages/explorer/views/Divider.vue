@@ -26,8 +26,10 @@ export default {
 
 <style lang="scss" scoped>
 .divider {
-  background-color: rgba(242, 242, 242, 0.8);
+  background-color: #eeeeee;
   width: 100%;
-  height: 1px ;
+  height: 1px;
+  margin-left: -10px;
+  margin-right: -10px;
 }
 </style>

@@ -6,7 +6,7 @@
     >
     <span class="copy-btn" @click="copy()" @mouseenter="enter" @mouseleave="leave">
       <el-tooltip :content="tip" placement="top" manual v-model="visibility">
-        <svg-icon icon-class="copy" class="f-18" />
+        <svg-icon icon-class="copy" :class="{ [`f-${size}`]: true }" />
       </el-tooltip>
     </span>
   </span>
@@ -20,6 +20,10 @@ export default {
   props: {
     raw: {
       type: [Number, String],
+    },
+    size: {
+      type: Number,
+      default: 18,
     },
   },
   data() {
