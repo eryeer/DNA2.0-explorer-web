@@ -1,4 +1,4 @@
-const WebpackCdnPlugin = require('webpack-cdn-plugin');
+// const WebpackCdnPlugin = require('webpack-cdn-plugin');
 
 const path = require('path');
 
@@ -87,19 +87,19 @@ module.exports = {
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch');
 
-    if (isProd) {
-      config.plugin('cdn').use(WebpackCdnPlugin, [
-        {
-          modules: [
-            { name: 'vue', var: 'Vue', path: 'dist/vue.runtime.min.js' },
-            { name: 'vue-router', var: 'VueRouter', path: 'dist/vue-router.min.js' },
-            { name: 'vuex', var: 'Vuex', path: 'dist/vuex.min.js' },
-            { name: 'element-ui', var: 'ELEMENT', path: 'lib/index.js' },
-          ],
-          prodUrl: '//cdn.jsdelivr.net/npm/:name@:version/:path',
-        },
-      ]);
-    }
+    // if (isProd) {
+    //   config.plugin('cdn').use(WebpackCdnPlugin, [
+    //     {
+    //       modules: [
+    //         { name: 'vue', var: 'Vue', path: 'dist/vue.runtime.min.js' },
+    //         { name: 'vue-router', var: 'VueRouter', path: 'dist/vue-router.min.js' },
+    //         { name: 'vuex', var: 'Vuex', path: 'dist/vuex.min.js' },
+    //         { name: 'element-ui', var: 'ELEMENT', path: 'lib/index.js' },
+    //       ],
+    //       prodUrl: '//cdn.jsdelivr.net/npm/:name@:version/:path',
+    //     },
+    //   ]);
+    // }
 
     // set svg-sprite-loader
     config.module.rule('svg').exclude.add(resolve('src/icons')).end();
