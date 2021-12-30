@@ -54,6 +54,7 @@
 <script>
 import Loading from '@dna2.0/utils/loading';
 import { getAddressList } from '../../api';
+import { eventBus } from '@dna2.0/utils';
 
 export default {
   name: 'Addresses',
@@ -86,8 +87,12 @@ export default {
       this.query();
     },
   },
-  created() {
+  mounted() {
     this.query();
+    eventBus.$on('refreshList', this.query);
+  },
+  beforeDestroy() {
+    eventBus.$off('refreshList');
   },
 };
 </script>

@@ -107,7 +107,7 @@
 <script>
 import Loading from '@dna2.0/utils/loading';
 import { getTransactionList, getTransactionListByAddress } from '../../api';
-import { gwei2ether, getGasAmount } from '@dna2.0/utils';
+import { gwei2ether, getGasAmount, eventBus } from '@dna2.0/utils';
 
 export default {
   name: 'Txs',
@@ -165,8 +165,12 @@ export default {
       return getGasAmount(gasUsed, gasPrice);
     },
   },
-  created() {
+  mounted() {
     this.query();
+    eventBus.$on('refreshList', this.query);
+  },
+  beforeDestroy() {
+    eventBus.$off('refreshList');
   },
 };
 </script>

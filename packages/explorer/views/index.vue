@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="pb-30">
     <div class="search-bar-wrapper">
       <div class="search-bar m-u">
         <router-link to="/" class="h2" tag="h2"> 区块链浏览器 </router-link>

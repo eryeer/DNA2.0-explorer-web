@@ -7,13 +7,11 @@
       >
       <span class="info-bar__btn">
         <copyable :raw="showCode" :size="22"></copyable>
-        <el-tooltip content="格式化ABI" placement="bottom">
+        <el-tooltip content="格式化ABI" placement="top">
           <svg-icon icon-class="formatter" class="f-20 c-p" @click="formatter" />
         </el-tooltip>
-        <el-tooltip v-if="canToggleFullscreen" content="切换全屏" placement="bottom">
-                    <svg-icon icon-class="toggle" class="f-17 c-p" @click="toggleFullscreen" />
-
-    
+        <el-tooltip v-if="canToggleFullscreen" content="切换全屏" placement="top">
+          <svg-icon icon-class="toggle" class="f-17 c-p" @click="toggleFullscreen" />
         </el-tooltip>
       </span>
     </div>

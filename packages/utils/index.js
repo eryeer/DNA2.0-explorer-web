@@ -1,3 +1,4 @@
+import Vue from "vue";
 import Big from "big.js";
 
 export const erasure = (params) => {
@@ -269,3 +270,5 @@ export const isValidAbi = function (abi) {
 
   return false;
 };
+
+export const eventBus = new Vue();
