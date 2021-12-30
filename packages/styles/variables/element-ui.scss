@@ -250,3 +250,8 @@ $--border-lighter: $--border-width-base $--border-style-base
 .el-tabs__active-bar.el-tabs__active-bar {
   height: 3px;
 }
+
+
+.el-loading-spinner .path.path {
+  stroke-width: 3;
+}

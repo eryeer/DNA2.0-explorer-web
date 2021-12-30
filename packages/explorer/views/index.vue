@@ -17,23 +17,31 @@
         </div>
       </div>
     </div>
-    <ul class="info-list bg-white p-40 mb-20 m-u" v-loading="loading.value">
+    <ul class="info-list bg-white mb-20 m-u" v-loading="loading.value">
       <template v-if="!!Object.keys(info).length">
         <li>
-          <span>区块高度</span>
-          <span> {{ info.blockNumber | filterCount }} </span>
+          <div>
+            <span>区块高度</span>
+            <span> {{ info.blockNumber | filterCount }} </span>
+          </div>
         </li>
         <li>
-          <span>交易总数</span>
-          <span> {{ info.txCount | filterCount }} </span>
+          <div>
+            <span>交易总数</span>
+            <span> {{ info.txCount | filterCount }} </span>
+          </div>
         </li>
         <li>
-          <span>正常/节点数</span>
-          <span> {{ info.activeCount }}/{{ info.nodeCount }} </span>
+          <div>
+            <span>正常/节点数</span>
+            <span> {{ info.activeCount }}/{{ info.nodeCount }} </span>
+          </div>
         </li>
         <li>
-          <span>网络状态</span>
-          <span> {{ info.netStatus ? '正常' : '异常' }} </span>
+          <div>
+            <span>网络状态</span>
+            <span> {{ info.netStatus ? '正常' : '异常' }} </span>
+          </div>
         </li>
       </template>
     </ul>
@@ -188,21 +196,30 @@ export default {
 .info-list {
   display: flex;
   flex-wrap: wrap;
-  align-content: space-between;
+  align-content: center;
   height: 125px;
+  box-shadow: 0px 1px 6px rgb(6 8 69 / 3%);
 
   > li {
     width: 25%;
-    display: flex;
-    flex-direction: column;
 
-    > span:first-child {
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 160px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    > div span:first-child {
       font-size: 14px;
       opacity: 0.6;
       margin-bottom: 10px;
     }
-    > span:last-child {
-      font-size: 20px;
+    > div span:last-child {
+      font-size: 26px;
       font-family: DINPro-Medium, DINPro;
     }
   }
