@@ -348,14 +348,16 @@ export default {
         });
       });
 
-      const addrInfo = await this.loading.run(async () => {
-        return await getAddress({
-          address: info.toAddress,
+      let toAddressType = 0;
+
+      try {
+        const addrInfo = await this.loading.run(async () => {
+          return await getAddress({
+            address: info.toAddress,
+          });
         });
-      });
-
-      const toAddressType = addrInfo ? addrInfo.type : 0;
-
+        toAddressType = addrInfo ? addrInfo.type : 0;
+      } catch (error) {}
       this.info = {
         ...info,
         toAddressType,
