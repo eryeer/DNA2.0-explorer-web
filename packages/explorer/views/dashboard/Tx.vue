@@ -52,7 +52,7 @@
         </template>
       </el-table-column>
       <el-table-column label="接收地址" width="150">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.toAddress">
           <el-tooltip content="合约" placement="top" v-if="scope.row.toAddressType == 1">
             <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
           </el-tooltip>
@@ -60,11 +60,11 @@
             :to="{
               name: 'explorerAddress',
               params: {
-                address: scope.row.toAddress || scope.row.contractAddress,
+                address: scope.row.toAddress,
               },
             }"
           >
-            <short-hash :hash="scope.row.toAddress || scope.row.contractAddress"></short-hash>
+            <short-hash :hash="scope.row.toAddress"></short-hash>
           </router-link>
         </template>
       </el-table-column>
