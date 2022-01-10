@@ -56,6 +56,7 @@ import { isHexString } from '@dna2.0/utils';
 import { getBlock, getAddress, getTransaction } from '../api';
 import { getTotalSummary } from '@/api/summary';
 import Loading from '@dna2.0/utils/loading';
+import { eventBus } from '@dna2.0/utils';
 
 export default {
   name: 'explorer',
@@ -128,7 +129,7 @@ export default {
       try {
         this.info = await getTotalSummary();
       } finally {
-        this.timer = setTimeout(this.getTotalSummary.bind(this), 10 * 1000);
+        this.timer = setTimeout(this.getTotalSummary.bind(this),  15 * 1000);
       }
     },
   },
@@ -142,6 +143,7 @@ export default {
         clearTimeout(this.timer);
       }
     });
+    eventBus.$on('refreshBlockNumber', (blockNumber) => (this.info.blockNumber = blockNumber));
   },
 };
 </script>

@@ -79,6 +79,7 @@ export default {
       });
       this.list = res.list || [];
       this.total = res.total;
+      eventBus.$emit('refreshBlockNumber', this.list.length && this.list[0].blockNumber);
     },
     handleCurrentChange(pageNumber) {
       this.params.pageNumber = pageNumber;
