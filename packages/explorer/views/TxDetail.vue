@@ -58,7 +58,7 @@
             </li>
             <li>
               <span>接收地址:</span>
-              <span>
+              <span v-if="info.toAddress">
                 <el-tooltip content="合约" placement="top" v-if="info.toAddressType === 1">
                   <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
                 </el-tooltip>
@@ -73,6 +73,22 @@
                   {{ info.toAddress }}
                 </router-link></span
               >
+              <span v-else>
+                [Contract
+                <router-link
+                  :to="{
+                    name: 'explorerAddress',
+                    params: {
+                      address: info.contractAddress,
+                    },
+                  }"
+                >
+                  {{ info.contractAddress }}
+                </router-link>
+                Created]
+
+                <el-tooltip content="合约执行完成" placement="top"> <i class="el-icon-success f-18 c-succ"></i> </el-tooltip>
+              </span>
             </li>
             <li><divider /></li>
             <template v-if="ERC20Transfers.length">
