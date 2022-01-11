@@ -87,7 +87,9 @@
                 </router-link>
                 Created]
 
-                <el-tooltip content="合约执行完成" placement="top"> <i class="el-icon-success f-18 c-succ"></i> </el-tooltip>
+                <el-tooltip content="ABI已上传" placement="top" v-if="abiHasUpload">
+                  <i class="el-icon-success f-18 c-succ" style="vertical-align: -2px"></i>
+                </el-tooltip>
               </span>
             </li>
             <li><divider /></li>
@@ -323,6 +325,7 @@ export default {
       loading: new Loading(),
       inputData: '0x',
       showAsOriginal: false,
+      abiHasUpload: false,
     };
   },
   computed: {
@@ -374,6 +377,18 @@ export default {
         });
         toAddressType = addrInfo ? addrInfo.type : 0;
       } catch (error) {}
+
+      try {
+        const contractAddressInfo = await this.loading.run(async () => {
+          return await getAddress({
+            address: info.contractAddress,
+          });
+        });
+        if (!!contractAddressInfo.contractInfo) {
+          this.abiHasUpload = true;
+        }
+      } catch (error) {}
+
       this.info = {
         ...info,
         toAddressType,
