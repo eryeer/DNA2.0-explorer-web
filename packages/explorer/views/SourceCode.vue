@@ -135,6 +135,8 @@ export default {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .info-bar__file {

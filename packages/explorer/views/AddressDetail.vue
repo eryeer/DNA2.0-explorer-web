@@ -66,6 +66,10 @@
             }}</el-tag>
           </span>
         </li>
+        <li>
+          <span>余额:</span>
+          <span><balance :address="address"></balance></span>
+        </li>
       </ol>
     </div>
     <el-tabs @tab-click="tabHandler">
@@ -89,15 +93,36 @@
             </div>
           </template>
           <template v-else>
-            <source-code :code="sourceCode" />
-            <div class="mt-40">
-              <el-button
-                type="primary"
-                class="medium-btn w-140 f-14"
-                @click="createContract.dialogVisible = true"
-                >重新上传
-              </el-button>
-            </div>
+            <el-tabs
+              :lazy="true"
+              style="width: 100%"
+              v-model="activeTabName"
+              type="card"
+              class="tabs"
+            >
+              <el-tab-pane label="ABI" name="abi">
+                <div class="contract-card">
+                  <source-code :code="sourceCode" />
+                  <div class="mt-40">
+                    <el-button
+                      type="primary"
+                      class="medium-btn w-140 f-14"
+                      @click="createContract.dialogVisible = true"
+                      >重新上传
+                    </el-button>
+                  </div>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="读合约" name="read">
+                <div class="contract-card">
+                  <read-contract :contract-info="info.contractInfo" />
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="写合约" name="write">
+                <div class="contract-card">
+                  <write-contract :contract-info="info.contractInfo" /></div
+              ></el-tab-pane>
+            </el-tabs>
           </template>
         </div>
       </el-tab-pane>
@@ -157,12 +182,18 @@ import Txs from './dashboard/Tx';
 import { getAddress, uploadAbi } from '../api';
 import SourceCode from './SourceCode.vue';
 import { isValidAbi } from '@dna2.0/utils';
+import Balance from './contract/Balance';
+import ReadContract from './contract/ReadContract';
+import WriteContract from './contract/WriteContract';
 
 export default {
   name: 'AddressDetail',
   components: {
     Txs,
     SourceCode,
+    Balance,
+    ReadContract,
+    WriteContract,
   },
   data() {
     return {
@@ -192,6 +223,7 @@ export default {
         ],
         uploadKey: [{ required: true, message: '请输入上传口令', trigger: 'blur' }],
       },
+      activeTabName: 'abi',
     };
   },
   computed: {
@@ -344,8 +376,24 @@ export default {
     }
   }
 }
+
 .app-form {
   border-top: 1px solid #eeeeee;
   margin-top: -20px;
+}
+
+.contract-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.tabs {
+  ::v-deep {
+    .el-tabs__header {
+      padding-left: 30px;
+    }
+  }
 }
 </style>
