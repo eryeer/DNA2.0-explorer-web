@@ -14,8 +14,6 @@ const router = new VueRouter({
   },
 });
 
-const whiteList = ['login', 'reg', 'notfound'];
-
 router.beforeEach((to, from, next) => {
   // 设置title
   if (to.meta && to.meta.title) {
@@ -24,7 +22,6 @@ router.beforeEach((to, from, next) => {
     setDocumentTitle(process.env.VUE_APP_TITLE);
   }
   next();
-
 });
 
 router.afterEach(() => {});

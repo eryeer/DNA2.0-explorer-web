@@ -12,7 +12,7 @@
       <el-collapse accordion v-model="activeNames">
         <el-collapse-item
           v-for="(item, index) in fragments"
-          :key="item.name"
+          :key="index"
           class="collapse-item"
           :name="index"
         >
@@ -112,6 +112,7 @@ export default {
       fragments: [],
       activeNames: [],
       indexMarker: [],
+      contract: null,
     };
   },
   props: {
@@ -135,10 +136,9 @@ export default {
   },
   methods: {
     async query(name, index) {
-      const contract = getContract();
       this.fragments[index].loading = true;
       try {
-        const res = await contract[name](...this.fragments[index].params);
+        const res = await this.contract[name](...this.fragments[index].params);
         this.fragments[index].reponse = [].concat(res);
         this.fragments[index].error = '';
       } catch (error) {
@@ -179,18 +179,18 @@ export default {
       });
     },
     async init() {
+      this.contract = getContract(this.contractInfo);
       this.getInterface();
     },
     async readImmediately() {
-      const contract = getContract();
       const requestQueue = this.fragments
         .filter((item, index) => {
           let hasInputs = item.inputs.length;
           if (!hasInputs) this.indexMarker.push(index);
           return !hasInputs;
         })
-        .map((item) => contract[item.name]());
-      const res = await Promise.all(requestQueue);
+        .map((item) => this.contract[item.name]());
+      const res = (await Promise.allSettled(requestQueue)).map((item) => item.value);
       let counter = 0;
       this.indexMarker.forEach((i) => {
         this.fragments[i].reponse = [].concat(res[counter]);
@@ -200,7 +200,6 @@ export default {
     async getInterface() {
       let { abi } = this.contractInfo;
       try {
-        abi = JSON.parse(abi);
         const { fragments } = getInterface(abi);
         this.fragments = fragments
           .filter(
@@ -247,6 +246,9 @@ export default {
     }
     .el-form-item--small.el-form-item {
       margin-bottom: 0;
+    }
+    .el-collapse {
+      border-bottom: none;
     }
   }
 }

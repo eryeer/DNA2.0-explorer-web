@@ -1,7 +1,15 @@
 <template>
   <div class="box">
     <div class="op">
-      <span>连接到Web3</span>
+      <el-button @click="connect" v-if="networkStatus === 0" class="w-130">
+        <i class="tip vm"></i> 连接到Web3
+      </el-button>
+      <el-button @click="switchNetwork" v-else-if="networkStatus === 1" type="danger" class="w-130">
+        请切换到正确网络
+      </el-button>
+      <el-button v-else class="w-130">
+        <span v-html="jazzicon" class="vm"></span> {{ account | filterAddress }}
+      </el-button>
       <span>
         <a href="#" @click.prevent="toggleCollapse()">{{ toggleDisplayText }}</a
         >&nbsp;
@@ -12,74 +20,39 @@
       <el-collapse accordion v-model="activeNames">
         <el-collapse-item
           v-for="(item, index) in fragments"
-          :key="item.name"
+          :key="index"
           class="collapse-item"
           :name="index"
         >
           <span slot="title" class="title"> {{ index + 1 }}. {{ item.name }} </span>
           <div class="content">
-            <div v-if="!item.inputs.length">
-              <div v-for="(output, index_ii) in item.outputs" :key="index_ii">
-                <router-link
-                  v-if="output.type === 'address'"
-                  :to="{
-                    name: 'explorerAddress',
-                    params: {
-                      address: fragments[index].reponse[index_ii],
-                    },
-                  }"
-                >
-                  {{ fragments[index].reponse[index_ii] }}
-                </router-link>
-                <span v-else>
-                  {{ fragments[index].reponse[index_ii] }}
-                </span>
-                <i class="type">{{ output.type }}</i>
-              </div>
+            <div v-for="(input, index_ii) in item.inputs" :key="'input_' + index_ii">
+              <el-form-item
+                :label="input.stateMutability === 'payable' ? '' : getInputLabel(input)"
+              >
+                <el-input
+                  v-model.trim="fragments[index].params[index_ii]"
+                  :placeholder="getInputLabel(input)"
+                />
+              </el-form-item>
             </div>
-            <div v-else>
-              <div v-for="(input, index_ii) in item.inputs" :key="'input_' + index_ii">
-                <el-form-item :label="getInputLabel(input)">
-                  <el-input
-                    v-model.trim="fragments[index].params[index_ii]"
-                    :placeholder="getInputLabel(input)"
-                  />
-                </el-form-item>
-              </div>
-              <div class="mt-10 mb-5">
-                <el-button
-                  size="mini"
-                  plain
-                  @click="query(item.name, index)"
-                  v-loading="item.loading"
-                  :disabled="item.loading"
-                  >写入</el-button
-                >
-              </div>
-              <div v-for="(output, index_ii) in item.outputs" :key="'output_' + index_ii">
-                <div>
-                  <img src="@/assets/images/tree.svg" width="8" /> {{ getOutputLabel(output) }}
-                  <i class="type">{{ output.type }}</i>
-                </div>
-              </div>
-              <div class="mt-10" v-if="item.reponse.length">
-                [
-                <span class="f-b"
-                  >{{ item.name }}({{ item.inputs.map((input) => input.type).join(',') }})</span
-                >
-                method Response ]
-              </div>
-              <div v-for="(r, index_ii) in item.reponse" :key="'reponse_' + index_ii">
-                <div>
-                  <i class="el-icon-d-arrow-right" />
-                  <span class="f-b" v-if="item.outputs[index_ii].name"
-                    >{{ item.outputs[index_ii].name }} </span
-                  ><i>{{ item.outputs[index_ii].type }}</i> : {{ r }}
-                </div>
-              </div>
-              <div class="c-danger" v-if="item.error">
-                {{ item.error }}
-              </div>
+            <div class="mt-10 mb-5">
+              <el-button
+                size="mini"
+                plain
+                @click="write(item.name, index)"
+                :class="{ disabled: networkStatus !== 2 }"
+                v-loading="item.loading"
+                :disabled="item.loading"
+                >写入</el-button
+              >
+              <el-button v-if="item.reponse" size="mini" plain @click="goTx(item.reponse)">
+                查看交易
+              </el-button>
+            </div>
+
+            <div class="c-danger" v-if="item.error">
+              {{ item.error.message }}
             </div>
           </div>
         </el-collapse-item>
@@ -89,7 +62,9 @@
 </template>
 
 <script>
-import { getInterface, getContract } from './utils';
+import { ethers } from 'ethers';
+import { getInterface, switchNetwork, getNetworkParams } from './utils';
+import Jazzicon from 'jazzicon';
 
 export default {
   name: 'WriteContract',
@@ -98,6 +73,8 @@ export default {
       fragments: [],
       activeNames: [],
       indexMarker: [],
+      networkStatus: 0,
+      account: null,
     };
   },
   props: {
@@ -106,9 +83,21 @@ export default {
       required: true,
     },
   },
+  filters: {
+    filterAddress(val) {
+      if (val.length <= 12) {
+        return val;
+      }
+      return `${val.substr(0, 6)}...${val.substr(val.length - 4, 4)}`;
+    },
+  },
   computed: {
     toggleDisplayText() {
       return this.activeNames.length ? '[Collapse All]' : '[Expand All]';
+    },
+    jazzicon() {
+      if (!this.account) return '';
+      return Jazzicon(16, parseInt(this.account.slice(2, 10), 16)).outerHTML;
     },
   },
   watch: {
@@ -120,15 +109,55 @@ export default {
     },
   },
   methods: {
-    async query(name, index) {
-      const contract = getContract();
+    async connect() {
+      if (typeof window.ethereum === 'undefined') {
+        window.open('https://metamask.io/', '_blank', 'noopener');
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+      await provider.send('eth_requestAccounts', []);
+      const signer = provider.getSigner();
+      this.account = await signer.getAddress();
+      this.provider = provider;
+
+      const networkParams = getNetworkParams();
+      const { chainId } = await provider.getNetwork();
+      if (chainId !== Number(networkParams.chainId)) {
+        this.networkStatus = 1;
+      } else {
+        this.networkStatus = 2;
+      }
+    },
+    async switchNetwork() {
+      await switchNetwork();
+      this.networkStatus = 2;
+    },
+    async write(name, index) {
+      if (this.networkStatus !== 2) {
+        this.$message({
+          message: '请先连接到Web3!',
+          type: 'error',
+        });
+        return;
+      }
+      const { abi, address } = this.contractInfo;
+      const signer = this.provider.getSigner();
+      const contract = new ethers.Contract(address, abi, signer);
       this.fragments[index].loading = true;
       try {
-        const res = await contract[name](...this.fragments[index].params);
-        this.fragments[index].reponse = [].concat(res);
+        let res;
+        if (this.fragments[index].stateMutability === 'payable') {
+          const value = this.fragments[index].params[0];
+          const params = this.fragments[index].params.slice(1);
+          const options = { value: ethers.utils.parseEther(value) };
+          res = await contract[name](...params, options);
+        } else {
+          res = await contract[name](...this.fragments[index].params);
+        }
+        this.fragments[index].reponse = res;
         this.fragments[index].error = '';
       } catch (error) {
-        this.fragments[index].reponse = [];
+        this.fragments[index].reponse = null;
         this.fragments[index].error = error;
       } finally {
         this.fragments[index].loading = false;
@@ -147,16 +176,38 @@ export default {
         this.activeNames = [];
       }
     },
+    goTx({ hash }) {
+      window.open(`/tx/${hash}`, '_blank');
+    },
     reset() {
       this.activeNames = [];
       this.fragments.forEach((f, i) => {
         f.params = f.params.map(() => '');
         f.error = '';
         if (!this.indexMarker.includes(i)) {
-          f.reponse = [];
+          f.reponse = null;
         }
         f.loading = false;
       });
+      this.networkStatus = 0;
+    },
+    handleChainChanged() {
+      if (ethereum && ethereum.on) {
+        this.handleChainChanged = (chainId) => {
+          const networkParams = getNetworkParams();
+          if (this.networkStatus === 2 && chainId !== networkParams.chainId) {
+            this.networkStatus = 1;
+          }
+        };
+
+        this.handleAccountsChanged = (accounts) => {
+          if (this.networkStatus !== 0) {
+            this.account = accounts[0];
+          }
+        };
+        ethereum.on('chainChanged', this.handleChainChanged);
+        ethereum.on('accountsChanged', this.handleAccountsChanged);
+      }
     },
     async init() {
       this.getInterface();
@@ -164,24 +215,44 @@ export default {
     async getInterface() {
       let { abi } = this.contractInfo;
       try {
-        abi = JSON.parse(abi);
         const { fragments } = getInterface(abi);
         this.fragments = fragments
           .filter(
             (f) =>
-              f.type === 'function' &&!f.constant  && f.stateMutability !== 'view' && f.stateMutability !== 'pure',
+              f.type === 'function' &&
+              !f.constant &&
+              f.stateMutability !== 'view' &&
+              f.stateMutability !== 'pure',
           )
           .map((item) => {
+            if (item.stateMutability === 'payable') {
+              item.inputs.unshift({
+                name: 'payableAmount',
+                type: 'ether',
+                stateMutability: 'payable',
+              });
+            }
             return {
               ...item,
               params: Array.from(new Array(item.inputs.length), () => ''),
-              reponse: [],
+              reponse: null,
               loading: false,
               error: '',
             };
           });
       } catch (error) {}
     },
+  },
+  mounted() {
+    this.handleChainChanged();
+  },
+  destroyed() {
+    if (ethereum && ethereum.on) {
+      if (ethereum.removeListener) {
+        ethereum.removeListener('chainChanged', this.handleChainChanged);
+        ethereum.removeListener('accountsChanged', this.handleAccountsChanged);
+      }
+    }
   },
 };
 </script>
@@ -210,6 +281,12 @@ export default {
     .el-form-item--small.el-form-item {
       margin-bottom: 0;
     }
+    .el-collapse {
+      border-bottom: none;
+    }
+    .el-button.el-button + .el-button.el-button {
+      margin-left: 10px;
+    }
   }
 }
 .op {
@@ -233,5 +310,22 @@ export default {
 }
 .type {
   opacity: 0.4;
+}
+.tip {
+  display: inline-block;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background-color: #dc3545;
+}
+.vm {
+  vertical-align: -3px;
+}
+.w-130 {
+  width: 130px;
+}
+.disabled {
+  opacity: 0.65;
+  cursor: default;
 }
 </style>
