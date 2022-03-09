@@ -52,7 +52,7 @@
             </div>
 
             <div class="c-danger" v-if="item.error">
-              {{ item.error.message }}
+              {{ item.error.message }} {{ item.error.data && item.error.data.message }}
             </div>
           </div>
         </el-collapse-item>
