@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 const { utils, Contract } = ethers;
 
 const IN_PRODUCTIOIN = process.env.NODE_ENV === 'production';
-const WEB3_ENDPOINT = IN_PRODUCTIOIN ? 'http://124.70.219.113:8545' : 'http://124.70.219.113:8545';
+const WEB3_ENDPOINT = IN_PRODUCTIOIN ? 'https://maas-node.onchain.com' : 'http://124.70.219.113:8545';
 const provider = new ethers.providers.JsonRpcProvider(WEB3_ENDPOINT);
 
 export const getBalance = async function (address) {
@@ -17,7 +17,7 @@ export const getBalance = async function (address) {
 };
 
 export const getContract = function ({ address, abi }) {
-  return new Contract(address, abi, provider);
+  return new Contract(address, abi);
 };
 
 export const getInterface = function (abi) {
