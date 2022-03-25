@@ -17,7 +17,7 @@ export const getBalance = async function (address) {
 };
 
 export const getContract = function ({ address, abi }) {
-  return new Contract(address, abi);
+  return new Contract(address, abi, provider);
 };
 
 export const getInterface = function (abi) {
