@@ -146,13 +146,20 @@ export default {
       this.fragments[index].loading = true;
       try {
         let res;
+        let params = this.fragments[index].params;
+        params = params.map((p)=> {
+          try {
+            return JSON.parse(p)
+          } catch (error) {
+            return p
+          }
+        });
         if (this.fragments[index].stateMutability === 'payable') {
-          const value = this.fragments[index].params[0];
-          const params = this.fragments[index].params.slice(1);
+          const value = params[0];
           const options = { value: ethers.utils.parseEther(value) };
-          res = await contract[name](...params, options);
+          res = await contract[name](...params.slice(1), options);
         } else {
-          res = await contract[name](...this.fragments[index].params);
+          res = await contract[name](...params);
         }
         this.fragments[index].reponse = res;
         this.fragments[index].error = '';

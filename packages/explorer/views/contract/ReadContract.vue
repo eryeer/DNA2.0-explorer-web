@@ -138,7 +138,15 @@ export default {
     async query(name, index) {
       this.fragments[index].loading = true;
       try {
-        const res = await this.contract[name](...this.fragments[index].params);
+        let params = this.fragments[index].params;
+        params = params.map((p) => {
+          try {
+            return JSON.parse(p);
+          } catch (error) {
+            return p;
+          }
+        });
+        const res = await this.contract[name](...params);
         this.fragments[index].reponse = [].concat(res);
         this.fragments[index].error = '';
       } catch (error) {
@@ -193,6 +201,9 @@ export default {
       const res = (await Promise.allSettled(requestQueue)).map((item) => item.value);
       let counter = 0;
       this.indexMarker.forEach((i) => {
+        if (Array.isArray(res[counter])) {
+          res[counter] = `[${res[counter].toString()}]`;
+        }
         this.fragments[i].reponse = [].concat(res[counter]);
         counter++;
       });

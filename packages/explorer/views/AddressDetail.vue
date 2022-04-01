@@ -114,7 +114,7 @@
                 </div>
               </el-tab-pane>
               <el-tab-pane label="读合约" name="read">
-                <div class="contract-card">
+                <div class="contract-card" v-if="activeTabName==='read'">
                   <read-contract :contract-info="info.contractInfo" />
                 </div>
               </el-tab-pane>
@@ -257,6 +257,7 @@ export default {
       if (this.info.contractInfo) {
         this.createContract.params.address = this.info.contractInfo.address;
         this.createContract.params.abi = this.info.contractInfo.abi;
+        this.sourceCode = this.info.contractInfo.abi;
       }
     },
     tabHandler(tab) {
