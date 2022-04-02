@@ -147,11 +147,12 @@ export default {
       try {
         let res;
         let params = this.fragments[index].params;
-        params = params.map((p)=> {
+        params = params.map((p) => {
           try {
-            return JSON.parse(p)
+            p = p.replace(/'/g, '"');
+            return JSON.parse(p);
           } catch (error) {
-            return p
+            return p;
           }
         });
         if (this.fragments[index].stateMutability === 'payable') {
@@ -160,6 +161,9 @@ export default {
           res = await contract[name](...params.slice(1), options);
         } else {
           res = await contract[name](...params);
+        }
+        if (Array.isArray(res)) {
+          res = `[${res.toString()}]`;
         }
         this.fragments[index].reponse = res;
         this.fragments[index].error = '';

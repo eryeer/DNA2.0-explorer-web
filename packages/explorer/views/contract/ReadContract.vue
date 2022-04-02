@@ -141,12 +141,16 @@ export default {
         let params = this.fragments[index].params;
         params = params.map((p) => {
           try {
+            p = p.replace(/'/g, '"');
             return JSON.parse(p);
           } catch (error) {
             return p;
           }
         });
-        const res = await this.contract[name](...params);
+        let res = await this.contract[name](...params);
+        if (Array.isArray(res)) {
+          res = `[${res.toString()}]`;
+        }
         this.fragments[index].reponse = [].concat(res);
         this.fragments[index].error = '';
       } catch (error) {
