@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 const { utils, Contract } = ethers;
 
 const IN_PRODUCTIOIN = process.env.NODE_ENV === 'production';
-const WEB3_ENDPOINT = IN_PRODUCTIOIN ? 'https://maas-node.onchain.com' : 'http://124.223.210.171:8545';
+const WEB3_ENDPOINT = IN_PRODUCTIOIN ? 'https://maas-node.onchain.com' : 'https://maas-test-node.onchain.com';
 const provider = new ethers.providers.JsonRpcProvider(WEB3_ENDPOINT);
 
 export const getBalance = async function (address) {
@@ -35,8 +35,8 @@ export const getNetworkParams = function () {
           symbol: 'eth',
           decimals: 18,
         },
-        rpcUrls: ['http://124.223.210.171:8545'],
-        blockExplorerUrls: ['http://124.223.210.171:6702'],
+        rpcUrls: ['https://maas-test-node.onchain.com'],
+        blockExplorerUrls: ['https://maas-test-explorer.onchain.com/'],
       }
     : {
         chainId: '0x828',
