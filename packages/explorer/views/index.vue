@@ -2,7 +2,7 @@
   <section class="pb-30">
     <div class="search-bar-wrapper">
       <div class="search-bar m-u">
-        <router-link to="/" class="h2" tag="h2"> 区块链浏览器 </router-link>
+        <router-link to="/" class="h2" tag="h2">{{ title }}</router-link>
         <div>
           <el-input
             class="search-input mr-10"
@@ -66,6 +66,11 @@ export default {
       loading: new Loading(),
       info: {},
     };
+  },
+  computed: {
+    title() {
+      return process.env.VUE_APP_TITLE
+    }
   },
   methods: {
     async toSearch() {

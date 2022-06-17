@@ -38,7 +38,18 @@
             </li>
             <li>
               <span>区块高度:</span>
-              <span>{{ info.blockNumber | filterCount }}</span>
+              <span>
+                <router-link
+                  :to="{
+                    name: 'explorerBlock',
+                    params: {
+                      blockHeight: info.blockNumber,
+                    },
+                  }"
+                >
+                  {{ info.blockNumber | filterCount }}
+                </router-link></span
+              >
             </li>
             <li><divider /></li>
             <li>

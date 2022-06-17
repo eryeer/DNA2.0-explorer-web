@@ -29,43 +29,49 @@
           <span>{{ info.txCount | filterCount }}</span>
         </li>
       </ol>
-      <ol class="list" v-if="isContract">
-        <li v-if="info.contractInfo && info.contractInfo.creator">
-          <span>合约创建者:</span>
-          <span>
-            <router-link
-              :to="{
-                name: 'explorerAddress',
-                params: {
-                  address: info.contractInfo.creator,
-                },
-              }"
-            >
-              <short-hash :hash="info.contractInfo.creator"></short-hash>
-            </router-link>
-            <span class="ml-10 mr-10">于交易</span>
-            <router-link
-              :to="{
-                name: 'explorerTx',
-                params: {
-                  txHash: info.contractInfo.createTxHash,
-                },
-              }"
-            >
-              <short-hash :hash="info.contractInfo.createTxHash"></short-hash>
-            </router-link>
-            <span class="ml-10">中创建</span>
-          </span>
-        </li>
-        <li v-if="abiHasUpload && info.contractInfo.tokenName">
-          <span>Token标识:</span>
-          <span>
-            {{ info.contractInfo.tokenName }} ({{ info.contractInfo.tokenSymbol }})
-            <el-tag size="mini" effect="dark" class="ml-10" v-if="info.contractInfo.contractType">{{
-              info.contractInfo.contractType
-            }}</el-tag>
-          </span>
-        </li>
+      <ol class="list">
+        <template v-if="isContract">
+          <li v-if="info.contractInfo && info.contractInfo.creator">
+            <span>合约创建者:</span>
+            <span>
+              <router-link
+                :to="{
+                  name: 'explorerAddress',
+                  params: {
+                    address: info.contractInfo.creator,
+                  },
+                }"
+              >
+                <short-hash :hash="info.contractInfo.creator"></short-hash>
+              </router-link>
+              <span class="ml-10 mr-10">于交易</span>
+              <router-link
+                :to="{
+                  name: 'explorerTx',
+                  params: {
+                    txHash: info.contractInfo.createTxHash,
+                  },
+                }"
+              >
+                <short-hash :hash="info.contractInfo.createTxHash"></short-hash>
+              </router-link>
+              <span class="ml-10">中创建</span>
+            </span>
+          </li>
+          <li v-if="abiHasUpload && info.contractInfo.tokenName">
+            <span>Token标识:</span>
+            <span>
+              {{ info.contractInfo.tokenName }} ({{ info.contractInfo.tokenSymbol }})
+              <el-tag
+                size="mini"
+                effect="dark"
+                class="ml-10"
+                v-if="info.contractInfo.contractType"
+                >{{ info.contractInfo.contractType }}</el-tag
+              >
+            </span>
+          </li>
+        </template>
         <li>
           <span>余额:</span>
           <span><balance :address="address"></balance></span>
@@ -114,7 +120,7 @@
                 </div>
               </el-tab-pane>
               <el-tab-pane label="读合约" name="read">
-                <div class="contract-card" v-if="activeTabName==='read'">
+                <div class="contract-card" v-if="activeTabName === 'read'">
                   <read-contract :contract-info="info.contractInfo" />
                 </div>
               </el-tab-pane>
