@@ -57,3 +57,7 @@ export const switchNetwork = async function () {
     params: [getNetworkParams()],
   });
 };
+
+export const hashTypedData =  function (...args) {
+  return utils._TypedDataEncoder.hash(...args)
+};

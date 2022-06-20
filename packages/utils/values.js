@@ -83,4 +83,8 @@ export const dstChain = {
   POLY_TESTNET: "Poly Enterprise",
 };
 
-
+export const networkStatus = {
+  "UNCONNECTED": 0,
+  "CONNECT_ERROR": 1,
+  "CONNECT_NORMAL": 2,
+}

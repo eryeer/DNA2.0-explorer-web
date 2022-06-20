@@ -8,6 +8,7 @@ import errorHandler from '@dna2.0/utils/errorHandler';
 import App from './App.vue';
 import router from './router';
 import * as filters from './filters';
+import store from './store';
 import './icons';
 
 // enable debug for development
@@ -33,5 +34,6 @@ Vue.prototype.$message = Message;
 
 new Vue({
   router,
+  store,
   render: (h) => h(App),
 }).$mount('#app');

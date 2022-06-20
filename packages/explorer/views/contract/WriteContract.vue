@@ -1,15 +1,7 @@
 <template>
   <div class="box">
     <div class="op">
-      <el-button @click="connect" v-if="networkStatus === 0" class="w-130">
-        <i class="tip vm"></i> 连接到Web3
-      </el-button>
-      <el-button @click="switchNetwork" v-else-if="networkStatus === 1" type="danger" class="w-130">
-        请切换到正确网络
-      </el-button>
-      <el-button v-else class="w-130">
-        <span v-html="jazzicon" class="vm"></span> {{ account | filterAddress }}
-      </el-button>
+      <wallet></wallet>
       <span>
         <a href="#" @click.prevent="toggleCollapse()">{{ toggleDisplayText }}</a
         >&nbsp;
@@ -41,7 +33,7 @@
                 size="mini"
                 plain
                 @click="write(item.name, index)"
-                :class="{ disabled: networkStatus !== 2 }"
+                :class="{ disabled: connect_no_normal }"
                 v-loading="item.loading"
                 :disabled="item.loading"
                 >写入</el-button
@@ -63,18 +55,20 @@
 
 <script>
 import { ethers } from 'ethers';
-import { getInterface, switchNetwork, getNetworkParams } from './utils';
-import Jazzicon from 'jazzicon';
+import { getInterface } from './utils';
+import Wallet from './Wallet';
+import { networkStatus } from '@dna2.0/utils/values';
 
 export default {
   name: 'WriteContract',
+  components: {
+    Wallet,
+  },
   data() {
     return {
       fragments: [],
       activeNames: [],
       indexMarker: [],
-      networkStatus: 0,
-      account: null,
     };
   },
   props: {
@@ -83,21 +77,15 @@ export default {
       required: true,
     },
   },
-  filters: {
-    filterAddress(val) {
-      if (val.length <= 12) {
-        return val;
-      }
-      return `${val.substr(0, 6)}...${val.substr(val.length - 4, 4)}`;
-    },
-  },
   computed: {
+    unconnected() {
+      return this.$store.state.networkStatus === networkStatus.UNCONNECTED;
+    },
+    connect_no_normal() {
+      return this.$store.state.networkStatus !== networkStatus.CONNECT_NORMAL;
+    },
     toggleDisplayText() {
       return this.activeNames.length ? '[Collapse All]' : '[Expand All]';
-    },
-    jazzicon() {
-      if (!this.account) return '';
-      return Jazzicon(16, parseInt(this.account.slice(2, 10), 16)).outerHTML;
     },
   },
   watch: {
@@ -109,31 +97,8 @@ export default {
     },
   },
   methods: {
-    async connect() {
-      if (typeof window.ethereum === 'undefined') {
-        window.open('https://metamask.io/', '_blank', 'noopener');
-        return;
-      }
-      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
-      await provider.send('eth_requestAccounts', []);
-      const signer = provider.getSigner();
-      this.account = await signer.getAddress();
-      this.provider = provider;
-
-      const networkParams = getNetworkParams();
-      const { chainId } = await provider.getNetwork();
-      if (chainId !== Number(networkParams.chainId)) {
-        this.networkStatus = 1;
-      } else {
-        this.networkStatus = 2;
-      }
-    },
-    async switchNetwork() {
-      await switchNetwork();
-      this.networkStatus = 2;
-    },
     async write(name, index) {
-      if (this.networkStatus !== 2) {
+      if (this.unconnected) {
         this.$message({
           message: '请先连接到Web3!',
           type: 'error',
@@ -141,7 +106,9 @@ export default {
         return;
       }
       const { abi, address } = this.contractInfo;
-      const signer = this.provider.getSigner();
+      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+      const signer = provider.getSigner();
+
       const contract = new ethers.Contract(address, abi, signer);
       this.fragments[index].loading = true;
       try {
@@ -200,25 +167,7 @@ export default {
         }
         f.loading = false;
       });
-      this.networkStatus = 0;
-    },
-    handleChainChanged() {
-      if (ethereum && ethereum.on) {
-        this.handleChainChanged = (chainId) => {
-          const networkParams = getNetworkParams();
-          if (this.networkStatus === 2 && chainId !== networkParams.chainId) {
-            this.networkStatus = 1;
-          }
-        };
-
-        this.handleAccountsChanged = (accounts) => {
-          if (this.networkStatus !== 0) {
-            this.account = accounts[0];
-          }
-        };
-        ethereum.on('chainChanged', this.handleChainChanged);
-        ethereum.on('accountsChanged', this.handleAccountsChanged);
-      }
+      this.$store.commit('reset');
     },
     async init() {
       this.getInterface();
@@ -253,17 +202,6 @@ export default {
           });
       } catch (error) {}
     },
-  },
-  mounted() {
-    this.handleChainChanged();
-  },
-  destroyed() {
-    if (ethereum && ethereum.on) {
-      if (ethereum.removeListener) {
-        ethereum.removeListener('chainChanged', this.handleChainChanged);
-        ethereum.removeListener('accountsChanged', this.handleAccountsChanged);
-      }
-    }
   },
 };
 </script>
@@ -322,19 +260,7 @@ export default {
 .type {
   opacity: 0.4;
 }
-.tip {
-  display: inline-block;
-  height: 14px;
-  width: 14px;
-  border-radius: 50%;
-  background-color: #dc3545;
-}
-.vm {
-  vertical-align: -3px;
-}
-.w-130 {
-  width: 130px;
-}
+
 .disabled {
   opacity: 0.65;
   cursor: default;

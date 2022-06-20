@@ -78,11 +78,14 @@
         </li>
       </ol>
     </div>
-    <el-tabs @tab-click="tabHandler">
-      <el-tab-pane label="最新交易">
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="最新交易" name="txs">
         <txs :address="address"></txs>
       </el-tab-pane>
-      <el-tab-pane label="合约" v-if="isContract">
+      <el-tab-pane label="ERC721 交易" name="nft">
+        <nft-txs :address="address"></nft-txs>
+      </el-tab-pane>
+      <el-tab-pane label="合约" v-if="isContract" name="contract">
         <div class="un-upload bg-white p-30">
           <template v-if="!abiHasUpload">
             <div class="mt-100">
@@ -137,9 +140,15 @@
       <div slot="title">上传ABI</div>
       <div class="dialog-bd">
         <div class="app-form" @dragover.prevent @drop.prevent>
+          <div class="op mt-20">
+            <wallet></wallet>
+            <a href="#" @click.prevent="reset()">[Reset]</a>
+          </div>
           <el-form :model="createContract.params" :rules="rules" ref="form">
             <div class="f-14 mt-40 mb-15 c-grey">ABI对应的合约地址:</div>
             <div>{{ address }}</div>
+            <div class="f-14 mt-40 mb-15 c-grey">合约创建者地址:</div>
+            <div>{{ creator }}</div>
             <div class="f-14 mt-30 mb-10 c-grey">ABI文件内容:</div>
             <el-form-item prop="abi">
               <div @drop="drop">
@@ -154,28 +163,27 @@
                 ></el-input>
               </div>
             </el-form-item>
-            <div class="f-14 mt-30 mb-10 c-grey">上传口令:</div>
-            <el-form-item prop="uploadKey">
-              <el-input
-                v-model.trim="createContract.params.uploadKey"
-                type="password"
-                size="medium"
-                autocomplete="off"
-                show-password
-                class="create-btn"
-              ></el-input>
-            </el-form-item>
           </el-form>
         </div>
       </div>
       <div slot="footer" class="dialog-footer mb-20 mt-40 t-c">
         <el-button
           type="primary"
-          @click="createNewContract"
-          style="width: 100px"
+          @click="sign"
+          style="width: 120px"
           class="common-btn"
-          v-loading="uploading"
-          :disabled="createNewContractDisabled"
+          icon="el-icon-edit"
+          :loading="signing"
+          >签名</el-button
+        >
+        <el-button
+          type="primary"
+          @click="createNewContract"
+          style="width: 120px"
+          class="common-btn"
+          icon="el-icon-upload"
+          :loading="uploading"
+          :disabled="!createContract.params.signature"
           >上传</el-button
         >
       </div>
@@ -185,21 +193,28 @@
 <script>
 import Loading from '@dna2.0/utils/loading';
 import Txs from './dashboard/Tx';
+import NftTxs from './NftTx';
 import { getAddress, uploadAbi } from '../api';
 import SourceCode from './SourceCode.vue';
 import { isValidAbi } from '@dna2.0/utils';
 import Balance from './contract/Balance';
 import ReadContract from './contract/ReadContract';
 import WriteContract from './contract/WriteContract';
+import { ethers } from 'ethers';
+// import { keccak256, hashTypedData } from './contract/utils';
+import Wallet from './contract/Wallet';
+import { networkStatus } from '@dna2.0/utils/values';
 
 export default {
   name: 'AddressDetail',
   components: {
     Txs,
+    NftTxs,
     SourceCode,
     Balance,
     ReadContract,
     WriteContract,
+    Wallet,
   },
   data() {
     return {
@@ -208,11 +223,14 @@ export default {
       list: [],
       sourceCode: '',
       uploading: false,
+      signing: false,
+      activeName: 'txs',
       createContract: {
         dialogVisible: false,
         params: {
           abi: '',
-          uploadKey: '',
+          digest: '',
+          signature: '',
         },
       },
       rules: {
@@ -227,7 +245,6 @@ export default {
             trigger: 'blur',
           },
         ],
-        uploadKey: [{ required: true, message: '请输入上传口令', trigger: 'blur' }],
       },
       activeTabName: 'abi',
     };
@@ -242,9 +259,19 @@ export default {
     abiHasUpload() {
       return !!this.info.contractInfo;
     },
-    createNewContractDisabled() {
-      const p = this.createContract.params;
-      return Object.keys(p).some((key) => !p[key]);
+    creator() {
+      if (this.info.contractInfo) {
+        return this.info.contractInfo.creator;
+      }
+    },
+    account() {
+      return this.$store.state.account;
+    },
+    unconnected() {
+      return this.$store.state.networkStatus === networkStatus.UNCONNECTED;
+    },
+    connect_no_normal() {
+      return this.$store.state.networkStatus !== networkStatus.CONNECT_NORMAL;
     },
   },
   watch: {
@@ -266,12 +293,6 @@ export default {
         this.sourceCode = this.info.contractInfo.abi;
       }
     },
-    tabHandler(tab) {
-      if (!this.info.contractInfo) {
-        return;
-      }
-      this.sourceCode = tab.index === '1' ? this.info.contractInfo.abi : '';
-    },
     drop(e) {
       const files = e.target.files || e.dataTransfer.files;
       if (!files.length) {
@@ -282,6 +303,65 @@ export default {
         this.createContract.params.abi = fr.result;
       };
       fr.readAsText(files[0]);
+    },
+    reset() {
+      this.$store.commit('reset');
+    },
+    async sign() {
+      this.$refs['form'].validate(async (valid) => {
+        if (valid) {
+          if (this.unconnected) {
+            this.$message({
+              message: '请先连接到Web3!',
+              type: 'error',
+            });
+            return;
+          }
+
+          // if (this.account !== this.creator) {
+          //   this.$message({
+          //     message: '请切换到合约创建者地址！',
+          //     type: 'error',
+          //   });
+          //   return;
+          // }
+          try {
+            this.signing = true;
+            this.createContract.params.digest = ethers.utils.keccak256(
+              ethers.utils.toUtf8Bytes(this.createContract.params.abi),
+            );
+            const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+            const signer = provider.getSigner();
+            this.createContract.params.signature = await signer.signMessage(
+              ethers.utils.arrayify(this.createContract.params.digest),
+            );
+
+            // const { chainId } = await provider.getNetwork();
+
+            // const domain = {
+            //   name: 'Maas',
+            //   version: '1',
+            //   chainId,
+            // };
+
+            // const types = {
+            //   ABI: [{ name: 'ABI', type: 'string' }],
+            // };
+
+            // // The data to sign
+            // const value = {
+            //   ABI: this.createContract.params.abi,
+            // };
+
+            // const signature = await signer._signTypedData(domain, types, value);
+            // this.createContract.params.signature = signature;
+            // this.createContract.params.digest = hashTypedData(domain, types, value);
+            console.log('this.createContract.params:', this.createContract.params);
+          } finally {
+            this.signing = false;
+          }
+        }
+      });
     },
     createNewContract() {
       this.$refs['form'].validate(async (valid) => {
@@ -402,5 +482,11 @@ export default {
       padding-left: 30px;
     }
   }
+}
+
+.op {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
 }
 </style>
