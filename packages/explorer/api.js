@@ -56,9 +56,20 @@ export function getTransactionListByAddress(params) {
   });
 }
 
+
+// ERC721
+export function getTransferListByAddress(params) {
+  return request({
+    url: '/address/getTransferListByAddress',
+    method: 'get',
+    params,
+  });
+}
+
+
 export function uploadAbi(data) {
   return request({
-    url: '/contract/uploadAbi',
+    url: '/explorer/contract/uploadAbi',
     method: 'post',
     data,
   });

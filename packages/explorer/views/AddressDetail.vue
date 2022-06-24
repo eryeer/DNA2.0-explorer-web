@@ -229,7 +229,7 @@ export default {
         dialogVisible: false,
         params: {
           abi: '',
-          digest: '',
+          address: '',
           signature: '',
         },
       },
@@ -318,45 +318,21 @@ export default {
             return;
           }
 
-          // if (this.account !== this.creator) {
-          //   this.$message({
-          //     message: '请切换到合约创建者地址！',
-          //     type: 'error',
-          //   });
-          //   return;
-          // }
+          if (this.account !== this.creator) {
+            this.$message({
+              message: '请切换到合约创建者地址！',
+              type: 'error',
+            });
+            return;
+          }
+
           try {
+            const { keccak256, toUtf8Bytes, arrayify } = ethers.utils;
             this.signing = true;
-            this.createContract.params.digest = ethers.utils.keccak256(
-              ethers.utils.toUtf8Bytes(this.createContract.params.abi),
-            );
+            const digest = keccak256(toUtf8Bytes(this.createContract.params.abi));
             const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
             const signer = provider.getSigner();
-            this.createContract.params.signature = await signer.signMessage(
-              ethers.utils.arrayify(this.createContract.params.digest),
-            );
-
-            // const { chainId } = await provider.getNetwork();
-
-            // const domain = {
-            //   name: 'Maas',
-            //   version: '1',
-            //   chainId,
-            // };
-
-            // const types = {
-            //   ABI: [{ name: 'ABI', type: 'string' }],
-            // };
-
-            // // The data to sign
-            // const value = {
-            //   ABI: this.createContract.params.abi,
-            // };
-
-            // const signature = await signer._signTypedData(domain, types, value);
-            // this.createContract.params.signature = signature;
-            // this.createContract.params.digest = hashTypedData(domain, types, value);
-            console.log('this.createContract.params:', this.createContract.params);
+            this.createContract.params.signature = await signer.signMessage(arrayify(digest));
           } finally {
             this.signing = false;
           }
