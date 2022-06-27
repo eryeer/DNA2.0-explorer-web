@@ -116,7 +116,7 @@ export default {
       params: {
         pageNumber: 1,
         pageSize: 10,
-        address: "0x4805ce49f4Da8229faA31f4A75490Ab140Dd1613" || this.$route.params.address,
+        address: this.$route.params.address,
       },
       total: 0,
       list: [],
