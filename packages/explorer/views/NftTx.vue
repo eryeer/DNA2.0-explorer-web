@@ -39,7 +39,7 @@
             effect="dark"
             size="mini"
             class="tag"
-            v-if="$route.params.address === scope.row.toAddress"
+            v-if="$route.params.address === scope.row.transferTo"
           >
             IN
           </el-tag>
