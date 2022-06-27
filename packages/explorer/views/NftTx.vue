@@ -149,6 +149,8 @@ export default {
 .tag {
   font-size: 11px;
   font-weight: 600;
-  transform: scale(.866666);
+  transform: scale(0.866666);
+  width: 36px;
+  text-align: center;
 }
 </style>
