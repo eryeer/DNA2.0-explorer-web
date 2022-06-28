@@ -75,7 +75,7 @@
             }"
           >
             <span v-if="scope.row.tokenName">
-              {{ scope.row.tokenName }}(scope.row.tokenSymbol)
+              {{ scope.row.tokenName }}({{scope.row.tokenSymbol}})
             </span>
             <short-hash :hash="scope.row.contractAddress" v-else></short-hash>
           </router-link>
@@ -152,5 +152,7 @@ export default {
   transform: scale(0.866666);
   width: 36px;
   text-align: center;
+  position: relative;
+  right: -15px;
 }
 </style>

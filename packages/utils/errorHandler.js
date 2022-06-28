@@ -1,5 +1,4 @@
 function handleGlobalError(error) {
-  console.error(error);
 }
 
 export default {

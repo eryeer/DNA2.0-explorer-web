@@ -31,29 +31,29 @@
       </ol>
       <ol class="list">
         <template v-if="isContract">
-          <li v-if="info.contractInfo && info.contractInfo.creator">
+          <li>
             <span>合约创建者:</span>
             <span>
               <router-link
                 :to="{
                   name: 'explorerAddress',
                   params: {
-                    address: info.contractInfo.creator,
+                    address: info.creator,
                   },
                 }"
               >
-                <short-hash :hash="info.contractInfo.creator"></short-hash>
+                <short-hash :hash="info.creator"></short-hash>
               </router-link>
               <span class="ml-10 mr-10">于交易</span>
               <router-link
                 :to="{
                   name: 'explorerTx',
                   params: {
-                    txHash: info.contractInfo.createTxHash,
+                    txHash: info.createTxHash,
                   },
                 }"
               >
-                <short-hash :hash="info.contractInfo.createTxHash"></short-hash>
+                <short-hash :hash="info.createTxHash"></short-hash>
               </router-link>
               <span class="ml-10">中创建</span>
             </span>
@@ -65,7 +65,8 @@
               <el-tag
                 size="mini"
                 effect="dark"
-                class="ml-10"
+                class="tag"
+                type="success"
                 v-if="info.contractInfo.contractType"
                 >{{ info.contractInfo.contractType }}</el-tag
               >
@@ -260,9 +261,7 @@ export default {
       return !!this.info.contractInfo;
     },
     creator() {
-      if (this.info.contractInfo) {
-        return this.info.contractInfo.creator;
-      }
+      return this.info.creator;
     },
     account() {
       return this.$store.state.account;
@@ -272,11 +271,6 @@ export default {
     },
     connect_no_normal() {
       return this.$store.state.networkStatus !== networkStatus.CONNECT_NORMAL;
-    },
-  },
-  watch: {
-    blockHeight() {
-      this.query();
     },
   },
   methods: {
@@ -464,5 +458,12 @@ export default {
   display: flex;
   justify-content: space-between;
   gap: 10px;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  transform: scale(0.866666);
+  text-align: center;
 }
 </style>
