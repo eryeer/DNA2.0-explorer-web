@@ -348,6 +348,7 @@ export default {
             });
             this.createContract.dialogVisible = false;
             this.uploading = false;
+            this.createContract.params.signature = '';
             this.query();
           } catch (error) {
             this.uploading = false;
