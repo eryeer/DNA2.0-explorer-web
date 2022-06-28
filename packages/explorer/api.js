@@ -69,7 +69,7 @@ export function getTransferListByAddress(params) {
 
 export function uploadAbi(data) {
   return request({
-    url: '/explorer/contract/uploadAbi',
+    url: '/contract/uploadAbi',
     method: 'post',
     data,
   });
