@@ -312,7 +312,7 @@ export default {
             return;
           }
 
-          if (this.account !== this.creator) {
+          if (this.account.toLowerCase() !== this.creator.toLowerCase()) {
             this.$message({
               message: '请切换到合约创建者地址！',
               type: 'error',
