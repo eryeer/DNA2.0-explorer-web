@@ -39,7 +39,7 @@
             effect="dark"
             size="mini"
             class="tag"
-            v-if="$route.params.address === scope.row.transferTo"
+            v-if="ifSameAddress($route.params.address, scope.row.transferTo)"
           >
             IN
           </el-tag>
@@ -75,7 +75,7 @@
             }"
           >
             <span v-if="scope.row.tokenName">
-              {{ scope.row.tokenName }}({{scope.row.tokenSymbol}})
+              {{ scope.row.tokenName }}({{ scope.row.tokenSymbol }})
             </span>
             <short-hash :hash="scope.row.contractAddress" v-else></short-hash>
           </router-link>
@@ -138,6 +138,12 @@ export default {
       this.params.pageNumber = 1;
       this.params.pageSize = pageSize;
       this.query();
+    },
+    ifSameAddress(a, b) {
+      if (a?.toLowerCase() === b?.toLowerCase()) {
+        return true;
+      }
+      return false;
     },
   },
   mounted() {
