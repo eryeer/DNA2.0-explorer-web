@@ -148,7 +148,6 @@ export default {
         clearTimeout(this.timer);
       }
     });
-    eventBus.$on('refreshBlockNumber', (blockNumber) => (this.info.blockNumber = blockNumber));
   },
 };
 </script>
