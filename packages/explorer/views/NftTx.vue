@@ -17,7 +17,7 @@
       </el-table-column>
       <el-table-column label="从" width="160">
         <template slot-scope="scope">
-          <el-tooltip content="合约" placement="top" v-if="scope.row.fromType == 1">
+          <el-tooltip content="合约" placement="top" v-if="scope.row.fromType != 0">
             <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
           </el-tooltip>
           <router-link
@@ -48,7 +48,7 @@
       </el-table-column>
       <el-table-column label="转账到" width="160">
         <template slot-scope="scope">
-          <el-tooltip content="合约" placement="top" v-if="scope.row.toType == 1">
+          <el-tooltip content="合约" placement="top" v-if="scope.row.toType != 0">
             <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
           </el-tooltip>
           <router-link

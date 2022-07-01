@@ -16,13 +16,13 @@
     </div>
     <div class="bg-white p-40 col-2 mb-10">
       <ol class="list">
-        <li>
+        <li v-if="info.type !== 2">
           <span>生成时间:</span>
           <span>{{ info.blockTime | filterDate }}</span>
         </li>
         <li>
           <span>地址类型:</span>
-          <span> {{ isContract ? '合约' : '用户' }} </span>
+          <span> {{ getType(info.type) }} </span>
         </li>
         <li>
           <span>交易数量:</span>
@@ -274,6 +274,10 @@ export default {
     },
   },
   methods: {
+    getType(type) {
+      const map = ['用户', '合约', '原生合约'];
+      return map[type];
+    },
     async query() {
       const res = await this.loading.run(async () => {
         return await getAddress({
