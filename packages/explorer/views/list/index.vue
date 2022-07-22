@@ -181,7 +181,7 @@
                   >
                     <short-hash :hash="item.toAddress"></short-hash> </router-link
                 ></template>
-                <template>
+                <template v-else>
                   创建合约
                   <router-link
                     :to="{
