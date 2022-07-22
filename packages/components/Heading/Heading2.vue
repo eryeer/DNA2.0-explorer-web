@@ -40,6 +40,7 @@ export default {
   margin-right: 15px;
   font-weight: 400;
 }
+
 .with-go-back {
   cursor: pointer;
   transition: opacity 0.5s;

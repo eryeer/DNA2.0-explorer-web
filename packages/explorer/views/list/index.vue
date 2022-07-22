@@ -342,7 +342,6 @@ export default {
       }
     },
     async getTxCount() {
-      const filterDate = this.$options.filters.filterDate;
       const txCount = await getTransactionSummary({ limit: 30 });
 
       this.txCountByMonth = txCount.monthlySummary
@@ -350,14 +349,14 @@ export default {
         .slice(0, 12)
         .map((item) => {
           return {
-            label: `${filterDate(item.summaryTime, 'MM')}月`,
             value: item.summaryCount,
+            time: item.summaryTime,
           };
         });
       this.txCountByDay = txCount.dailySummary.reverse().map((item) => {
         return {
-          label: `${filterDate(item.summaryTime, 'MM.dd')}`,
           value: item.summaryCount,
+          time: item.summaryTime,
         };
       });
     },

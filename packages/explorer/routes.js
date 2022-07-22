@@ -3,7 +3,7 @@ export default {
   name: 'explorer',
   component: () => import(/* webpackChunkName: "explorer" */ './views'),
   redirect: '/',
-  meta: { title: '灵境Maas链区块链浏览器', showInMenu: true, icon: 'explorer' },
+  meta: { title: '灵境MaaS链区块链浏览器', showInMenu: true, icon: 'explorer' },
   children: [
     {
       path: '/',

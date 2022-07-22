@@ -3,7 +3,7 @@
     <div class="header-wrapper">
       <div class="header margin-auto">
         <div class="header-logo">
-          <router-link to="/" class="header-title" tag="h2">灵境Maas链区块链浏览器</router-link>
+          <router-link to="/" class="header-title" tag="h2">灵境MaaS链区块链浏览器</router-link>
           <div
             class="dropdown-wrapper"
             ref="dropdownWrapper"
@@ -24,7 +24,7 @@
         </div>
         <div class="header-nav">
           <transition name="slide-fade2">
-            <div class="header-search" v-show="$route.name !== 'home'">
+            <div class="header-search" v-show="!inHome || homeShow">
               <svg-icon icon-class="search" class="header-search-icon f-16" />
               <el-input
                 class="header-search-input"
@@ -52,6 +52,10 @@
               :class="{ 'router-link-active': $route.path.includes('/address') }"
               >地址</router-link
             >
+            <span class="add-network" @click="switchNetwork">
+              <img src="@/assets/images/metamask.png" width="16" height="16" alt="metamask" />
+              Add Mass {{ isProd ? '' : 'Testnet' }} Network
+            </span>
           </div>
         </div>
       </div>
@@ -63,9 +67,9 @@
 </template>
 
 <script>
-import { isHexString } from '@dna2.0/utils';
+import { isHexString, debounce } from '@dna2.0/utils';
 import { getBlock, getAddress, getTransaction } from '../api';
-import { getNetworkParams } from './contract/utils';
+import { switchNetwork } from './contract/utils';
 
 export default {
   name: 'explorer',
@@ -73,11 +77,15 @@ export default {
     return {
       searchContent: '',
       show: false,
+      homeShow: false,
     };
   },
   computed: {
     isProd() {
       return process.env.NODE_ENV === 'production';
+    },
+    inHome() {
+      return this.$route.name === 'home';
     },
   },
   watch: {
@@ -155,12 +163,26 @@ export default {
         this.show = false;
       }
     },
+    handleScroll() {
+      if (!this.inHome) return;
+      const y = window.pageYOffset || document.documentElement.scrollTop;
+      if (y >= 100) {
+        this.homeShow = true;
+      } else {
+        this.homeShow = false;
+      }
+    },
+     switchNetwork() {
+      switchNetwork()
+    }
   },
   mounted() {
     document.addEventListener('click', this.documentClick);
+    window.addEventListener('scroll', this.handleScroll);
   },
   destroyed() {
     document.removeEventListener('click', this.documentClick);
+    window.removeEventListener('scroll', this.handleScroll);
   },
 };
 </script>
@@ -170,6 +192,9 @@ export default {
   box-shadow: 0px 1px 10px rgba(6, 8, 69, 0.06);
   background-color: #001a35;
   color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header {
@@ -201,7 +226,8 @@ export default {
   &-router {
     display: flex;
     column-gap: 30px;
-    margin-left: 256px;
+        align-items: center;
+    margin-left: 90px;
 
     a {
       color: #fff;
@@ -210,6 +236,7 @@ export default {
       border-bottom-color: transparent;
       font-weight: 400;
       padding-bottom: 5px;
+      padding-top: 5px;
       &.router-link-active {
         border-bottom-color: #0078fa;
         font-weight: 500;
@@ -322,6 +349,27 @@ export default {
   width: 1280px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.add-network {
+  font-family: 'PingFang SC';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  color: #0078fa;
+  display: flex;
+  align-items: center;
+  background-color: #000000;
+  border-radius: 4px;
+  height: 32px;
+  padding-left: 10px;
+  padding-right: 10px;
+  column-gap: 5px;
+  cursor: pointer;
+
+  &:hover {
+      background-color: rgba(0, 0, 0, 0.4);
+  }
 }
 </style>
 

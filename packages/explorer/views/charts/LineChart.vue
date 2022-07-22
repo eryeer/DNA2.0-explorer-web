@@ -6,6 +6,8 @@
 import echarts from 'echarts';
 require('echarts/theme/macarons'); // echarts theme
 import resize from './mixins/resize';
+import { filterDate, filterCount } from '@dna2.0/utils';
+
 function nFormatter(num, digits) {
   const lookup = [
     { value: 1, symbol: '' },
@@ -92,15 +94,18 @@ export default {
     setOptions() {
       this.chart.setOption({
         xAxis: {
-          data: this.dataSource.map((item) => item.label),
+          data: this.dataSource.map((item) => {
+            if (this.label === '日交易量') {
+              return `${filterDate(item.time, 'MM.dd')}`;
+            } else {
+              return `${filterDate(item.time, 'MM')}月`;
+            }
+          }),
           boundaryGap: false,
           axisTick: {
             show: false,
           },
-          axisLabel: {
-            // interval: this.dataSource.length === 12 ? 0 : (index) => index % 4 === 0 && index !== 0,
-            // rotate: 10, //-30度角倾斜显示
-          },
+          axisLabel: {},
           axisLine: {
             lineStyle: {
               color: 'rgba(0,0,0,0.29)',
@@ -127,9 +132,13 @@ export default {
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            type: 'cross',
+            type: 'none',
           },
-          padding: [0, 0],
+          formatter: (params) => {
+            const index = params[0].dataIndex;
+            return `日期：${filterDate(this.dataSource[index].time, 'yyyy-MM-dd')}<br />
+              交易量：${filterCount(params[0].value)}`;
+          },
         },
         yAxis: {
           min: Math.min(...this.dataSource.map((item) => item.value)),
