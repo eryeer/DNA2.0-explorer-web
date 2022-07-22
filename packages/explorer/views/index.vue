@@ -172,9 +172,9 @@ export default {
         this.homeShow = false;
       }
     },
-     switchNetwork() {
-      switchNetwork()
-    }
+    switchNetwork() {
+      switchNetwork();
+    },
   },
   mounted() {
     document.addEventListener('click', this.documentClick);
@@ -226,7 +226,7 @@ export default {
   &-router {
     display: flex;
     column-gap: 30px;
-        align-items: center;
+    align-items: center;
     margin-left: 90px;
 
     a {
@@ -356,10 +356,10 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
-  color: #0078fa;
+  color: #fff;
   display: flex;
   align-items: center;
-  background-color: #000000;
+  background: rgba(136,164,193,1);
   border-radius: 4px;
   height: 32px;
   padding-left: 10px;
@@ -368,7 +368,7 @@ export default {
   cursor: pointer;
 
   &:hover {
-      background-color: rgba(0, 0, 0, 0.4);
+    background-color: #79a5d3;
   }
 }
 </style>
