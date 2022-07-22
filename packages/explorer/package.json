@@ -7,6 +7,8 @@
   "scripts": {},
   "dependencies": {
     "@dna2.0/utils": "workspace:^0.1.0",
-    "axios": "^0.21.0"
+    "axios": "^0.21.0",
+    "vue-count-to": "1.0.13",
+    "echarts": "4.2.1"
   }
 }

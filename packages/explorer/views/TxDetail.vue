@@ -449,7 +449,14 @@ MethodID: ${result.slice(0, 10)}`;
   display: flex;
   height: 40px;
   line-height: 40px;
-  background-color: rgba($color: #0078fa, $alpha: 0.04);
+  background-color: #0078fa;
+  color: #fff;
+  > span {
+    opacity: 0.6;
+  }
+  .copy-wrapper {
+    color: #fff;
+  }
 }
 
 .log {

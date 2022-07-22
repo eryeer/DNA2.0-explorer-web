@@ -1,27 +1,42 @@
 export default {
-  path: '/',
+  path: '',
   name: 'explorer',
   component: () => import(/* webpackChunkName: "explorer" */ './views'),
-  redirect: 'blocks',
+  redirect: '/',
   meta: { title: '灵境Maas链区块链浏览器', showInMenu: true, icon: 'explorer' },
   children: [
     {
-      path: ':type',
-      name: 'explorerDashboard',
-      component: () => import(/* webpackChunkName: "explorer" */ './views/dashboard'),
+      path: '/',
+      name: 'home',
+      component: () => import(/* webpackChunkName: "explorer" */ './views/list/index'),
     },
     {
-      path: 'block/:blockHeight',
+      path: '/blocks',
+      name: 'blocks',
+      component: () => import(/* webpackChunkName: "explorer" */ './views/list/Block'),
+    },
+    {
+      path: '/txs',
+      name: 'txs',
+      component: () => import(/* webpackChunkName: "explorer" */ './views/list/Tx'),
+    },
+    {
+      path: '/addresses',
+      name: 'addresses',
+      component: () => import(/* webpackChunkName: "explorer" */ './views/list/Address'),
+    },
+    {
+      path: '/block/:blockHeight',
       name: 'explorerBlock',
       component: () => import(/* webpackChunkName: "explorer" */ './views/BlockDetail'),
     },
     {
-      path: 'tx/:txHash',
+      path: '/tx/:txHash',
       name: 'explorerTx',
       component: () => import(/* webpackChunkName: "explorer" */ './views/TxDetail'),
     },
     {
-      path: 'address/:address',
+      path: '/address/:address',
       name: 'explorerAddress',
       component: () => import(/* webpackChunkName: "explorer" */ './views/AddressDetail'),
     },

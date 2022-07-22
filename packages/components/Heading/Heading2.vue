@@ -28,11 +28,13 @@ export default {
 
 <style lang="scss" scoped>
 .heading2 {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  font-weight: 500;
+  margin-top: 60px;
+  margin-bottom: 40px;
   display: flex;
   align-items: center;
+  font-family: 'PingFang SC';
+  font-weight: 500;
+  font-size: 24px;
 }
 .btn {
   margin-right: 15px;

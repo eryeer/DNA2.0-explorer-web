@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white p-20" v-loading="loading.value">
     <el-table :data="list" style="width: 100%">
-      <el-table-column label="交易哈希" width="160">
+      <el-table-column label="交易哈希" width="180">
         <template slot-scope="scope">
           <router-link
             :to="{
@@ -15,7 +15,7 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="从" width="160">
+      <el-table-column label="从" width="180">
         <template slot-scope="scope">
           <el-tooltip content="合约" placement="top" v-if="scope.row.fromType != 0">
             <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
@@ -46,7 +46,7 @@
           <el-tag type="danger" effect="dark" size="mini" class="tag" v-else> OUT </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="转账到" width="160">
+      <el-table-column label="转账到" width="180">
         <template slot-scope="scope">
           <el-tooltip content="合约" placement="top" v-if="scope.row.toType != 0">
             <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
@@ -81,7 +81,7 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="生成时间" width="180">
+      <el-table-column label="生成时间" width="200">
         <template slot-scope="scope">
           <div>
             {{ scope.row.blockTime | filterDate }}

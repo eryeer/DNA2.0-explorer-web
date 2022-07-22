@@ -6,7 +6,7 @@
         合约ABI</span
       >
       <span class="info-bar__btn">
-        <copyable :raw="showCode" :size="22"></copyable>
+        <copyable :raw="showCode" :size="22" icon="copy2"></copyable>
         <el-tooltip content="格式化ABI" placement="top">
           <svg-icon icon-class="formatter" class="f-20 c-p" @click="formatter" />
         </el-tooltip>
@@ -137,6 +137,7 @@ export default {
   margin-bottom: 20px;
   padding-left: 10px;
   padding-right: 10px;
+  
 }
 
 .info-bar__file {

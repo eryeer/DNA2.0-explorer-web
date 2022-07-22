@@ -1,51 +1,61 @@
 <template>
   <section class="pb-30">
-    <div class="search-bar-wrapper">
-      <div class="search-bar m-u">
-        <router-link to="/" class="h2" tag="h2">{{ title }}</router-link>
-        <div>
-          <el-input
-            class="search-input mr-10"
-            placeholder="输入地址/交易哈希/区块高度"
-            prefix-icon="el-icon-search"
-            @keyup.enter.native="toSearch"
-            v-model="searchContent"
-            style="width: 550px"
-            clearable
-          ></el-input>
-          <el-button type="primary" @click="toSearch">搜索</el-button>
+    <div class="header-wrapper">
+      <div class="header margin-auto">
+        <div class="header-logo">
+          <router-link to="/" class="header-title" tag="h2">{{ title }}</router-link>
+          <div
+            class="dropdown-wrapper"
+            ref="dropdownWrapper"
+            :class="{ 'dropdown-wrapper-test': !isProd }"
+          >
+            <div class="flag" @click="show = !show" :class="{ show: show }">
+              {{ isProd ? '主网' : '测试网' }}
+              <span class="flag-icon"></span>
+            </div>
+            <transition name="slide-fade">
+              <div class="dropdown" v-show="show">
+                <div @click="handleSelect" class="dropdown-item">
+                  {{ isProd ? '测试网' : '主网' }}
+                </div>
+              </div>
+            </transition>
+          </div>
+        </div>
+        <div class="header-nav">
+          <transition name="slide-fade2">
+            <div class="header-search" v-show="$route.name !== 'home'">
+              <svg-icon icon-class="search" class="header-search-icon f-16" />
+              <el-input
+                class="header-search-input"
+                placeholder="输入地址/交易哈希/区块高度"
+                @keyup.enter.native="toSearch"
+                v-model="searchContent"
+                style="width: 290px"
+              ></el-input>
+              <el-button type="primary" @click="toSearch">搜索</el-button>
+            </div>
+          </transition>
+
+          <div class="header-router">
+            <router-link
+              to="/blocks"
+              :class="{ 'router-link-active': $route.path.includes('/block') }"
+              >区块</router-link
+            >
+            <router-link to="/txs" :class="{ 'router-link-active': $route.path.includes('/tx') }"
+              >交易</router-link
+            >
+            <router-link
+              to="/addresses"
+              :class="{ 'router-link-active': $route.path.includes('/address') }"
+              >地址</router-link
+            >
+          </div>
         </div>
       </div>
     </div>
-    <ul class="info-list bg-white mb-20 m-u" v-loading="loading.value">
-      <template v-if="!!Object.keys(info).length">
-        <li>
-          <div>
-            <span>区块高度</span>
-            <span> {{ info.blockNumber | filterCount }} </span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <span>交易总数</span>
-            <span> {{ info.txCount | filterCount }} </span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <span>正常/节点数</span>
-            <span> {{ info.activeCount }}/{{ info.nodeCount }} </span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <span>网络状态</span>
-            <span> {{ info.netStatus ? '正常' : '异常' }} </span>
-          </div>
-        </li>
-      </template>
-    </ul>
-    <div class="m-u">
+    <div class="margin-auto">
       <router-view :key="$route.fullPath" />
     </div>
   </section>
@@ -54,22 +64,27 @@
 <script>
 import { isHexString } from '@dna2.0/utils';
 import { getBlock, getAddress, getTransaction } from '../api';
-import { getTotalSummary } from '@/api/summary';
-import Loading from '@dna2.0/utils/loading';
-import { eventBus } from '@dna2.0/utils';
+import { getNetworkParams } from './contract/utils';
 
 export default {
   name: 'explorer',
   data() {
     return {
       searchContent: '',
-      loading: new Loading(),
-      info: {},
+      show: false,
     };
   },
   computed: {
     title() {
-      return process.env.VUE_APP_TITLE
+      return process.env.VUE_APP_TITLE;
+    },
+    isProd() {
+      return process.env.NODE_ENV === 'production';
+    },
+  },
+  watch:{
+    $route (to, from){
+        this.searchContent = '';
     }
   },
   methods: {
@@ -130,110 +145,208 @@ export default {
       }
       this.$message.error('对不起，您的搜索不匹配任何记录');
     },
-    async getTotalSummary() {
-      try {
-        this.info = await getTotalSummary();
-      } finally {
-        this.timer = setTimeout(this.getTotalSummary.bind(this),  15 * 1000);
+    handleSelect() {
+      window.location.href = getNetworkParams().blockExplorerUrls;
+    },
+    documentClick({ target }) {
+      const el = this.$refs.dropdownWrapper;
+      if (!el) return;
+      if (el !== target && !el.contains(target)) {
+        this.show = false;
       }
     },
   },
   mounted() {
-    this.timer = null;
-    this.loading.run(async () => {
-      await this.getTotalSummary();
-    });
-    this.$once('hook:beforeDestroy', () => {
-      if (this.timer !== null) {
-        clearTimeout(this.timer);
-      }
-    });
+    document.addEventListener('click', this.documentClick);
+  },
+  destroyed() {
+    document.removeEventListener('click', this.documentClick);
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.search-bar-wrapper {
+.header-wrapper {
   box-shadow: 0px 1px 10px rgba(6, 8, 69, 0.06);
-  background-color: #fff;
+  background-color: #001a35;
+  color: #fff;
 }
 
-.search-bar {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  height: 100px;
+  height: 80px;
 
-  .h2 {
-    font-family: PingFang SC;
+  &-title {
+    cursor: pointer;
+    font-family: 'PingFang SC';
     font-style: normal;
     font-weight: 500;
-    font-size: 24px;
-    line-height: 34px;
-    cursor: pointer;
+    font-size: 20px;
   }
 
-  ::v-deep {
-    .el-input__inner {
-      height: 40px;
-      line-height: 40px;
-      border-color: #d8d8d8;
-      background-color: white;
-      border-radius: 4px;
+  &-logo {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+  }
 
-      &:focus {
-        border-color: var(--color-primary);
-        box-shadow: rgb(230 240 255) 0px 0px 0px 4px;
+  &-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  &-router {
+    display: flex;
+    column-gap: 30px;
+    margin-left: 256px;
+
+    a {
+      color: #fff;
+      border-bottom-width: 3px;
+      border-bottom-style: solid;
+      border-bottom-color: transparent;
+      font-weight: 400;
+      padding-bottom: 5px;
+      &.router-link-active {
+        border-bottom-color: #0078fa;
+        font-weight: 500;
       }
     }
-    .el-input__icon {
-      font-size: 16px;
+  }
+
+  &-search {
+    height: 40px;
+    background-color: white;
+    box-shadow: 0px 10px 20px rgba(0, 120, 250, 0.05);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    &-icon {
+      fill: none;
+      stroke: none;
     }
-    .el-button {
-      padding-top: 11px;
-      padding-bottom: 11px;
-      width: 80px;
-      font-size: 16px;
+
+    ::v-deep {
+      .el-input__inner {
+        background-color: white;
+        border: none;
+        color: rgba(0, 0, 0, 0.6);
+      }
+      .el-input__icon {
+        font-size: 16px;
+      }
+      .el-button {
+        width: 58px;
+        height: 30px;
+        font-size: 14px;
+        line-height: 29px;
+        color: #ffffff;
+        text-align: center;
+        border-radius: 4px;
+        padding: 0;
+      }
     }
   }
 }
 
-.info-list {
+.dropdown-wrapper {
+  position: relative;
+  width: 70px;
+  height: 24px;
+  background: #0078fa;
+  border-radius: 3px;
+  font-weight: 500;
+  font-size: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: #ffffff;
+  line-height: 24px;
+
+  .dropdown {
+    background: #0078fa;
+  }
+
+  &-test {
+    background: #88a4c1;
+
+    .dropdown {
+      background: #88a4c1;
+    }
+  }
+}
+
+.flag {
   display: flex;
-  flex-wrap: wrap;
-  align-content: center;
-  height: 125px;
-  box-shadow: 0px 1px 6px rgb(6 8 69 / 3%);
-
-  > li {
-    width: 25%;
-
-    > div {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 160px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: left;
-    }
-
-    > div span:first-child {
-      font-size: 14px;
-      opacity: 0.6;
-      margin-bottom: 10px;
-    }
-    > div span:last-child {
-      font-size: 26px;
-      font-family: DINPro-Medium, DINPro;
-    }
+  justify-content: space-between;
+  align-items: center;
+  &-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    border-color: #ffffff transparent transparent transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  &.show .flag-icon {
+    transform: rotateZ(180deg);
   }
 }
 
-.m-u {
+.dropdown {
+  position: absolute;
+  z-index: 111;
+  top: 25px;
+  left: 0px;
+  right: 0px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.dropdown-item {
+  cursor: pointer;
+  padding-left: 10px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.margin-auto {
   width: 1280px;
   margin-left: auto;
   margin-right: auto;
+}
+</style>
+
+<style lang="scss">
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+  max-height: 360px;
+  overflow: hidden;
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.slide-fade2-enter-active,
+.slide-fade2-leave-active {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+.slide-fade2-enter,
+.slide-fade2-leave-to {
+  opacity: 0;
+  overflow: hidden;
 }
 </style>

@@ -3,10 +3,14 @@ lockfileVersion: 5.3
 specifiers:
   '@dna2.0/utils': workspace:^0.1.0
   axios: ^0.21.0
+  echarts: 4.2.1
+  vue-count-to: 1.0.13
 
 dependencies:
   '@dna2.0/utils': link:../utils
   axios: 0.21.4
+  echarts: 4.2.1
+  vue-count-to: 1.0.13
 
 packages:
 
@@ -18,6 +22,12 @@ packages:
       - debug
     dev: false
 
+  /echarts/4.2.1:
+    resolution: {integrity: sha512-pw4xScRPsLegD/cqEcoXRKeA2SD4+s+Kyo0Na166NamOWhzNl2yI5RZ2rE97tBlAopNmhyMeBVpAeD5qb+ee1A==}
+    dependencies:
+      zrender: 4.0.7
+    dev: false
+
   /follow-redirects/1.14.5:
     resolution: {integrity: sha512-wtphSXy7d4/OR+MvIFbCVBDzZ5520qV8XfPklSN5QtxuMUJZ+b0Wnst1e1lCDocfzuCkHqj8k0FpZqO+UIaKNA==}
     engines: {node: '>=4.0'}
@@ -26,4 +36,12 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
+
+  /vue-count-to/1.0.13:
+    resolution: {integrity: sha512-6R4OVBVNtQTlcbXu6SJ8ENR35M2/CdWt3Jmv57jOUM+1ojiFmjVGvZPH8DfHpMDSA+ITs+EW5V6qthADxeyYOQ==}
+    dev: false
+
+  /zrender/4.0.7:
+    resolution: {integrity: sha512-TNloHe0ums6zxbHfnaCryM61J4IWDajZwNq6dHk9vfWhhysO/OeFvvR0drBs/nbXha2YxSzfQj2FiCd6RVBe+Q==}
     dev: false

@@ -66,7 +66,7 @@
 </template>
 <script>
 import Loading from '@dna2.0/utils/loading';
-import Txs from './dashboard/Tx';
+import Txs from './list/Tx';
 import { getBlock } from '../api';
 
 export default {
@@ -110,7 +110,14 @@ export default {
   display: flex;
   height: 40px;
   line-height: 40px;
-  background-color: rgba($color: #0078fa, $alpha: 0.04);
+  background-color: #0078fa;
+  color: #fff;
+  > span {
+    opacity: 0.6;
+  }
+  .copy-wrapper {
+    color: #fff;
+  }
 }
 .col-2 {
   display: flex;
