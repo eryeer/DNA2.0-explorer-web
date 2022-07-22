@@ -3,7 +3,7 @@
     <div class="header-wrapper">
       <div class="header margin-auto">
         <div class="header-logo">
-          <router-link to="/" class="header-title" tag="h2">{{ title }}</router-link>
+          <router-link to="/" class="header-title" tag="h2">灵境Maas链区块链浏览器</router-link>
           <div
             class="dropdown-wrapper"
             ref="dropdownWrapper"
@@ -32,6 +32,7 @@
                 @keyup.enter.native="toSearch"
                 v-model="searchContent"
                 style="width: 290px"
+                clearable
               ></el-input>
               <el-button type="primary" @click="toSearch">搜索</el-button>
             </div>
@@ -75,17 +76,14 @@ export default {
     };
   },
   computed: {
-    title() {
-      return process.env.VUE_APP_TITLE;
-    },
     isProd() {
       return process.env.NODE_ENV === 'production';
     },
   },
-  watch:{
-    $route (to, from){
-        this.searchContent = '';
-    }
+  watch: {
+    $route(to, from) {
+      this.searchContent = '';
+    },
   },
   methods: {
     async toSearch() {
@@ -146,7 +144,9 @@ export default {
       this.$message.error('对不起，您的搜索不匹配任何记录');
     },
     handleSelect() {
-      window.location.href = getNetworkParams().blockExplorerUrls;
+      window.location.href = this.isProd
+        ? 'https://maas-test-explorer.onchain.com/'
+        : 'https://maas-explorer.onchain.com/';
     },
     documentClick({ target }) {
       const el = this.$refs.dropdownWrapper;
