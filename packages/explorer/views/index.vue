@@ -54,7 +54,7 @@
             >
             <span class="add-network" @click="switchNetwork">
               <img src="@/assets/images/metamask.png" width="16" height="16" alt="metamask" />
-              Add Mass {{ isProd ? '' : 'Testnet' }} Network
+              Add MaaS {{ isProd ? '' : 'Testnet' }} Network
             </span>
           </div>
         </div>

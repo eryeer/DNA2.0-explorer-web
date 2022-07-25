@@ -29,7 +29,7 @@ export const getNetworkParams = function () {
   return !IN_PRODUCTIOIN
     ? {
         chainId: '0x440',
-        chainName: 'Mass Testnet',
+        chainName: 'MaaS Testnet',
         nativeCurrency: {
           name: 'eth',
           symbol: 'eth',
@@ -40,7 +40,7 @@ export const getNetworkParams = function () {
       }
     : {
         chainId: '0x828',
-        chainName: 'Mass Mainnet',
+        chainName: 'MaaS Mainnet',
         nativeCurrency: {
           name: 'eth',
           symbol: 'eth',
