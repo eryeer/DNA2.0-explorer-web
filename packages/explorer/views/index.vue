@@ -69,7 +69,7 @@
 <script>
 import { isHexString, debounce } from '@dna2.0/utils';
 import { getBlock, getAddress, getTransaction } from '../api';
-import { switchNetwork } from './contract/utils';
+import { switchNetwork, getNetworkParams } from './contract/utils';
 
 export default {
   name: 'explorer',
@@ -173,6 +173,19 @@ export default {
       }
     },
     switchNetwork() {
+      if (!ethereum || !ethereum.on) {
+        window.open('https://metamask.io/', '_blank', 'noopener');
+        return;
+      }
+      const networkVersion = ethereum.networkVersion;
+      const networkParams = getNetworkParams();
+      if (parseInt(networkParams.chainId, 16) == networkVersion) {
+        this.$message({
+          message: `${networkParams.chainName} Network has already been added to Metamask.`,
+          type: 'info',
+        });
+        return;
+      }
       switchNetwork();
     },
   },
@@ -359,7 +372,7 @@ export default {
   color: #fff;
   display: flex;
   align-items: center;
-  background: rgba(136,164,193,1);
+  background: rgba(136, 164, 193, 1);
   border-radius: 4px;
   height: 32px;
   padding-left: 10px;
