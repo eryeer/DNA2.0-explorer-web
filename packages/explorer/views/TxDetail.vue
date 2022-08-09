@@ -104,9 +104,9 @@
               </span>
             </li>
             <li><divider /></li>
-            <template v-if="ERC20Transfers.length">
+            <!-- <template v-if="ERC20Transfers.length">
               <li>
-                <span>Token转账:</span>
+                <span>数字藏品转账:</span>
                 <span>
                   <div class="mb-10" v-for="(transfer, index) in ERC20Transfers" :key="index">
                     <span class="c-grey">从 </span>
@@ -136,7 +136,7 @@
                       {{ transfer.tokenName }}({{ transfer.tokenName }})
                     </span>
                     <template v-else>
-                      Token
+                      数字藏品标识
                       <router-link
                         :to="{
                           name: 'explorerAddress',
@@ -152,9 +152,9 @@
                 </span>
               </li>
               <li><divider /></li>
-            </template>
+            </template> -->
             <li v-for="(transfer, index) in ERC721Transfers" :key="index">
-              <span>NFT Token转账:</span>
+              <span>数字藏品转账:</span>
               <span>
                 <div class="mb-10">
                   <span class="c-grey">从 </span>
@@ -180,7 +180,7 @@
                     <short-hash :hash="transfer.toAddress"></short-hash>
                   </router-link>
                   <span class="c-grey"> 转 </span
-                  ><span class="f-b">ERC-721 TokenID [{{ transfer.tokenId }}] </span>
+                  ><span class="f-b">数字藏品ID [{{ transfer.tokenId }}] </span>
                   <span v-if="transfer.tokenName">
                     {{ transfer.tokenName }}({{ transfer.tokenName }})
                   </span>

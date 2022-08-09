@@ -29,7 +29,7 @@ export const getNetworkParams = function () {
   return !IN_PRODUCTIOIN
     ? {
         chainId: '0x440',
-        chainName: 'MaaS Testnet',
+        chainName: 'Lingjing Testnet Network',
         nativeCurrency: {
           name: 'eth',
           symbol: 'eth',
@@ -40,7 +40,7 @@ export const getNetworkParams = function () {
       }
     : {
         chainId: '0x828',
-        chainName: 'MaaS Mainnet',
+        chainName: 'Lingjing Network',
         nativeCurrency: {
           name: 'eth',
           symbol: 'eth',

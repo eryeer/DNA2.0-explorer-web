@@ -63,8 +63,8 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="Token ID" prop="tokenId"></el-table-column>
-      <el-table-column label="Token">
+      <el-table-column label="数字藏品ID" prop="tokenId"></el-table-column>
+      <el-table-column label="数字藏品标识">
         <template slot-scope="scope">
           <router-link
             :to="{

@@ -3,7 +3,7 @@
     <div class="header-wrapper">
       <div class="header margin-auto">
         <div class="header-logo">
-          <router-link to="/" class="header-title" tag="h2">灵境MaaS链区块链浏览器</router-link>
+          <router-link to="/" class="header-title" tag="h2">灵境元宇宙区块链浏览器</router-link>
           <div
             class="dropdown-wrapper"
             ref="dropdownWrapper"
@@ -54,7 +54,9 @@
             >
             <span class="add-network" @click="switchNetwork">
               <img src="@/assets/images/metamask.png" width="16" height="16" alt="metamask" />
-              Add MaaS {{ isProd ? '' : 'Testnet' }} Network
+              Add Lingjing {{ isProd ? '' : 'Testnet ' }}Network
+
+
             </span>
           </div>
         </div>

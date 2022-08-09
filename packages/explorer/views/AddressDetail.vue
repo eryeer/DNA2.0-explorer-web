@@ -59,17 +59,17 @@
             </span>
           </li>
           <li v-if="abiHasUpload && info.contractInfo.tokenName">
-            <span>Token标识:</span>
+            <span>数字藏品标识:</span>
             <span>
               {{ info.contractInfo.tokenName }} ({{ info.contractInfo.tokenSymbol }})
-              <el-tag
+              <!-- <el-tag
                 size="mini"
                 effect="dark"
                 class="tag"
                 type="success"
                 v-if="info.contractInfo.contractType"
                 >{{ info.contractInfo.contractType }}</el-tag
-              >
+              > -->
             </span>
           </li>
         </template>
@@ -83,7 +83,7 @@
       <el-tab-pane label="最新交易" name="txs">
         <txs :address="address"></txs>
       </el-tab-pane>
-      <el-tab-pane label="ERC721 交易" name="nft">
+      <el-tab-pane label="数字藏品交易" name="nft">
         <nft-txs :address="address"></nft-txs>
       </el-tab-pane>
       <el-tab-pane label="合约" v-if="isContract" name="contract">
