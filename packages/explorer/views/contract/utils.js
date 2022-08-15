@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 const { utils, Contract } = ethers;
 
 const IN_PRODUCTIOIN = process.env.NODE_ENV === 'production';
-const WEB3_ENDPOINT = IN_PRODUCTIOIN ? 'https://maas-node.onchain.com' : 'https://maas-test-node.onchain.com';
+const WEB3_ENDPOINT = IN_PRODUCTIOIN ? 'https://node.lingjing-eco.com.cn' : 'https://test-node.lingjing-eco.com.cn';
 const provider = new ethers.providers.JsonRpcProvider(WEB3_ENDPOINT);
 
 export const getBalance = async function (address) {
@@ -35,8 +35,8 @@ export const getNetworkParams = function () {
           symbol: 'eth',
           decimals: 18,
         },
-        rpcUrls: ['https://maas-test-node.onchain.com'],
-        blockExplorerUrls: ['https://maas-test-explorer.onchain.com/'],
+        rpcUrls: ['https://test-node.lingjing-eco.com.cn/'],
+        blockExplorerUrls: ['https://test-explorer.lingjing-eco.com.cn/'],
       }
     : {
         chainId: '0x828',
@@ -46,8 +46,8 @@ export const getNetworkParams = function () {
           symbol: 'eth',
           decimals: 18,
         },
-        rpcUrls: ['https://maas-node.onchain.com'],
-        blockExplorerUrls: ['https://maas-explorer.onchain.com'],
+        rpcUrls: ['https://node.lingjing-eco.com.cn/'],
+        blockExplorerUrls: ['https://explorer.lingjing-eco.com.cn/'],
       };
 };
 

@@ -155,8 +155,8 @@ export default {
     },
     handleSelect() {
       window.location.href = this.isProd
-        ? 'https://maas-test-explorer.onchain.com/'
-        : 'https://maas-explorer.onchain.com/';
+        ? 'https://test-explorer.lingjing-eco.com.cn/'
+        : 'https://explorer.lingjing-eco.com.cn/';
     },
     documentClick({ target }) {
       const el = this.$refs.dropdownWrapper;
