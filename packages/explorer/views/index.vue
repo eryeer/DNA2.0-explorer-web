@@ -183,7 +183,7 @@ export default {
       const networkParams = getNetworkParams();
       if (parseInt(networkParams.chainId, 16) == networkVersion) {
         this.$message({
-          message: `${networkParams.chainName} Network has already been added to Metamask.`,
+          message: `${networkParams.chainName} has already been added to Metamask.`,
           type: 'info',
         });
         return;
