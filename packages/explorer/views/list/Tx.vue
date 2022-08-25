@@ -98,7 +98,7 @@
           @size-change="handlePageSizeChange"
           :current-page="params.pageNumber"
           :total="total"
-          layout="total, sizes, prev, pager, next"
+          layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[10, 20, 50]"
         >
         </el-pagination>
