@@ -1,5 +1,5 @@
 <template>
-  <div class="box" v-loading="loading.value">
+  <div class="box">
     <heading-2 with-go-back>区块详情</heading-2>
     <div class="info-bar f-16 pl-30 mb-20">
       <span class="mr-10">区块</span>

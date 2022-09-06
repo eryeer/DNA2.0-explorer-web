@@ -89,7 +89,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="t-r mt-30">
+    <div class="t-r mt-30 flex">
+      <el-button
+          type="primary"
+          size="mini"
+          @click="openExportDialog"
+          >下载csv</el-button
+        >
       <el-pagination
         @current-change="handleCurrentChange"
         @size-change="handlePageSizeChange"
@@ -97,19 +103,25 @@
         :total="total"
         layout="total, sizes, prev, pager, next, jumper"
         :page-sizes="[10, 20, 50]"
+        :page-size="params.pageSize"
       >
       </el-pagination>
     </div>
+    <export-dialog ref="dialog" is-nft/>
   </div>
 </template>
 
 <script>
 import Loading from '@dna2.0/utils/loading';
 import { getTransferListByAddress } from '../api';
+import { serialize, deserialize } from '@dna2.0/utils/convertors';
+import ExportDialog from './ExportDialog';
 
 export default {
   name: 'NftTxs',
-  props: {},
+  components: {
+    ExportDialog,
+  },
   data() {
     return {
       loading: new Loading(),
@@ -117,12 +129,35 @@ export default {
         pageNumber: 1,
         pageSize: 10,
         address: this.$route.params.address,
+        ...deserialize(this.$route.query.q, null),
       },
       total: 0,
       list: [],
+      exporting: false,
+      unverified: true
     };
   },
+  computed: {
+    serializedParams() {
+      return serialize({ ...this.params });
+    },
+  },
+  watch: {
+    params: {
+      handler() {
+        this.query();
+      },
+      immediate: true,
+      deep: true,
+    },
+    serializedParams(value) {
+      this.$router.replace({ query: { ...this.$route.query, q: value } });
+    },
+  },
   methods: {
+     openExportDialog() {
+      this.$refs.dialog.open();
+    },
     async query() {
       const res = await this.loading.run(async () => {
         return await getTransferListByAddress(this.params);
@@ -146,9 +181,6 @@ export default {
       return false;
     },
   },
-  mounted() {
-    this.query();
-  },
 };
 </script>
 <style lang="scss" scoped>
@@ -160,5 +192,10 @@ export default {
   text-align: center;
   position: relative;
   right: -15px;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

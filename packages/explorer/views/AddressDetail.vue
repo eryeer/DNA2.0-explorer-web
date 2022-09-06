@@ -1,5 +1,5 @@
 <template>
-  <div class="box" v-loading="loading.value">
+  <div class="box">
     <heading-2 with-go-back>地址详情</heading-2>
     <div class="info-bar f-16 pl-30 mb-20">
       <span class="mr-10">地址</span>
@@ -24,12 +24,12 @@
           <span>地址类型:</span>
           <span> {{ getType(info.type) }} </span>
         </li>
+      </ol>
+      <ol class="list">
         <li>
           <span>交易数量:</span>
           <span>{{ info.txCount | filterCount }}</span>
         </li>
-      </ol>
-      <ol class="list">
         <template v-if="isContract">
           <li>
             <span>合约创建者:</span>
@@ -79,9 +79,9 @@
         </li>
       </ol>
     </div>
-    <el-tabs v-model="activeName">
+    <el-tabs v-model="params.activeName">
       <el-tab-pane label="最新交易" name="txs">
-        <txs :address="address"></txs>
+        <txs :address="address" :show-export="true"></txs>
       </el-tab-pane>
       <el-tab-pane label="数字藏品交易" name="nft">
         <nft-txs :address="address"></nft-txs>
@@ -205,6 +205,7 @@ import { ethers } from 'ethers';
 // import { keccak256, hashTypedData } from './contract/utils';
 import Wallet from './contract/Wallet';
 import { networkStatus } from '@dna2.0/utils/values';
+import { serialize, deserialize } from '@dna2.0/utils/convertors';
 
 export default {
   name: 'AddressDetail',
@@ -225,7 +226,6 @@ export default {
       sourceCode: '',
       uploading: false,
       signing: false,
-      activeName: 'txs',
       createContract: {
         dialogVisible: false,
         params: {
@@ -248,6 +248,12 @@ export default {
         ],
       },
       activeTabName: 'abi',
+      loading: new Loading(),
+      params: {
+        activeName: 'txs',
+        ...deserialize(this.$route.query.q, null),
+      },
+
     };
   },
   computed: {
@@ -271,6 +277,14 @@ export default {
     },
     connect_no_normal() {
       return this.$store.state.networkStatus !== networkStatus.CONNECT_NORMAL;
+    },
+    serializedParams() {
+      return serialize({ ...this.params });
+    },
+  },
+  watch: {
+    serializedParams(value) {
+      this.$router.replace({ query: { ...this.$route.query, q: value } });
     },
   },
   methods: {
@@ -365,9 +379,9 @@ export default {
       });
     },
   },
-  mounted() {
-    this.query();
-  },
+  created() {
+    this.query()
+  }
 };
 </script>
 <style lang="scss" scoped>

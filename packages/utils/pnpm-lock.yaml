@@ -2,12 +2,18 @@ lockfileVersion: 5.3
 
 specifiers:
   big.js: ^6.1.1
+  js-base64: ^2.5.1
 
 dependencies:
   big.js: 6.1.1
+  js-base64: 2.6.4
 
 packages:
 
   /big.js/6.1.1:
     resolution: {integrity: sha512-1vObw81a8ylZO5ePrtMay0n018TcftpTA5HFKDaSuiUDBo8biRBtjIobw60OpwuvrGk+FsxKamqN4cnmj/eXdg==}
+    dev: false
+
+  /js-base64/2.6.4:
+    resolution: {integrity: sha512-pZe//GGmwJndub7ZghVHz7vjb2LgC1m8B07Au3eYqeqv9emhESByMXxaEgkUkEqJe87oBbSniGYoQNIBklc7IQ==}
     dev: false

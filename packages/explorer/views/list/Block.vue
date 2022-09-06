@@ -1,7 +1,7 @@
 <template>
-  <div class="box" v-loading="loading.value">
+  <div class="box">
     <heading-2 v-if="$route.name === 'blocks'" class="mt-60">区块列表</heading-2>
-    <div class="bg-white p-20">
+    <div class="bg-white p-20"  v-loading="loading.value">
       <el-table :data="list" style="width: 100%">
         <el-table-column label="区块高度">
           <template slot-scope="scope">
@@ -50,6 +50,7 @@
           :total="total"
           layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[10, 20, 50]"
+          :page-size="params.pageSize"
         >
         </el-pagination>
       </div>
@@ -60,7 +61,7 @@
 <script>
 import Loading from '@dna2.0/utils/loading';
 import { getBlockList } from '../../api';
-import { eventBus } from '@dna2.0/utils';
+import { serialize, deserialize } from '@dna2.0/utils/convertors';
 
 export default {
   name: 'Blocks',
@@ -70,10 +71,28 @@ export default {
       params: {
         pageNumber: 1,
         pageSize: 10,
+        ...deserialize(this.$route.query.q, null),
       },
       total: 0,
       list: [],
     };
+  },
+  computed: {
+    serializedParams() {
+      return serialize({ ...this.params });
+    },
+  },
+  watch: {
+    params: {
+      handler() {
+        this.query();
+      },
+      immediate: true,
+      deep: true,
+    },
+    serializedParams(value) {
+      this.$router.replace({ query: { ...this.$route.query, q: value } });
+    },
   },
   methods: {
     async query() {
@@ -92,13 +111,6 @@ export default {
       this.params.pageSize = pageSize;
       this.query();
     },
-  },
-  mounted() {
-    this.query();
-    eventBus.$on('refreshList', this.query);
-  },
-  beforeDestroy() {
-    eventBus.$off('refreshList');
   },
 };
 </script>

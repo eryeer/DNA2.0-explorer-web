@@ -1,5 +1,5 @@
 <template>
-  <div class="box" v-loading="loading.value">
+  <div class="box">
     <heading-2 with-go-back>交易详情</heading-2>
     <div class="info-bar f-16 pl-30 mb-20">
       <span class="mr-10">交易</span>

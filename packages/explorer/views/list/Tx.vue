@@ -1,7 +1,7 @@
 <template>
-  <div class="box" v-loading="loading.value">
+  <div class="box">
     <heading-2 v-if="$route.name === 'txs'">交易列表</heading-2>
-    <div class="bg-white p-20">
+    <div class="bg-white p-20"  v-loading="loading.value">
       <el-table :data="list" style="width: 100%">
         <el-table-column label="交易哈希" width="150">
           <template slot-scope="scope">
@@ -92,7 +92,10 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="t-r mt-30">
+      <div class="t-r mt-30" :class="{ flex: showExport }">
+        <el-button type="primary" size="mini" @click="openExportDialog" v-if="showExport"
+          >下载csv</el-button
+        >
         <el-pagination
           @current-change="handleCurrentChange"
           @size-change="handlePageSizeChange"
@@ -100,10 +103,12 @@
           :total="total"
           layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[10, 20, 50]"
+          :page-size="params.pageSize"
         >
         </el-pagination>
       </div>
     </div>
+    <export-dialog ref="dialog" />
   </div>
 </template>
 
@@ -111,6 +116,8 @@
 import Loading from '@dna2.0/utils/loading';
 import { getTransactionList, getTransactionListByAddress } from '../../api';
 import { gwei2ether, getGasAmount, eventBus } from '@dna2.0/utils';
+import { serialize, deserialize } from '@dna2.0/utils/convertors';
+import ExportDialog from '../ExportDialog';
 
 export default {
   name: 'Txs',
@@ -123,6 +130,14 @@ export default {
       type: String,
       default: '',
     },
+    showExport: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  name: 'NftTxs',
+  components: {
+    ExportDialog,
   },
   data() {
     return {
@@ -130,12 +145,33 @@ export default {
       params: {
         pageNumber: 1,
         pageSize: 10,
+        ...deserialize(this.$route.query.q, null),
       },
       total: 0,
       list: [],
     };
   },
+  computed: {
+    serializedParams() {
+      return serialize({ ...this.params });
+    },
+  },
+  watch: {
+    params: {
+      handler() {
+        this.query();
+      },
+      immediate: true,
+      deep: true,
+    },
+    serializedParams(value) {
+      this.$router.replace({ query: { ...this.$route.query, q: value } });
+    },
+  },
   methods: {
+    openExportDialog() {
+      this.$refs.dialog.open();
+    },
     async query() {
       const res = await this.loading.run(async () => {
         const params = this.params;
@@ -168,17 +204,15 @@ export default {
       return getGasAmount(gasUsed, gasPrice);
     },
   },
-  mounted() {
-    this.query();
-    eventBus.$on('refreshList', this.query);
-  },
-  beforeDestroy() {
-    eventBus.$off('refreshList');
-  },
 };
 </script>
 <style lang="scss" scoped>
 .contract-icon {
   vertical-align: -2px;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
