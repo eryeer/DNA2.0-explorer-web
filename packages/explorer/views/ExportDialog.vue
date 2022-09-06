@@ -125,7 +125,7 @@ export default {
 
       this.exporting = true;
 
-      const baseURL = "http://121.4.146.202:8701/explorer" || process.env.VUE_APP_BASE_API;
+      const baseURL = "http://172.17.16.31:8701/explorer" || process.env.VUE_APP_BASE_API;
       const queryUrl = `${baseURL}${this.isNft ? '/address/downloadTransferList': '/address/downloadTransactionList'}`
 
       try {
