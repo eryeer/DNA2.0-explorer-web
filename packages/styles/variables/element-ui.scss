@@ -264,3 +264,7 @@ $--border-lighter: $--border-width-base $--border-style-base
 .el-loading-spinner .path.path {
   stroke-width: 3;
 }
+
+.el-picker-panel__footer .el-button--text.el-picker-panel__link-btn {
+  display: none;
+}

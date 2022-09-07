@@ -1,7 +1,7 @@
 <template>
   <el-dialog :visible.sync="visible" width="720px">
     <div slot="title">
-      <div>{{ isNft? '下载数字藏品交易记录': '下载交易记录'}}</div>
+      <div>{{ isNft ? '下载数字藏品交易记录' : '下载交易记录' }}</div>
       <div class="sub-title">请选择时间区间，支持下载该地址在所选区间的最近5000条交易记录</div>
     </div>
     <div class="dialog-bd">
@@ -49,7 +49,7 @@ export default {
   props: {
     isNft: {
       type: Boolean,
-      default: false
+      default: false,
     },
   },
   data() {
@@ -59,14 +59,32 @@ export default {
       startTime: new Date().setHours(0, 0, 0, 0),
       endTime: Date.now(),
       startTimePickerOptions: {
-        disabledDate: () => false,
+        disabledDate: (time) => {
+          return time.getTime() > Date.now();
+        },
         selectableRange: [],
       },
       endTimePickerOptions: {
-        disabledDate: () => false,
+        disabledDate: (time) => {
+          return time.getTime() > Date.now();
+        },
         selectableRange: [],
       },
     };
+  },
+  watch: {
+    startTime: {
+      handler(val) {
+        this.setOptions(val, this.startTimePickerOptions);
+      },
+      immediate: true,
+    },
+    endTime: {
+      handler(val) {
+        this.setOptions(val, this.endTimePickerOptions);
+      },
+      immediate: true,
+    },
   },
   methods: {
     open() {
@@ -81,28 +99,29 @@ export default {
           Date.now(),
           'hh:mm:ss',
         )}`;
-  
       } else {
         options.selectableRange = `00:00:00 - 23:59:59`;
       }
-      options.disabledDate = (time) => {
-        return time.getTime() > Date.now();
-      }
     },
     updateTime() {
-      let startTime = new Date().setHours(0, 0, 0, 0);
-      this.setOptions(startTime, this.startTimePickerOptions);
-      let endTime = Date.now();
-      this.setOptions(endTime, this.endTimePickerOptions);
+      this.startTimePickerOptions.disabledDate = (time) => {
+        return time.getTime() > Date.now();
+      };
+      this.endTimePickerOptions.disabledDate = (time) => {
+        return time.getTime() > Date.now();
+      };
       this.timer = setTimeout(this.updateTime.bind(this), 1 * 1000);
     },
     generateFilename() {
-      const separator = "_"
-      const cata = this.isNft ? "DigtalCollectionTransactions" : "LatestTransactions";
-      const shortAddr = this.$route.params.address.substr(0, 6)
+      const separator = '_';
+      const cata = this.isNft ? 'DigtalCollectionTransactions' : 'LatestTransactions';
+      const shortAddr = this.$route.params.address.substr(0, 6);
       const filterDate = this.$options.filters.filterDate;
-      const timeFormater = "yyyyMMdd-hh-mm-ss"
-      const time = `${filterDate(this.startTime, timeFormater)}${separator}${filterDate(this.endTime, timeFormater)}`
+      const timeFormater = 'yyyyMMdd-hh-mm-ss';
+      const time = `${filterDate(this.startTime, timeFormater)}${separator}${filterDate(
+        this.endTime,
+        timeFormater,
+      )}`;
       return `${cata}${separator}${shortAddr}${separator}${time}.csv`;
     },
     async exportCsv() {
@@ -128,7 +147,9 @@ export default {
       this.exporting = true;
 
       const baseURL = process.env.VUE_APP_BASE_API;
-      const queryUrl = `${baseURL}${this.isNft ? '/address/downloadTransferList': '/address/downloadTransactionList'}`
+      const queryUrl = `${baseURL}${
+        this.isNft ? '/address/downloadTransferList' : '/address/downloadTransactionList'
+      }`;
       try {
         const response = await axios.post(
           queryUrl,
@@ -141,7 +162,9 @@ export default {
           },
           { timeout: 0, responseType: 'blob' },
         );
-        const url = URL.createObjectURL(new Blob([response.data]), { type: 'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(new Blob([response.data]), {
+          type: 'text/csv;charset=utf-8;',
+        });
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', this.generateFilename());
@@ -158,7 +181,6 @@ export default {
         return;
       }
     },
-
   },
   created() {
     this.timer = null;
@@ -243,5 +265,7 @@ export default {
       display: none;
     }
   }
+
 }
+
 </style>
