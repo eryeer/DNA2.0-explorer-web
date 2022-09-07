@@ -110,7 +110,7 @@ export default {
       const filterDate = this.$options.filters.filterDate;
       const timeFormater = "yyyyMMdd-hh-mm-ss"
       const time = `${filterDate(this.startTime, timeFormater)}${separator}${filterDate(this.endTime, timeFormater)}`
-      return `${cata}${separator}${shortAddr}${separator}${time}`;
+      return `${cata}${separator}${shortAddr}${separator}${time}.csv`;
     },
     async exportCsv() {
       let captcha = null;
