@@ -59,32 +59,14 @@ export default {
       startTime: new Date().setHours(0, 0, 0, 0),
       endTime: Date.now(),
       startTimePickerOptions: {
-        disabledDate: (time) => {
-          return time.getTime() > Date.now();
-        },
+        disabledDate: () => false,
         selectableRange: [],
       },
       endTimePickerOptions: {
-        disabledDate: (time) => {
-          return time.getTime() > Date.now();
-        },
+        disabledDate: () => false,
         selectableRange: [],
       },
     };
-  },
-  watch: {
-    startTime: {
-      handler(val) {
-        this.setOptions(val, this.startTimePickerOptions);
-      },
-      immediate: true,
-    },
-    endTime: {
-      handler(val) {
-        this.setOptions(val, this.endTimePickerOptions);
-      },
-      immediate: true,
-    },
   },
   methods: {
     open() {
@@ -99,9 +81,20 @@ export default {
           Date.now(),
           'hh:mm:ss',
         )}`;
+  
       } else {
         options.selectableRange = `00:00:00 - 23:59:59`;
       }
+      options.disabledDate = (time) => {
+        return time.getTime() > Date.now();
+      }
+    },
+    updateTime() {
+      let startTime = new Date().setHours(0, 0, 0, 0);
+      this.setOptions(startTime, this.startTimePickerOptions);
+      let endTime = Date.now();
+      this.setOptions(endTime, this.endTimePickerOptions);
+      this.timer = setTimeout(this.updateTime.bind(this), 1 * 1000);
     },
     generateFilename() {
       const separator = "_"
@@ -165,6 +158,16 @@ export default {
         return;
       }
     },
+
+  },
+  created() {
+    this.timer = null;
+    this.updateTime();
+    this.$once('hook:beforeDestroy', () => {
+      if (this.timer !== null) {
+        clearTimeout(this.timer);
+      }
+    });
   },
 };
 </script>
