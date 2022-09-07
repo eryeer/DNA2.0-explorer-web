@@ -103,6 +103,15 @@ export default {
         options.selectableRange = `00:00:00 - 23:59:59`;
       }
     },
+    generateFilename() {
+      const separator = "_"
+      const cata = this.isNft ? "DigtalCollectionTransactions" : "LatestTransactions";
+      const shortAddr = this.$route.params.address.substr(0, 6)
+      const filterDate = this.$options.filters.filterDate;
+      const timeFormater = "yyyyMMdd-hh-mm-ss"
+      const time = `${filterDate(this.startTime, timeFormater)}${separator}${filterDate(this.endTime, timeFormater)}`
+      return `${cata}${separator}${shortAddr}${separator}${time}`;
+    },
     async exportCsv() {
       let captcha = null;
       const captchResult = await new Promise((resolve, reject) => {
@@ -127,7 +136,6 @@ export default {
 
       const baseURL = process.env.VUE_APP_BASE_API;
       const queryUrl = `${baseURL}${this.isNft ? '/address/downloadTransferList': '/address/downloadTransactionList'}`
-
       try {
         const response = await axios.post(
           queryUrl,
@@ -143,7 +151,7 @@ export default {
         const url = URL.createObjectURL(new Blob([response.data]), { type: 'text/csv;charset=utf-8;'});
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `export-${this.$route.params.address}.csv`);
+        link.setAttribute('download', this.generateFilename());
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();
