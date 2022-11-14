@@ -17,7 +17,6 @@
         </template>
       </el-table-column>
       >
-
       <el-table-column label="持有数量">
         <template slot-scope="scope">
           {{ scope.row.count | filterCount }}
@@ -31,7 +30,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="t-r mt-30 flex">
+    <div class="t-r mt-30">
       <el-pagination
         @current-change="handleCurrentChange"
         @size-change="handlePageSizeChange"
