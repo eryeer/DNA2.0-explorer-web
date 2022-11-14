@@ -71,7 +71,7 @@ export const filterCount = (val, minimumFractionDigits = 0) => {
 export const filterPercentage = (val, suffix = "%") => {
   if (!val) return "-";
   val = Number(val);
-  return (val * 100).toFixed(8) + suffix;
+  return (val * 100).toFixed(4) + suffix;
 };
 
 export const filterWordCount = (val, LIMIT_NUM = 24) => {

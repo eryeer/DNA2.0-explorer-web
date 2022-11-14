@@ -17,15 +17,15 @@
         </template>
       </el-table-column>
       >
-      <el-table-column label="持有数量">
+      <el-table-column label="持有数量" width="120">
         <template slot-scope="scope">
           {{ scope.row.count | filterCount }}
         </template>
       </el-table-column>
-      <el-table-column label="持有占比">
+      <el-table-column label="持有占比" width="120">
         <template slot-scope="scope">
           <div>
-            {{ scope.row.percentage * 100 }} %
+            {{ scope.row.percentage | filterPercentage }}
           </div>
         </template>
       </el-table-column>
@@ -60,16 +60,10 @@ export default {
         pageNumber: 1,
         pageSize: 10,
         contractAddress: this.$route.params.address,
-        ...deserialize(this.$route.query.q, null),
       },
       total: 0,
       list: [],
     };
-  },
-  computed: {
-    serializedParams() {
-      return serialize({ ...this.params });
-    },
   },
   watch: {
     params: {
@@ -78,9 +72,6 @@ export default {
       },
       immediate: true,
       deep: true,
-    },
-    serializedParams(value) {
-      this.$router.replace({ query: { ...this.$route.query, q: value } });
     },
   },
   methods: {

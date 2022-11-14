@@ -129,18 +129,12 @@ export default {
         pageNumber: 1,
         pageSize: 10,
         address: this.$route.params.address,
-        ...deserialize(this.$route.query.q, null),
       },
       total: 0,
       list: [],
       exporting: false,
       unverified: true
     };
-  },
-  computed: {
-    serializedParams() {
-      return serialize({ ...this.params });
-    },
   },
   watch: {
     params: {
@@ -149,9 +143,6 @@ export default {
       },
       immediate: true,
       deep: true,
-    },
-    serializedParams(value) {
-      this.$router.replace({ query: { ...this.$route.query, q: value } });
     },
   },
   methods: {

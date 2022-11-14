@@ -27,7 +27,7 @@
         <template v-if="isContract">
           <li>
           <span>持有者数量:</span>
-          <span> {{ info.tokenSum | filterCount }} </span>
+          <span> {{ info.tokenHolderSum | filterCount }} </span>
         </li>
         </template>
       </ol>
@@ -262,7 +262,6 @@ export default {
       loading: new Loading(),
       params: {
         activeName: 'txs',
-        ...deserialize(this.$route.query.q, null),
       },
 
     };
@@ -288,14 +287,6 @@ export default {
     },
     connect_no_normal() {
       return this.$store.state.networkStatus !== networkStatus.CONNECT_NORMAL;
-    },
-    serializedParams() {
-      return serialize({ ...this.params });
-    },
-  },
-  watch: {
-    serializedParams(value) {
-      this.$router.replace({ query: { ...this.$route.query, q: value } });
     },
   },
   methods: {
