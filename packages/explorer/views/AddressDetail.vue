@@ -24,6 +24,12 @@
           <span>地址类型:</span>
           <span> {{ getType(info.type) }} </span>
         </li>
+        <template v-if="isContract">
+          <li>
+          <span>持有者数量:</span>
+          <span> {{ info.tokenSum | filterCount }} </span>
+        </li>
+        </template>
       </ol>
       <ol class="list">
         <li>
@@ -80,13 +86,13 @@
       </ol>
     </div>
     <el-tabs v-model="params.activeName">
-      <el-tab-pane label="最新交易" name="txs">
+      <el-tab-pane label="最新交易" name="txs" lazy>
         <txs :address="address" :show-export="true"></txs>
       </el-tab-pane>
-      <el-tab-pane label="数字藏品交易" name="nft">
+      <el-tab-pane label="数字藏品交易" name="nft" lazy>
         <nft-txs :address="address"></nft-txs>
       </el-tab-pane>
-      <el-tab-pane label="合约" v-if="isContract" name="contract">
+      <el-tab-pane label="合约" v-if="isContract" name="contract" lazy>
         <div class="un-upload bg-white p-30">
           <template v-if="!abiHasUpload">
             <div class="mt-100">
@@ -135,6 +141,9 @@
             </el-tabs>
           </template>
         </div>
+      </el-tab-pane>
+      <el-tab-pane label="持有者" v-if="isContract" name="holders" lazy>
+        <nft-holders :address="address"></nft-holders>
       </el-tab-pane>
     </el-tabs>
     <el-dialog :visible.sync="createContract.dialogVisible" width="720px">
@@ -195,6 +204,7 @@
 import Loading from '@dna2.0/utils/loading';
 import Txs from './list/Tx';
 import NftTxs from './NftTx';
+import NftHolders from './NftHolders';
 import { getAddress, uploadAbi } from '../api';
 import SourceCode from './SourceCode.vue';
 import { isValidAbi } from '@dna2.0/utils';
@@ -212,6 +222,7 @@ export default {
   components: {
     Txs,
     NftTxs,
+    NftHolders,
     SourceCode,
     Balance,
     ReadContract,

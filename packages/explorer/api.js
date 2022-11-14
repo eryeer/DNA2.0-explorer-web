@@ -76,3 +76,10 @@ export function uploadAbi(data) {
 }
 
 
+export function getTokenHolder(params) {
+  return request({
+    url: '/token/getTokenHolder',
+    method: 'get',
+    params,
+  });
+}
