@@ -24,12 +24,10 @@
           <span>地址类型:</span>
           <span> {{ getType(info.type) }} </span>
         </li>
-        <template v-if="isContract">
-          <li>
+        <li v-if="isContract">
           <span>持有者数量:</span>
           <span> {{ info.tokenHolderSum | filterCount }} </span>
         </li>
-        </template>
       </ol>
       <ol class="list">
         <li>
@@ -263,7 +261,6 @@ export default {
       params: {
         activeName: 'txs',
       },
-
     };
   },
   computed: {
@@ -271,7 +268,7 @@ export default {
       return this.$route.params.address;
     },
     isContract() {
-      return this.info.type === 1;
+      return this.info.type !== 0;
     },
     abiHasUpload() {
       return !!this.info.contractInfo;
@@ -382,8 +379,8 @@ export default {
     },
   },
   created() {
-    this.query()
-  }
+    this.query();
+  },
 };
 </script>
 <style lang="scss" scoped>

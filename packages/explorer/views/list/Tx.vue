@@ -25,7 +25,7 @@
           </template>
         </el-table-column>
         <el-table-column label="方法名" prop="method"></el-table-column>
-        <el-table-column label="区块高度">
+        <el-table-column label="区块高度" width="100">
           <template slot-scope="scope">
             <router-link
               :to="{
@@ -70,14 +70,14 @@
             </router-link>
           </template>
         </el-table-column>
-        <el-table-column label="数量（Ether）">
+        <el-table-column label="数量（Ether）" width="100">
           <template slot-scope="scope">
             <div>
               {{ gwei2ether(scope.row.txValue) }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="消耗燃料（Gwei）">
+        <el-table-column label="消耗燃料（Gwei）" width="120">
           <template slot-scope="scope">
             <div>
               {{ getGasAmount(scope.row.gasUsed, scope.row.gasPrice) }}
