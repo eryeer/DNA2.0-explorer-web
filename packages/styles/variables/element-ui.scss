@@ -268,3 +268,8 @@ $--border-lighter: $--border-width-base $--border-style-base
 .el-picker-panel__footer .el-button--text.el-picker-panel__link-btn {
   display: none;
 }
+
+
+.el-progress-bar__outer.el-progress-bar__outer {
+  background-color: rgba(0, 120, 250, 0.08);
+}

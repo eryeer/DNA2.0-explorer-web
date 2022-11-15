@@ -24,9 +24,10 @@
       </el-table-column>
       <el-table-column label="持有占比" width="120">
         <template slot-scope="scope">
-          <div>
+          <div class="mb-10">
             {{ scope.row.percentage | filterPercentage }}
           </div>
+          <el-progress :percentage="getPercentage(scope.row.percentage)" :show-text="false"></el-progress>
         </template>
       </el-table-column>
     </el-table>
@@ -91,6 +92,10 @@ export default {
       this.params.pageSize = pageSize;
       this.query();
     },
+    getPercentage(val) {
+      if(!val) return 0
+      return val * 100
+    }
   },
 };
 </script>
