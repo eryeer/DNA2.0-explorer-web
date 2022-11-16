@@ -254,7 +254,7 @@ export default {
       return this.$route.params.address;
     },
     isContract() {
-      return this.info.type !== 0;
+      return this.info.type == 1;
     },
     isERC721() {
       return !!this.info.contractInfo && this.info.contractInfo.contractType === 'ERC721';
