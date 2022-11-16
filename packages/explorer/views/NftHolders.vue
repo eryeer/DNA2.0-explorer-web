@@ -22,9 +22,9 @@
           {{ scope.row.count | filterCount }}
         </template>
       </el-table-column>
-      <el-table-column label="持有占比" width="120">
+      <el-table-column label="持有占比" width="140">
         <template slot-scope="scope">
-          <div class="mb-10">
+          <div class="mb-5">
             {{ scope.row.percentage | filterPercentage }}
           </div>
           <el-progress :percentage="getPercentage(scope.row.percentage)" :show-text="false"></el-progress>

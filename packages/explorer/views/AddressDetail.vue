@@ -14,25 +14,15 @@
         <copyable>{{ address }}</copyable>
       </router-link>
     </div>
-    <div class="bg-white p-40 col-2 mb-10">
+    <div class="bg-white p-40 mb-10">
       <ol class="list">
-        <li v-if="info.type !== 2">
-          <span>生成时间:</span>
-          <span>{{ info.blockTime | filterDate }}</span>
-        </li>
         <li>
           <span>地址类型:</span>
           <span> {{ getType(info.type) }} </span>
         </li>
-        <li v-if="isContract">
-          <span>持有者数量:</span>
-          <span> {{ info.tokenHolderSum | filterCount }} </span>
-        </li>
-      </ol>
-      <ol class="list">
-        <li>
-          <span>交易数量:</span>
-          <span>{{ info.txCount | filterCount }}</span>
+        <li v-if="info.type !== 2">
+          <span>生成时间:</span>
+          <span>{{ info.blockTime | filterDate }}</span>
         </li>
         <template v-if="isContract">
           <li>
@@ -78,8 +68,16 @@
           </li>
         </template>
         <li>
+          <span>交易数量:</span>
+          <span>{{ info.txCount | filterCount }}</span>
+        </li>
+        <li>
           <span>余额:</span>
           <span><balance :address="address"></balance></span>
+        </li>
+        <li v-if="isERC721">
+          <span>持有者数量:</span>
+          <span> {{ info.tokenHolderSum | filterCount }} </span>
         </li>
       </ol>
     </div>
@@ -140,7 +138,7 @@
           </template>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="持有者" v-if="isContract" name="holders" lazy>
+      <el-tab-pane label="持有者" v-if="isERC721" name="holders" lazy>
         <nft-holders :address="address"></nft-holders>
       </el-tab-pane>
     </el-tabs>
@@ -269,6 +267,11 @@ export default {
     },
     isContract() {
       return this.info.type !== 0;
+    },
+    isERC721() {
+      return (
+        this.isContract && this.info.contractInfo && this.info.contractInfo.contractType != 'ERC20'
+      );
     },
     abiHasUpload() {
       return !!this.info.contractInfo;
@@ -404,7 +407,8 @@ export default {
 }
 
 .list {
-  width: 45%;
+  display: grid;
+  grid-template-columns: 50% 50%;
   > li {
     display: flex;
     align-items: center;
