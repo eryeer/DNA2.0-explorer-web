@@ -24,49 +24,33 @@
           <span>生成时间:</span>
           <span>{{ info.blockTime | filterDate }}</span>
         </li>
-        <template v-if="isContract">
-          <li>
-            <span>合约创建者:</span>
-            <span>
-              <router-link
-                :to="{
-                  name: 'explorerAddress',
-                  params: {
-                    address: info.creator,
-                  },
-                }"
-              >
-                <short-hash :hash="info.creator"></short-hash>
-              </router-link>
-              <span class="ml-10 mr-10">于交易</span>
-              <router-link
-                :to="{
-                  name: 'explorerTx',
-                  params: {
-                    txHash: info.createTxHash,
-                  },
-                }"
-              >
-                <short-hash :hash="info.createTxHash"></short-hash>
-              </router-link>
-              <span class="ml-10">中创建</span>
-            </span>
-          </li>
-          <li v-if="abiHasUpload && info.contractInfo.tokenName">
-            <span>数字藏品标识:</span>
-            <span>
-              {{ info.contractInfo.tokenName }} ({{ info.contractInfo.tokenSymbol }})
-              <!-- <el-tag
-                size="mini"
-                effect="dark"
-                class="tag"
-                type="success"
-                v-if="info.contractInfo.contractType"
-                >{{ info.contractInfo.contractType }}</el-tag
-              > -->
-            </span>
-          </li>
-        </template>
+        <li v-if="isContract">
+          <span>合约创建者:</span>
+          <span>
+            <router-link
+              :to="{
+                name: 'explorerAddress',
+                params: {
+                  address: info.creator,
+                },
+              }"
+            >
+              <short-hash :hash="info.creator"></short-hash>
+            </router-link>
+            <span class="ml-10 mr-10">于交易</span>
+            <router-link
+              :to="{
+                name: 'explorerTx',
+                params: {
+                  txHash: info.createTxHash,
+                },
+              }"
+            >
+              <short-hash :hash="info.createTxHash"></short-hash>
+            </router-link>
+            <span class="ml-10">中创建</span>
+          </span>
+        </li>
         <li>
           <span>交易数量:</span>
           <span>{{ info.txCount | filterCount }}</span>
@@ -74,6 +58,10 @@
         <li>
           <span>余额:</span>
           <span><balance :address="address"></balance></span>
+        </li>
+        <li v-if="isERC721">
+          <span>数字藏品标识:</span>
+          <span> {{ info.contractInfo.tokenName }} ({{ info.contractInfo.tokenSymbol }}) </span>
         </li>
         <li v-if="isERC721">
           <span>持有者数量:</span>
@@ -269,9 +257,7 @@ export default {
       return this.info.type !== 0;
     },
     isERC721() {
-      return (
-        this.isContract && this.info.contractInfo && this.info.contractInfo.contractType != 'ERC20'
-      );
+      return !!this.info.contractInfo && this.info.contractInfo.contractType === 'ERC721';
     },
     abiHasUpload() {
       return !!this.info.contractInfo;
@@ -400,18 +386,14 @@ export default {
     color: #fff;
   }
 }
-.col-2 {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
+
 
 .list {
   display: grid;
   grid-template-columns: 50% 50%;
+  row-gap: 30px;
   > li {
     display: flex;
-    align-items: center;
     > span:first-child {
       opacity: 0.6;
       min-width: 90px;
@@ -420,9 +402,6 @@ export default {
     > span:last-child {
       word-break: break-all;
       padding-right: 20px;
-    }
-    &:not(:last-child) {
-      margin-bottom: 30px;
     }
   }
 }
