@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white p-20" v-loading="loading.value">
     <el-table :data="list" style="width: 100%">
-      <el-table-column label="排名" prop="rank" width="60"></el-table-column>
+      <el-table-column label="排名" prop="rank" width="80"></el-table-column>
       <el-table-column label="地址">
         <template slot-scope="scope">
           <router-link
