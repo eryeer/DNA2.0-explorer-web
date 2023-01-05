@@ -366,7 +366,7 @@ export default {
     },
     getTokenIdentifier(info) {
       if (!info.tokenName) {
-        return '';
+        return '--';
       }
       return `${info.tokenName} (${info.contractInfo.tokenSymbol})`;
     },
