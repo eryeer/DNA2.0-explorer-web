@@ -368,7 +368,7 @@ export default {
       if (!info.tokenName) {
         return '--';
       }
-      return `${info.tokenName} (${info.contractInfo.tokenSymbol})`;
+      return `${info.tokenName} (${info.tokenSymbol})`;
     },
   },
   created() {
