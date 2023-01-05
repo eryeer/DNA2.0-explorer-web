@@ -61,7 +61,7 @@
         </li>
         <li v-if="isERC721">
           <span>数字藏品标识:</span>
-          <span> {{ getTokenInfo(info.contractInfo) }} </span>
+          <span> {{ getTokenIdentifier(info.contractInfo) }} </span>
         </li>
         <li v-if="isERC721">
           <span>持有者数量:</span>
@@ -199,7 +199,6 @@ import { ethers } from 'ethers';
 // import { keccak256, hashTypedData } from './contract/utils';
 import Wallet from './contract/Wallet';
 import { networkStatus } from '@/utils/values';
-import { serialize, deserialize } from '@/utils/convertors';
 
 export default {
   name: 'AddressDetail',
@@ -365,7 +364,7 @@ export default {
         }
       });
     },
-    getTokenInfo(info) {
+    getTokenIdentifier(info) {
       if (!info.tokenName) {
         return '';
       }
