@@ -61,7 +61,7 @@
         </li>
         <li v-if="isERC721">
           <span>数字藏品标识:</span>
-          <span> {{ info.contractInfo.tokenName }} ({{ info.contractInfo.tokenSymbol }}) </span>
+          <span> {{ getTokenInfo(info.contractInfo) }} </span>
         </li>
         <li v-if="isERC721">
           <span>持有者数量:</span>
@@ -364,6 +364,12 @@ export default {
           }
         }
       });
+    },
+    getTokenInfo(info) {
+      if (!info.tokenName) {
+        return '';
+      }
+      return `${info.tokenName} (${info.contractInfo.tokenSymbol})`;
     },
   },
   created() {
