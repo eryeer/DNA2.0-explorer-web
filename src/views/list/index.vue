@@ -58,14 +58,14 @@
             <div class="info-title">正常/节点数</div>
             <div class="info-val">
               {{ info.activeCount }}/{{ info.nodeCount }}
-              <span
+              <!-- <span
                 class="net-status"
                 :class="{
                   'net-status--normal': info.netStatus,
                   'net-status--abnormal': !info.netStatus,
                 }"
                 >（网络状态：{{ info.netStatus ? '正常' : '异常' }}）</span
-              >
+              > -->
             </div>
           </div>
         </li>
