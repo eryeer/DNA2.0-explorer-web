@@ -610,6 +610,8 @@ export default {
   font-weight: 400;
   font-size: 12px;
   opacity: 0.6;
+  position: relative;
+  top: -2px;
 
   &--normal {
     color: #2ab9a5;
