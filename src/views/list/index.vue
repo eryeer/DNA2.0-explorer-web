@@ -40,17 +40,33 @@
           </div>
         </li>
         <li class="bg-white">
-          <img src="@/assets/images/node.png" width="60" height="60" />
+          <img src="@/assets/images/address.png" width="60" height="60" />
           <div>
-            <div class="info-title">正常/节点数</div>
-            <div class="info-val">{{ info.activeCount }}/{{ info.nodeCount }}</div>
+            <div class="info-title">地址总数</div>
+            <div class="info-val">
+              <count-to
+                :start-val="parseInt(preInfo.addressCount)"
+                :end-val="parseInt(info.addressCount)"
+                :duration="2600"
+              />
+            </div>
           </div>
         </li>
         <li class="bg-white">
           <img src="@/assets/images/net.png" width="60" height="60" />
           <div>
-            <div class="info-title">网络状态</div>
-            <div class="info-val">{{ info.netStatus ? '正常' : '异常' }}</div>
+            <div class="info-title">正常/节点数</div>
+            <div class="info-val">
+              {{ info.activeCount }}/{{ info.nodeCount }}
+              <span
+                class="net-status"
+                :class="{
+                  'net-status--normal': info.netStatus,
+                  'net-status--abnormal': !info.netStatus,
+                }"
+                >（网络状态：{{ info.netStatus ? '正常' : '异常' }}）</span
+              >
+            </div>
           </div>
         </li>
       </ul>
@@ -234,6 +250,7 @@ export default {
         txCount: 0,
         nodeCount: 0,
         activeCount: 0,
+        addressCount: 0,
         netStatus: true,
       },
       preInfo: {
@@ -241,6 +258,7 @@ export default {
         txCount: 0,
         nodeCount: 0,
         activeCount: 0,
+        addressCount: 0,
         netStatus: true,
       },
       txs: [],
@@ -585,6 +603,20 @@ export default {
       color: #fff;
       cursor: default;
     }
+  }
+}
+
+.net-status {
+  font-weight: 400;
+  font-size: 12px;
+  opacity: 0.6;
+
+  &--normal {
+    color: #2ab9a5;
+  }
+
+  &--abnormal {
+    color: #ff0000;
   }
 }
 </style>
