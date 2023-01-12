@@ -53,7 +53,7 @@
           </div>
         </li>
         <li class="bg-white">
-          <img src="@/assets/images/net.png" width="60" height="60" />
+          <img src="@/assets/images/node.png" width="60" height="60" />
           <div>
             <div class="info-title">正常/节点数</div>
             <div class="info-val">
