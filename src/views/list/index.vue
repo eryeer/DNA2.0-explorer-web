@@ -368,8 +368,8 @@ export default {
       const txCount = await getTransactionSummary({ limit: 30 });
 
       this.txCountByMonth = txCount.monthlySummary
-        .reverse()
         .slice(0, 12)
+        .reverse()
         .map((item) => {
           return {
             value: item.summaryCount,
