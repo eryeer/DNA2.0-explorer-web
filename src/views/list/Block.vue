@@ -83,13 +83,6 @@ export default {
     },
   },
   watch: {
-    params: {
-      handler() {
-        this.query();
-      },
-      immediate: true,
-      deep: true,
-    },
     serializedParams(value) {
       this.$router.replace({ query: { ...this.$route.query, q: value } });
     },
@@ -104,13 +97,14 @@ export default {
     },
     handleCurrentChange(pageNumber) {
       this.params.pageNumber = pageNumber;
-      this.query();
     },
     handlePageSizeChange(pageSize) {
       this.params.pageNumber = 1;
       this.params.pageSize = pageSize;
-      this.query();
     },
+  },
+  created() {
+    this.query();
   },
 };
 </script>
