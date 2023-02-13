@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <heading-2 v-if="$route.name === 'txs'">交易列表</heading-2>
+    <heading-2 v-if="ifTopLevel">交易列表</heading-2>
     <div class="bg-white p-20" v-loading="loading.value">
       <el-table :data="list" style="width: 100%">
         <el-table-column label="交易哈希" width="150">
@@ -154,10 +154,22 @@ export default {
     serializedParams() {
       return serialize({ ...this.params });
     },
+    ifTopLevel() {
+      return this.$route.name === 'txs';
+    },
   },
   watch: {
     serializedParams(value) {
+      if (!this.ifTopLevel) return;
       this.$router.replace({ query: { ...this.$route.query, q: value } });
+    },
+    params: {
+      handler() {
+        if (this.ifTopLevel) return;
+        this.query();
+      },
+      immediate: true,
+      deep: true,
     },
   },
   methods: {

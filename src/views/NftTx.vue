@@ -153,12 +153,10 @@ export default {
     },
     handleCurrentChange(pageNumber) {
       this.params.pageNumber = pageNumber;
-      this.query();
     },
     handlePageSizeChange(pageSize) {
       this.params.pageNumber = 1;
       this.params.pageSize = pageSize;
-      this.query();
     },
     ifSameAddress(a, b) {
       if (a?.toLowerCase() === b?.toLowerCase()) {
