@@ -389,16 +389,18 @@ export default {
         toAddressType = addrInfo ? addrInfo.type : 0;
       } catch (error) {}
 
-      try {
-        const contractAddressInfo = await this.loading.run(async () => {
-          return await getAddress({
-            address: info.contractAddress,
+      if (info.contractAddress) {
+        try {
+          const contractAddressInfo = await this.loading.run(async () => {
+            return await getAddress({
+              address: info.contractAddress,
+            });
           });
-        });
-        if (!!contractAddressInfo.contractInfo) {
-          this.abiHasUpload = true;
-        }
-      } catch (error) {}
+          if (!!contractAddressInfo.contractInfo) {
+            this.abiHasUpload = true;
+          }
+        } catch (error) {}
+      }
 
       this.info = {
         ...info,
