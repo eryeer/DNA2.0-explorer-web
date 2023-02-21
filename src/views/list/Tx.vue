@@ -163,14 +163,14 @@ export default {
       if (!this.ifTopLevel) return;
       this.$router.replace({ query: { ...this.$route.query, q: value } });
     },
-    params: {
-      handler() {
-        if (this.ifTopLevel) return;
-        this.query();
-      },
-      immediate: true,
-      deep: true,
-    },
+    // params: {
+    //   handler() {
+    //     if (this.ifTopLevel) return;
+    //     this.query();
+    //   },
+    //   immediate: true,
+    //   deep: true,
+    // },
   },
   methods: {
     openExportDialog() {
@@ -194,10 +194,14 @@ export default {
     },
     handleCurrentChange(pageNumber) {
       this.params.pageNumber = pageNumber;
+      if (this.ifTopLevel) return;
+      this.query();
     },
     handlePageSizeChange(pageSize) {
       this.params.pageNumber = 1;
       this.params.pageSize = pageSize;
+      if (this.ifTopLevel) return;
+      this.query();
     },
     gwei2ether(val) {
       return gwei2ether(val);
