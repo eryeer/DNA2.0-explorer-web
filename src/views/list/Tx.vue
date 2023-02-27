@@ -70,14 +70,14 @@
             </router-link>
           </template>
         </el-table-column>
-        <el-table-column label="数量（Ether）" width="100">
+        <el-table-column label="数量（10⁹Gwei）" width="120">
           <template slot-scope="scope">
             <div>
               {{ gwei2ether(scope.row.txValue) }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="消耗燃料（Gwei）" width="120">
+        <el-table-column label="交易费（Gwei）" width="120">
           <template slot-scope="scope">
             <div>
               {{ getGasAmount(scope.row.gasUsed, scope.row.gasPrice) }}
@@ -190,7 +190,7 @@ export default {
         }
       });
       this.list = res.list || [];
-      this.total = res.total;
+      this.total = res.total > 500000 ? 500000 : res.total;
     },
     handleCurrentChange(pageNumber) {
       this.params.pageNumber = pageNumber;

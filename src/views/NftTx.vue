@@ -149,7 +149,7 @@ export default {
         return await getTransferListByAddress(this.params);
       });
       this.list = res.list;
-      this.total = res.total;
+      this.total = res.total > 500000 ? 500000 : res.total;
     },
     handleCurrentChange(pageNumber) {
       this.params.pageNumber = pageNumber;

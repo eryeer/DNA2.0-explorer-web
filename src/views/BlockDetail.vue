@@ -43,7 +43,7 @@
           <span>{{ info.nonce }}</span>
         </li>
         <li>
-          <span>总消耗燃料:</span>
+          <span>总交易费:</span>
           <span>{{ info.gasUsed | filterCount }}</span>
         </li>
         <li>

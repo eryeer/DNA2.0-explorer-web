@@ -1,5 +1,5 @@
 <template>
-  <span> {{ balance }} Ether </span>
+  <span> {{ balance }} Gwei </span>
 </template>
 
 <script>
@@ -22,7 +22,7 @@ export default {
     address: {
       async handler(value) {
         if (!value) return;
-        this.balance = await getBalance(value);
+        this.balance = await getBalance(value * Math.pow(10, 9));
       },
       immediate: true,
     },

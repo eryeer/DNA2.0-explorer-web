@@ -202,7 +202,7 @@
             <li v-if="ERC721Transfers.length"><divider /></li>
             <li>
               <span>数量:</span>
-              <span> {{ gwei2ether(info.txValue) }} Ether</span>
+              <span> {{ gwei2ether(info.txValue * Math.pow(10, 9)) }} Gwei</span>
             </li>
             <li>
               <span>交易费:</span>
@@ -213,7 +213,7 @@
               <span>{{ gwei2ether(info.gasPrice) }} Gwei</span>
             </li>
             <li>
-              <span>消耗燃料:</span>
+              <span>交易费:</span>
               <span>{{ info.gasUsed | filterCount }}</span>
             </li>
             <li>
