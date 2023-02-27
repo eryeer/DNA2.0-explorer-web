@@ -22,7 +22,8 @@ export default {
     address: {
       async handler(value) {
         if (!value) return;
-        this.balance = await getBalance(value * Math.pow(10, 9));
+        let result = await getBalance(value);
+        this.balance = result * Math.pow(10, 9);
       },
       immediate: true,
     },
