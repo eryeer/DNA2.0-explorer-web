@@ -213,7 +213,7 @@
               <span>{{ gwei2ether(info.gasPrice) }} Gwei</span>
             </li>
             <li>
-              <span>交易费:</span>
+              <span>消耗燃料:</span>
               <span>{{ info.gasUsed | filterCount }}</span>
             </li>
             <li>
