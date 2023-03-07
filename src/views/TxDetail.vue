@@ -418,7 +418,9 @@ export default {
     async genInputData(infoData, contractInfo) {
       console.log('infoData===>', infoData);
       console.log('contractInfo===>', contractInfo);
-      if (contractInfo && !!contractInfo.abi) {
+      if (!result || result === '0x' || result.slice(0, 2) !== '0x') {
+        this.inputData = result;
+      } else if (contractInfo && !!contractInfo.abi) {
         console.log(1111);
         const { Interface, FormatTypes } = ethers.utils;
         try {
