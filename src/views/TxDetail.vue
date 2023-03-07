@@ -439,6 +439,7 @@ MethodID: ${infoData.slice(0, 10)}`;
           return;
         } catch (error) {
           console.error(error);
+          this.inputData = `MethodID: ${infoData.slice(0, 10)}`;
         }
       } else {
         this.inputData = await axios({
