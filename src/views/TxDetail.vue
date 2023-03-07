@@ -317,6 +317,8 @@
 import axios from 'axios';
 import Loading from '@/utils/loading';
 import { getTransaction, getAddress } from '@/api/explorer';
+// import abiDecoder from 'abi-decoder';
+import { ethers } from 'ethers';
 import Divider from './Divider';
 import CodeHighlight from './CodeHighlight';
 import { gwei2ether, getGasAmount } from '@/utils';
@@ -333,6 +335,7 @@ export default {
         logList: [],
         ercTransferLog: [],
       },
+      contractAddressInfo: {},
       loading: new Loading(),
       inputData: '0x',
       showAsOriginal: false,
@@ -363,9 +366,6 @@ export default {
     txHash() {
       this.query();
     },
-    'info.data'(val) {
-      this.genInputData(val);
-    },
   },
   methods: {
     query() {
@@ -377,7 +377,6 @@ export default {
           txHash: this.txHash,
         });
       });
-
       let toAddressType = 0;
 
       try {
@@ -387,6 +386,8 @@ export default {
           });
         });
         toAddressType = addrInfo ? addrInfo.type : 0;
+        this.contractAddressInfo = addrInfo?.contractInfo || {};
+        this.genInputData(info.data, addrInfo?.contractInfo);
       } catch (error) {}
 
       if (info.contractAddress) {
@@ -413,30 +414,40 @@ export default {
     getGasAmount(gasUsed, gasPrice) {
       return getGasAmount(gasUsed, gasPrice);
     },
-    async genInputData(result) {
-      if (!result || result === '0x' || result.slice(0, 2) !== '0x') {
-        this.inputData = result;
-      } else {
-        const signHash = result.slice(2, 10);
+    async genInputData(infoData, contractInfo) {
+      if (!!contractInfo.abi && contractInfo.abi !== '{}') {
+        const { Interface, FormatTypes } = ethers.utils;
+        try {
+          const iface = new Interface(contractInfo.abi);
+          const functionFragment = iface.getFunction(infoData.slice(0, 10));
+          let str = `Function: ${functionFragment.format(FormatTypes.sighash)} 
 
-        const signatures = await axios({
-          url: `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${signHash}`,
+MethodID: ${infoData.slice(0, 10)}`;
+
+          let i = 0;
+
+          while (i < Math.floor(infoData.length / 64)) {
+            str += `\n[${i}]:  ${infoData.slice(i * 64 + 10, (i + 1) * 64 + 10)}`;
+
+            i++;
+          }
+          // abiDecoder.addABI(JSON.parse(contractInfo.abi));
+          // const decodedData = abiDecoder.decodeMethod(infoData) || [];
+          // str += `\n${JSON.stringify(decodedData?.params)}`;
+          this.inputData = str;
+
+          return;
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        this.inputData = await axios({
+          url: `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${infoData.slice(
+            0,
+            10,
+          )}`,
           method: 'get',
         });
-
-        let str = `Function: ${signatures.data} ***
-
-MethodID: ${result.slice(0, 10)}`;
-
-        let i = 0;
-
-        while (i < Math.floor(result.length / 64)) {
-          str += `\n[${i}]:  ${result.slice(i * 64 + 10, (i + 1) * 64 + 10)}`;
-
-          i++;
-        }
-
-        this.inputData = str;
       }
     },
   },
