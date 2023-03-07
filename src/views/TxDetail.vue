@@ -385,6 +385,7 @@ export default {
             address: info.toAddress,
           });
         });
+        console.log('addrInfo', addrInfo);
         toAddressType = addrInfo ? addrInfo.type : 0;
         this.contractAddressInfo = addrInfo?.contractInfo || {};
         this.genInputData(info.data, addrInfo?.contractInfo);
@@ -415,7 +416,10 @@ export default {
       return getGasAmount(gasUsed, gasPrice);
     },
     async genInputData(infoData, contractInfo) {
-      if (!!contractInfo.abi && contractInfo.abi !== '{}') {
+      console.log('infoData===>', infoData);
+      console.log('contractInfo===>', contractInfo);
+      if (contractInfo && !!contractInfo.abi) {
+        console.log(1111);
         const { Interface, FormatTypes } = ethers.utils;
         try {
           const iface = new Interface(contractInfo.abi);
@@ -435,20 +439,40 @@ MethodID: ${infoData.slice(0, 10)}`;
           // const decodedData = abiDecoder.decodeMethod(infoData) || [];
           // str += `\n${JSON.stringify(decodedData?.params)}`;
           this.inputData = str;
-
           return;
         } catch (error) {
-          console.error(error);
-          this.inputData = `MethodID: ${infoData.slice(0, 10)}`;
+          let str = `MethodID: ${infoData.slice(0, 10)}`;
+
+          let i = 0;
+
+          while (i < Math.floor(infoData.length / 64)) {
+            str += `\n[${i}]:  ${infoData.slice(i * 64 + 10, (i + 1) * 64 + 10)}`;
+
+            i++;
+          }
+          this.inputData = str;
         }
       } else {
-        this.inputData = await axios({
-          url: `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${infoData.slice(
-            0,
-            10,
-          )}`,
-          method: 'get',
-        });
+        try {
+          this.inputData = await axios({
+            url: `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${infoData.slice(
+              0,
+              10,
+            )}`,
+            method: 'get',
+          });
+        } catch {
+          let str = `MethodID: ${infoData.slice(0, 10)}`;
+
+          let i = 0;
+
+          while (i < Math.floor(infoData.length / 64)) {
+            str += `\n[${i}]:  ${infoData.slice(i * 64 + 10, (i + 1) * 64 + 10)}`;
+
+            i++;
+          }
+          this.inputData = str;
+        }
       }
     },
   },
