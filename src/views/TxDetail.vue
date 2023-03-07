@@ -416,10 +416,8 @@ export default {
       return getGasAmount(gasUsed, gasPrice);
     },
     async genInputData(infoData, contractInfo) {
-      console.log('infoData===>', infoData);
-      console.log('contractInfo===>', contractInfo);
-      if (!result || result === '0x' || result.slice(0, 2) !== '0x') {
-        this.inputData = result;
+      if (!infoData || infoData === '0x' || infoData.slice(0, 2) !== '0x') {
+        this.inputData = infoData;
       } else if (contractInfo && !!contractInfo.abi) {
         console.log(1111);
         const { Interface, FormatTypes } = ethers.utils;
@@ -456,14 +454,26 @@ MethodID: ${infoData.slice(0, 10)}`;
         }
       } else {
         try {
-          this.inputData = await axios({
-            url: `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${infoData.slice(
-              0,
-              10,
-            )}`,
+          const signHash = infoData.slice(2, 10);
+          const signatures = await axios({
+            url: `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${signHash}`,
             method: 'get',
           });
-        } catch {
+          let fin = JSON.stringify(signatures.data);
+          let str = `Function: ${fin} ***
+
+MethodID: ${infoData.slice(0, 10)}`;
+
+          let i = 0;
+
+          while (i < Math.floor(infoData.length / 64)) {
+            str += `\n[${i}]:  ${infoData.slice(i * 64 + 10, (i + 1) * 64 + 10)}`;
+
+            i++;
+          }
+
+          this.inputData = str;
+        } catch (error) {
           let str = `MethodID: ${infoData.slice(0, 10)}`;
 
           let i = 0;
