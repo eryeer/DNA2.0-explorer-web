@@ -249,6 +249,7 @@
                     size="mini"
                     plain
                     @click="showAsOriginal = !showAsOriginal"
+                    :disabled="info.txType === 1"
                   >
                     <svg-icon icon-class="back2" class="s-n" />
                     {{ !showAsOriginal ? '展示原始数据' : '展示默认视图' }}</el-button
@@ -378,14 +379,15 @@ export default {
         });
       });
       let toAddressType = 0;
-
+      if (info.txType === 1) {
+        this.showAsOriginal = true;
+      }
       try {
         const addrInfo = await this.loading.run(async () => {
           return await getAddress({
             address: info.toAddress,
           });
         });
-        console.log('addrInfo', addrInfo);
         toAddressType = addrInfo ? addrInfo.type : 0;
         this.contractAddressInfo = addrInfo?.contractInfo || {};
         this.genInputData(info.data, addrInfo?.contractInfo);
