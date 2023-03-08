@@ -460,7 +460,7 @@ MethodID: ${infoData.slice(0, 10)}`;
             url: `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${signHash}`,
             method: 'get',
           });
-          let fin = JSON.stringify(signatures.data);
+          let fin = signatures.data;
           let str = `Function: ${fin}
 
 MethodID: ${infoData.slice(0, 10)}`;
