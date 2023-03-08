@@ -421,7 +421,6 @@ export default {
       if (!infoData || infoData === '0x' || infoData.slice(0, 2) !== '0x') {
         this.inputData = infoData;
       } else if (contractInfo && !!contractInfo.abi) {
-        console.log(1111);
         const { Interface, FormatTypes } = ethers.utils;
         try {
           const iface = new Interface(contractInfo.abi);
@@ -462,7 +461,7 @@ MethodID: ${infoData.slice(0, 10)}`;
             method: 'get',
           });
           let fin = JSON.stringify(signatures.data);
-          let str = `Function: ${fin} ***
+          let str = `Function: ${fin}
 
 MethodID: ${infoData.slice(0, 10)}`;
 
