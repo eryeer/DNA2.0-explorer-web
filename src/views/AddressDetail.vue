@@ -73,6 +73,9 @@
       <el-tab-pane label="最新交易" name="txs" lazy>
         <txs :address="address" :show-export="true"></txs>
       </el-tab-pane>
+      <el-tab-pane label="内部交易" name="addressInteriorDetail" lazy>
+        <AddressInteriorDetail :address="address" :show-export="true"></AddressInteriorDetail>
+      </el-tab-pane>
       <el-tab-pane label="数字藏品交易" name="nft" lazy>
         <nft-txs :address="address"></nft-txs>
       </el-tab-pane>
@@ -187,6 +190,7 @@
 <script>
 import Loading from '@/utils/loading';
 import Txs from './list/Tx';
+import AddressInteriorDetail from './AddressInteriorDetail';
 import NftTxs from './NftTx';
 import NftHolders from './NftHolders';
 import { getAddress, uploadAbi } from '@/api/explorer';
@@ -204,6 +208,7 @@ export default {
   name: 'AddressDetail',
   components: {
     Txs,
+    AddressInteriorDetail,
     NftTxs,
     NftHolders,
     SourceCode,

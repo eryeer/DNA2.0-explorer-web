@@ -1,69 +1,81 @@
 <template>
-  <section class="pb-30">
-    <div class="header-wrapper">
-      <div class="header margin-auto">
-        <div class="header-logo">
-          <router-link to="/" class="header-title" tag="h2">灵境元宇宙区块链浏览器</router-link>
-          <div
-            class="dropdown-wrapper"
-            ref="dropdownWrapper"
-            :class="{ 'dropdown-wrapper-test': !isProd }"
-          >
-            <div class="flag" @click="show = !show" :class="{ show: show }">
-              {{ isProd ? '主网' : '测试网' }}
-              <span class="flag-icon"></span>
-            </div>
-            <transition name="slide-fade">
-              <div class="dropdown" v-show="show">
-                <div @click="handleSelect" class="dropdown-item">
-                  {{ isProd ? '测试网' : '主网' }}
+  <div class="app-container">
+    <section class="pb-30 header-top">
+      <div class="header-wrapper">
+        <div class="header margin-auto">
+          <div class="header-logo">
+            <router-link to="/" class="header-title" tag="h2">灵境元宇宙区块链浏览器</router-link>
+            <div
+              class="dropdown-wrapper"
+              ref="dropdownWrapper"
+              :class="{ 'dropdown-wrapper-test': !isProd }"
+            >
+              <div class="flag" @click="show = !show" :class="{ show: show }">
+                {{ isProd ? '主网' : '测试网' }}
+                <span class="flag-icon"></span>
+              </div>
+              <transition name="slide-fade">
+                <div class="dropdown" v-show="show">
+                  <div @click="handleSelect" class="dropdown-item">
+                    {{ isProd ? '测试网' : '主网' }}
+                  </div>
                 </div>
+              </transition>
+            </div>
+          </div>
+          <div class="header-nav">
+            <transition name="slide-fade2">
+              <div class="header-search" v-show="!inHome || homeShow">
+                <svg-icon icon-class="search" class="header-search-icon f-16" />
+                <el-input
+                  class="header-search-input"
+                  placeholder="输入地址/交易哈希/区块高度"
+                  @keyup.enter.native="toSearch"
+                  v-model="searchContent"
+                  style="width: 290px"
+                  clearable
+                ></el-input>
+                <el-button type="primary" @click="toSearch">搜索</el-button>
               </div>
             </transition>
-          </div>
-        </div>
-        <div class="header-nav">
-          <transition name="slide-fade2">
-            <div class="header-search" v-show="!inHome || homeShow">
-              <svg-icon icon-class="search" class="header-search-icon f-16" />
-              <el-input
-                class="header-search-input"
-                placeholder="输入地址/交易哈希/区块高度"
-                @keyup.enter.native="toSearch"
-                v-model="searchContent"
-                style="width: 290px"
-                clearable
-              ></el-input>
-              <el-button type="primary" @click="toSearch">搜索</el-button>
-            </div>
-          </transition>
 
-          <div class="header-router">
-            <router-link
-              to="/blocks"
-              :class="{ 'router-link-active': $route.path.includes('/block') }"
-              >区块</router-link
-            >
-            <router-link to="/txs" :class="{ 'router-link-active': $route.path.includes('/tx') }"
-              >交易</router-link
-            >
-            <router-link
-              to="/addresses"
-              :class="{ 'router-link-active': $route.path.includes('/address') }"
-              >地址</router-link
-            >
-            <span class="add-network" @click="switchNetwork">
-              <img src="@/assets/images/metamask.png" width="16" height="16" alt="metamask" />
-              Add Lingjing {{ isProd ? '' : 'Testnet ' }}Network
-            </span>
+            <div class="header-router">
+              <router-link
+                to="/blocks"
+                :class="{ 'router-link-active': $route.path.includes('/block') }"
+                >区块</router-link
+              >
+              <router-link to="/txs" :class="{ 'router-link-active': $route.path.includes('/tx') }"
+                >交易</router-link
+              >
+              <router-link
+                to="/addresses"
+                :class="{ 'router-link-active': $route.path.includes('/address') }"
+                >地址</router-link
+              >
+              <span class="add-network" @click="switchNetwork">
+                <img src="@/assets/images/metamask.png" width="16" height="16" alt="metamask" />
+                Add Lingjing {{ isProd ? '' : 'Testnet ' }}Network
+              </span>
+            </div>
           </div>
         </div>
       </div>
+      <div class="margin-auto">
+        <router-view :key="$route.fullPath" />
+      </div>
+    </section>
+    <div class="footer margin-auto">
+      <div class="footer-left">Copyright © 上海分布信息科技有限公司</div>
+      <div class="footer-left">
+        沪网信备31011019336458500019号
+        <span class="ml-10 mr-10">|</span>
+        EDI&ICP备沪B2-20211760
+        <span class="ml-10 mr-10">|</span>
+        沪ICP备19046837号-3
+      </div>
     </div>
-    <div class="margin-auto">
-      <router-view :key="$route.fullPath" />
-    </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -201,6 +213,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.app-container {
+  height: 100%;
+}
+
+.header-top {
+  box-sizing: border-box;
+  min-height: 100%;
+  padding-bottom: 80px;
+}
+
+.footer {
+  display: flex;
+  height: 80px;
+  line-height: 80px;
+  margin-top: -80px;
+  opacity: 0.5;
+  justify-content: space-between;
+  align-content: center;
+}
+
 .header-wrapper {
   box-shadow: 0px 1px 10px rgba(6, 8, 69, 0.06);
   background-color: #001a35;

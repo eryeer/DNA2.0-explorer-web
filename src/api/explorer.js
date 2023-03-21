@@ -80,3 +80,11 @@ export function getTokenHolder(params) {
     params,
   });
 }
+
+export function getInternalTxListByAddress(params) {
+  return request({
+    url: '/explore/address/getInternalTxListByAddress',
+    method: 'get',
+    params,
+  });
+}

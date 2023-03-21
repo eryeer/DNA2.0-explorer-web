@@ -103,6 +103,19 @@
                 </el-tooltip>
               </span>
             </li>
+            <li class="tree-container" v-if="internalTxns.length > 0">
+              <span class="tree-left"></span>
+              <span>
+                <el-tree
+                  :data="internalTxns"
+                  :props="defaultProps"
+                  class="tree-line"
+                  icon-class="el-icon-circle-plus-outline"
+                  :default-expand-all="true"
+                  :expand-on-click-node="false"
+                ></el-tree
+              ></span>
+            </li>
             <li><divider /></li>
             <!-- <template v-if="ERC20Transfers.length">
               <li>
@@ -260,6 +273,13 @@
           </ol>
         </div>
       </el-tab-pane>
+      <el-tab-pane label="内部交易">
+        <TxInteriorDetail
+          :internalTxns="flattenInternalTxns"
+          :fromAddress="info.fromAddress"
+          :toAddress="info.toAddress"
+        />
+      </el-tab-pane>
       <el-tab-pane label="日志">
         <div class="bg-white p-40" v-if="!info.logList.length">
           <el-empty description="没有日志"></el-empty>
@@ -321,6 +341,8 @@ import { getTransaction, getAddress } from '@/api/explorer';
 // import abiDecoder from 'abi-decoder';
 import { ethers } from 'ethers';
 import Divider from './Divider';
+import TxInteriorDetail from './TxInteriorDetail';
+import ShortHash from '../components/ShortHash.vue';
 import CodeHighlight from './CodeHighlight';
 import { gwei2ether, getGasAmount } from '@/utils';
 
@@ -328,6 +350,8 @@ export default {
   name: 'TxDetail',
   components: {
     Divider,
+    TxInteriorDetail,
+    ShortHash,
     CodeHighlight,
   },
   data() {
@@ -341,6 +365,35 @@ export default {
       inputData: '0x',
       showAsOriginal: false,
       abiHasUpload: false,
+      internalTxns: [
+        {
+          fromAddress: '',
+          toAddress: '',
+          calls: [],
+        },
+      ],
+      flattenInternalTxns: [],
+      level: 0,
+      defaultProps: {
+        children: 'calls',
+        label: (data, node) => {
+          return (
+            <div>
+              <span>从 </span>
+              <el-tooltip placement="top">
+                <div slot="content">{data.fromAddress}</div>
+                <a onClick={() => this.goPage(data)}>{this.renderAddress(data.fromAddress)}</a>
+              </el-tooltip>
+              <span> 到 </span>
+              <el-tooltip placement="top">
+                <div slot="content">{data.toAddress}</div>
+                <a onClick={() => this.goPage(data)}>{this.renderAddress(data.toAddress)}</a>
+              </el-tooltip>
+              <span> 转账 {data.value} GWEI</span>
+            </div>
+          );
+        },
+      },
     };
   },
   computed: {
@@ -378,6 +431,8 @@ export default {
           txHash: this.txHash,
         });
       });
+      this.internalTxns = info.internalTxns;
+      this.flatten(info.internalTxns);
       let toAddressType = 0;
       if (info.txType === 1) {
         this.showAsOriginal = true;
@@ -488,6 +543,50 @@ MethodID: ${infoData.slice(0, 10)}`;
         }
       }
     },
+    flatten(arr) {
+      for (let i = 0, length = arr.length; i < length; i++) {
+        let str = {
+          blockNumber: arr[i].blockNumber,
+          blockTime: arr[i].blockTime,
+          error: arr[i].error,
+          fromAddress: arr[i].fromAddress,
+          gas: arr[i].gas,
+          gasUsed: arr[i].gasUsed,
+          id: arr[i].id,
+          input: arr[i].input,
+          output: arr[i].output,
+          parentId: arr[i].parentId,
+          toAddress: arr[i].toAddress,
+          txHash: arr[i].txHash,
+          type: arr[i].type,
+          value: arr[i].value,
+          level: this.level,
+        };
+        this.flattenInternalTxns.push(str);
+        if (Array.isArray(arr[i].calls)) {
+          this.level += 1;
+          this.flatten(arr[i].calls);
+        }
+      }
+    },
+    goPage(data) {
+      this.$router.push({
+        name: 'explorerAddress',
+        params: { address: data.toAddress },
+      });
+    },
+    renderAddress(address) {
+      if (address.length >= 12) {
+        return (
+          <span>
+            {address.substr(0, 6)}...
+            {address.substr(address.length - 6, 6)}
+          </span>
+        );
+      } else {
+        return address;
+      }
+    },
   },
   mounted() {
     this.query();
@@ -522,6 +621,9 @@ MethodID: ${infoData.slice(0, 10)}`;
       min-width: 100px;
       margin-right: 50px;
     }
+    .tree-left {
+      margin-right: 26px !important;
+    }
     > span:last-child {
       word-break: break-all;
       padding-right: 20px;
@@ -530,6 +632,11 @@ MethodID: ${infoData.slice(0, 10)}`;
     &:not(:last-child) {
       margin-bottom: 30px;
     }
+  }
+  .tree-container {
+    max-height: 260px;
+    margin-top: -28px;
+    overflow: scroll;
   }
 }
 
@@ -547,6 +654,78 @@ MethodID: ${infoData.slice(0, 10)}`;
       padding: 20px;
       color: rgb(119, 131, 143);
       font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.tree-line {
+  .el-tree-node {
+    position: relative;
+    // padding-left: 24px; // 缩进量
+    .el-tree-node__content {
+      padding-left: 16px !important; // 缩进量
+    }
+    .el-tree-node__content:hover {
+      background-color: #fff;
+    }
+    .el-tree-node:focus > .el-tree-node__content {
+      background-color: #fff;
+    }
+  }
+  .el-tree-node:focus > .el-tree-node__content {
+    background-color: #fff;
+  }
+  .el-tree-node__children {
+    padding-left: 32px; // 缩进量
+  }
+
+  // 竖线
+  .el-tree-node::before {
+    content: '';
+    height: 100%;
+    width: 1px;
+    position: absolute;
+    left: -3px;
+    top: -26px;
+    border-width: 1px;
+    border-left: 1px solid rgba(0, 0, 0, 0.29);
+  }
+  // 当前层最后一个节点的竖线高度固定
+  .el-tree-node:last-child::before {
+    height: 38px; // 可以自己调节到合适数值
+  }
+
+  // 横线
+  .el-tree-node::after {
+    content: '';
+    width: 24px;
+    // height: 16px;
+    position: absolute;
+    left: -3px;
+    top: 12px;
+    border-width: 1px;
+    border-top: 1px solid rgba(0, 0, 0, 0.29);
+  }
+
+  // 去掉最顶层的虚线，放最下面样式才不会被上面的覆盖了
+  & > .el-tree-node::after {
+    border-top: none;
+  }
+  & > .el-tree-node::before {
+    border-left: none;
+  }
+
+  // 展开关闭的icon
+  .el-tree-node__expand-icon {
+    font-size: 16px;
+    // display: none;
+    // 叶子节点（无子节点）
+    &.is-leaf {
+      color: transparent;
+      // display: none; // 也可以去掉
+      font-size: 0;
     }
   }
 }
