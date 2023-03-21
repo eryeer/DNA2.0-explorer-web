@@ -67,7 +67,7 @@
                 </router-link></span
               >
             </li>
-            <li>
+            <!-- <li>
               <span>接收地址:</span>
               <span v-if="info.toAddress">
                 <el-tooltip content="合约" placement="top" v-if="info.toAddressType === 1">
@@ -102,9 +102,9 @@
                   <i class="el-icon-success f-18 c-succ" style="vertical-align: -2px"></i>
                 </el-tooltip>
               </span>
-            </li>
+            </li> -->
             <li class="tree-container" v-if="internalTxns.length > 0">
-              <span class="tree-left"></span>
+              <span class="tree-left">接收地址:</span>
               <span>
                 <el-tree
                   :data="internalTxns"
@@ -112,9 +112,79 @@
                   class="tree-line"
                   icon-class="el-icon-circle-plus-outline"
                   :default-expand-all="true"
-                  :expand-on-click-node="false"
-                ></el-tree
-              ></span>
+                >
+                  <span slot-scope="{ node, data }">
+                    <span v-if="node.level === 1">
+                      <span v-if="info.toAddress">
+                        <el-tooltip content="合约" placement="top" v-if="info.toAddressType === 1">
+                          <img
+                            src="@/assets/images/contract.png"
+                            height="14"
+                            class="contract-icon mr-5"
+                          />
+                        </el-tooltip>
+                        <router-link
+                          :to="{
+                            name: 'explorerAddress',
+                            params: {
+                              address: info.toAddress,
+                            },
+                          }"
+                        >
+                          {{ info.toAddress }}
+                        </router-link></span
+                      >
+                      <span v-else>
+                        [Contract
+                        <router-link
+                          :to="{
+                            name: 'explorerAddress',
+                            params: {
+                              address: info.contractAddress,
+                            },
+                          }"
+                        >
+                          {{ info.contractAddress }}
+                        </router-link>
+                        Created]
+
+                        <el-tooltip content="ABI已上传" placement="top" v-if="abiHasUpload">
+                          <i class="el-icon-success f-18 c-succ" style="vertical-align: -2px"></i>
+                        </el-tooltip>
+                      </span>
+                    </span>
+                    <span v-else>
+                      <span>从 </span>
+                      <el-tooltip placement="top" :content="data.fromAddress">
+                        <router-link
+                          :to="{
+                            name: 'explorerAddress',
+                            params: {
+                              address: data.fromAddress,
+                            },
+                          }"
+                        >
+                          <short-hash :hash="data.fromAddress"></short-hash>
+                        </router-link>
+                      </el-tooltip>
+                      <span> 到 </span>
+                      <el-tooltip placement="top" :content="data.toAddress">
+                        <router-link
+                          :to="{
+                            name: 'explorerAddress',
+                            params: {
+                              address: data.toAddress,
+                            },
+                          }"
+                        >
+                          <short-hash :hash="data.toAddress"></short-hash>
+                        </router-link>
+                      </el-tooltip>
+                      <span> 转账 {{ data.value }} GWEI</span>
+                    </span>
+                  </span>
+                </el-tree>
+              </span>
             </li>
             <li><divider /></li>
             <!-- <template v-if="ERC20Transfers.length">
@@ -274,11 +344,16 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="内部交易">
-        <TxInteriorDetail
-          :internalTxns="flattenInternalTxns"
-          :fromAddress="info.fromAddress"
-          :toAddress="info.toAddress"
-        />
+        <div class="bg-white p-40" v-if="!flattenInternalTxns.length">
+          <el-empty description="没有交易"></el-empty>
+        </div>
+        <div v-else>
+          <TxInteriorDetail
+            :internalTxns="flattenInternalTxns"
+            :fromAddress="info.fromAddress"
+            :toAddress="info.toAddress"
+          />
+        </div>
       </el-tab-pane>
       <el-tab-pane label="日志">
         <div class="bg-white p-40" v-if="!info.logList.length">
@@ -359,6 +434,8 @@ export default {
       info: {
         logList: [],
         ercTransferLog: [],
+        toAddress: '',
+        toAddressType: '',
       },
       contractAddressInfo: {},
       loading: new Loading(),
@@ -376,23 +453,7 @@ export default {
       level: 0,
       defaultProps: {
         children: 'calls',
-        label: (data, node) => {
-          return (
-            <div>
-              <span>从 </span>
-              <el-tooltip placement="top">
-                <div slot="content">{data.fromAddress}</div>
-                <a onClick={() => this.goPage(data)}>{this.renderAddress(data.fromAddress)}</a>
-              </el-tooltip>
-              <span> 到 </span>
-              <el-tooltip placement="top">
-                <div slot="content">{data.toAddress}</div>
-                <a onClick={() => this.goPage(data)}>{this.renderAddress(data.toAddress)}</a>
-              </el-tooltip>
-              <span> 转账 {data.value} GWEI</span>
-            </div>
-          );
-        },
+        label: '',
       },
     };
   },
@@ -431,8 +492,24 @@ export default {
           txHash: this.txHash,
         });
       });
-      this.internalTxns = info.internalTxns;
-      this.flatten(info.internalTxns);
+      if (info.txValue == 0) {
+        this.internalTxns = [
+          {
+            toAddress: info.toAddress,
+            toAddressType: 0,
+          },
+        ];
+      } else {
+        this.internalTxns = [
+          {
+            parents: info.fromAddress,
+            toAddress: info.toAddress,
+            calls: info.internalTxns,
+            toAddressType: 0,
+          },
+        ];
+      }
+      this.flatten(info.internalTxns, this.level);
       let toAddressType = 0;
       if (info.txType === 1) {
         this.showAsOriginal = true;
@@ -465,6 +542,7 @@ export default {
         ...info,
         toAddressType,
       };
+      this.internalTxns[0].toAddressType = toAddressType;
     },
     gwei2ether(val) {
       return gwei2ether(val);
@@ -543,7 +621,8 @@ MethodID: ${infoData.slice(0, 10)}`;
         }
       }
     },
-    flatten(arr) {
+    flatten(arr, level) {
+      this.level = level;
       for (let i = 0, length = arr.length; i < length; i++) {
         let str = {
           blockNumber: arr[i].blockNumber,
@@ -560,31 +639,12 @@ MethodID: ${infoData.slice(0, 10)}`;
           txHash: arr[i].txHash,
           type: arr[i].type,
           value: arr[i].value,
-          level: this.level,
+          level: level + 1,
         };
         this.flattenInternalTxns.push(str);
         if (Array.isArray(arr[i].calls)) {
-          this.level += 1;
-          this.flatten(arr[i].calls);
+          this.flatten(arr[i].calls, this.level + 1);
         }
-      }
-    },
-    goPage(data) {
-      this.$router.push({
-        name: 'explorerAddress',
-        params: { address: data.toAddress },
-      });
-    },
-    renderAddress(address) {
-      if (address.length >= 12) {
-        return (
-          <span>
-            {address.substr(0, 6)}...
-            {address.substr(address.length - 6, 6)}
-          </span>
-        );
-      } else {
-        return address;
       }
     },
   },
@@ -622,6 +682,7 @@ MethodID: ${infoData.slice(0, 10)}`;
       margin-right: 50px;
     }
     .tree-left {
+      margin-top: 5px;
       margin-right: 26px !important;
     }
     > span:last-child {
@@ -635,7 +696,7 @@ MethodID: ${infoData.slice(0, 10)}`;
   }
   .tree-container {
     max-height: 260px;
-    margin-top: -28px;
+    margin-top: -5px;
     overflow: scroll;
   }
 }
@@ -665,7 +726,7 @@ MethodID: ${infoData.slice(0, 10)}`;
     position: relative;
     // padding-left: 24px; // 缩进量
     .el-tree-node__content {
-      padding-left: 16px !important; // 缩进量
+      padding-left: 24px !important; // 缩进量
     }
     .el-tree-node__content:hover {
       background-color: #fff;
@@ -720,11 +781,11 @@ MethodID: ${infoData.slice(0, 10)}`;
   // 展开关闭的icon
   .el-tree-node__expand-icon {
     font-size: 16px;
-    // display: none;
+    display: none;
     // 叶子节点（无子节点）
     &.is-leaf {
       color: transparent;
-      // display: none; // 也可以去掉
+      display: none; // 也可以去掉
       font-size: 0;
     }
   }

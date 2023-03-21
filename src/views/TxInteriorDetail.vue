@@ -11,8 +11,14 @@
             <span class="type-container">
               <img src="@/assets/images/left-down-icon.svg" alt="" />
               <div v-for="index of scope.row.level" class="bottom-space"></div>
-              <img v-if="scope.row.error !== ''" src="@/assets/images/error-icon.png" alt="" />
-              <img v-else="scope.row.error !== ''" src="@/assets/images/success-icon.png" alt="" />
+              <img v-if="scope.row.error === ''" src="@/assets/images/success-icon.png" alt="" />
+              <el-tooltip
+                :content="scope.row.error"
+                placement="top"
+                v-else="scope.row.error !== ''"
+              >
+                <img src="@/assets/images/error-icon.png" alt="" />
+              </el-tooltip>
               {{ scope.row.type.toLowerCase() }}
             </span>
           </template>

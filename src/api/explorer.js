@@ -83,7 +83,7 @@ export function getTokenHolder(params) {
 
 export function getInternalTxListByAddress(params) {
   return request({
-    url: '/explore/address/getInternalTxListByAddress',
+    url: '/address/getInternalTxListByAddress',
     method: 'get',
     params,
   });
