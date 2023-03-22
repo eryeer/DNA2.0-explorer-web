@@ -639,7 +639,7 @@ MethodID: ${infoData.slice(0, 10)}`;
           txHash: arr[i].txHash,
           type: arr[i].type,
           value: arr[i].value,
-          level: level + 1,
+          level,
         };
         this.flattenInternalTxns.push(str);
         if (Array.isArray(arr[i].calls)) {

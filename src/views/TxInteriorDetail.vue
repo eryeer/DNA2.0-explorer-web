@@ -2,15 +2,17 @@
   <div class="box">
     <div class="top-d">
       智能合约调用从 <short-hash :hash="fromAddress"></short-hash> 到
-      <short-hash :hash="toAddress"></short-hash> 产生{{ internalTxns.length }}条内部交易
+      <short-hash :hash="toAddress"></short-hash> 产生 {{ internalTxns.length }} 条内部交易
     </div>
     <div class="bg-white p-20">
       <el-table :data="internalTxns" style="width: 100%">
         <el-table-column label="调用类型" prop="txStatus" width="320">
           <template slot-scope="scope">
             <span class="type-container">
-              <img src="@/assets/images/left-down-icon.svg" alt="" />
-              <div v-for="index of scope.row.level" class="bottom-space"></div>
+              <img class="left-bottom-icon" src="@/assets/images/left-bottom-icon.svg" alt="" />
+              <div v-for="index of scope.row.level" class="text-dec-d">
+                <img src="@/assets/images/text-dec-icon.svg" alt="" />
+              </div>
               <img v-if="scope.row.error === ''" src="@/assets/images/success-icon.png" alt="" />
               <el-tooltip
                 :content="scope.row.error"
@@ -50,7 +52,23 @@
                 },
               }"
             >
-              <short-hash :hash="scope.row.toAddress"></short-hash>
+              <span
+                v-if="
+                  scope.row.type.toLowerCase() !== 'create' &&
+                  scope.row.type.toLowerCase() !== 'create2'
+                "
+              >
+                <short-hash :hash="scope.row.toAddress" />
+              </span>
+              <span v-else>
+                <img
+                  src="@/assets/images/contract-icon.png"
+                  alt=""
+                  height="16"
+                  class="contract-icon"
+                />
+                Contract Creation
+              </span>
             </router-link>
           </template>
         </el-table-column>
@@ -114,6 +132,14 @@ export default {
   display: flex;
   img {
     margin-right: 4px;
+  }
+  .left-bottom-icon {
+    width: 8px;
+    height: 8px;
+    margin-top: 1px;
+  }
+  .text-dec-d {
+    display: flex;
   }
   .bottom-space {
     width: 18px;

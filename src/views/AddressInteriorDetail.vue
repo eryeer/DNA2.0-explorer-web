@@ -18,8 +18,8 @@
         </el-table-column>
         <el-table-column label="状态" prop="txStatus" width="80">
           <template slot-scope="scope">
-            <span :class="{ 'c-danger': scope.row.txStatus !== '0x1' }">
-              {{ scope.row.txStatus === '0x1' ? '成功' : '失败' }}</span
+            <span :class="{ 'c-danger': scope.row.error !== '' }">
+              {{ scope.row.error === '' ? '成功' : '失败' }}</span
             >
           </template>
         </el-table-column>
@@ -83,6 +83,18 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="t-r mt-30">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          @size-change="handlePageSizeChange"
+          :current-page="params.pageNumber"
+          :total="total"
+          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[10, 20, 50]"
+          :page-size="params.pageSize"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -117,13 +129,11 @@ export default {
     },
     handleCurrentChange(pageNumber) {
       this.params.pageNumber = pageNumber;
-      if (this.ifTopLevel) return;
       this.query();
     },
     handlePageSizeChange(pageSize) {
       this.params.pageNumber = 1;
       this.params.pageSize = pageSize;
-      if (this.ifTopLevel) return;
       this.query();
     },
     gwei2ether(val) {
