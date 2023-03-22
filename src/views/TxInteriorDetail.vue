@@ -13,13 +13,13 @@
               <div v-for="index of scope.row.level" class="text-dec-d">
                 <img src="@/assets/images/text-dec-icon.svg" alt="" />
               </div>
-              <img v-if="scope.row.error === ''" src="@/assets/images/success-icon.png" alt="" />
+              <img v-if="scope.row.error === ''" src="@/assets/images/success-icon.svg" alt="" />
               <el-tooltip
                 :content="scope.row.error"
                 placement="top"
                 v-else="scope.row.error !== ''"
               >
-                <img src="@/assets/images/error-icon.png" alt="" />
+                <img src="@/assets/images/error-icon.svg" alt="" />
               </el-tooltip>
               {{ scope.row.type.toLowerCase() }}
             </span>
@@ -132,6 +132,7 @@ export default {
   display: flex;
   img {
     margin-right: 4px;
+    height: 16px;
   }
   .left-bottom-icon {
     width: 8px;
@@ -140,6 +141,10 @@ export default {
   }
   .text-dec-d {
     display: flex;
+    align-items: center;
+    img {
+      height: 2px;
+    }
   }
   .bottom-space {
     width: 18px;

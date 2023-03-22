@@ -54,7 +54,21 @@
         <el-table-column label="接收地址" width="240">
           <template slot-scope="scope" v-if="scope.row.toAddress">
             <el-tooltip content="合约" placement="top" v-if="scope.row.toAddressType != 0">
-              <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
+              <img
+                v-if="
+                  scope.row.type.toLowerCase() !== 'create' &&
+                  scope.row.type.toLowerCase() !== 'create2'
+                "
+                src="@/assets/images/contract.png"
+                height="14"
+                class="contract-icon mr-5"
+              />
+              <img
+                v-else
+                src="@/assets/images/contract-icon.png"
+                height="14"
+                class="contract-icon mr-5"
+              />
             </el-tooltip>
             <router-link
               :to="{
@@ -71,7 +85,7 @@
         <el-table-column label="数量（10⁹Gwei）" width="120">
           <template slot-scope="scope">
             <div>
-              {{ gwei2ether(scope.row.txValue) }}
+              {{ gwei2ether(scope.row.value) }}
             </div>
           </template>
         </el-table-column>
