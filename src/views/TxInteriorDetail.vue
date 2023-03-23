@@ -79,7 +79,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="燃料上限" width="240">
+        <el-table-column label="燃料上限" width="200">
           <template slot-scope="scope">
             <div>{{ scope.row.gas | filterCount }}</div>
           </template>

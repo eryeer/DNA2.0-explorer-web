@@ -134,7 +134,7 @@
                           {{ info.toAddress }}
                         </router-link></span
                       >
-                      <span v-else>
+                      <span v-else class="default-t">
                         [Contract
                         <router-link
                           :to="{
@@ -698,6 +698,12 @@ MethodID: ${infoData.slice(0, 10)}`;
     max-height: 260px;
     margin-top: -5px;
     overflow: scroll;
+    .default-t {
+      color: #000;
+    }
+  }
+  ::-webkit-scrollbar {
+    display: none;
   }
 }
 
