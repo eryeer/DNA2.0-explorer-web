@@ -53,32 +53,6 @@
         </el-table-column>
         <el-table-column label="接收地址" width="240">
           <template slot-scope="scope" v-if="scope.row.toAddress">
-            <el-tooltip
-              :content="
-                scope.row.type.toLowerCase() !== 'create' &&
-                scope.row.type.toLowerCase() !== 'create2'
-                  ? '合约'
-                  : '创建合约'
-              "
-              placement="top"
-              v-if="scope.row.toAddressType != 0"
-            >
-              <img
-                v-if="
-                  scope.row.type.toLowerCase() !== 'create' &&
-                  scope.row.type.toLowerCase() !== 'create2'
-                "
-                src="@/assets/images/contract.png"
-                height="14"
-                class="contract-icon mr-5"
-              />
-              <img
-                v-else
-                src="@/assets/images/contract-icon.png"
-                height="14"
-                class="contract-icon mr-5"
-              />
-            </el-tooltip>
             <router-link
               :to="{
                 name: 'explorerAddress',
@@ -87,7 +61,25 @@
                 },
               }"
             >
-              <short-hash :hash="scope.row.toAddress"></short-hash>
+              <span
+                v-if="
+                  scope.row.type.toLowerCase() !== 'create' &&
+                  scope.row.type.toLowerCase() !== 'create2'
+                "
+              >
+                <short-hash :hash="scope.row.toAddress" />
+              </span>
+              <span v-else>
+                <el-tooltip content="创建合约" placement="top">
+                  <img
+                    src="@/assets/images/contract-icon.png"
+                    alt=""
+                    height="16"
+                    class="contract-icon"
+                  />
+                </el-tooltip>
+                Contract Creation
+              </span>
             </router-link>
           </template>
         </el-table-column>

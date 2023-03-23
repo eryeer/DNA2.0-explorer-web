@@ -55,9 +55,6 @@
                   scope.row.type.toLowerCase() !== 'create2'
                 "
               >
-                <el-tooltip content="合约" placement="top" v-if="scope.row.toAddressType != 0">
-                  <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
-                </el-tooltip>
                 <short-hash :hash="scope.row.toAddress" />
               </span>
               <span v-else>
