@@ -41,9 +41,6 @@
         </el-table-column>
         <el-table-column label="接收地址" width="240">
           <template slot-scope="scope" v-if="scope.row.toAddress">
-            <!-- <el-tooltip content="合约" placement="top" v-if="scope.row.toAddressType != 0">
-              <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
-            </el-tooltip> -->
             <router-link
               :to="{
                 name: 'explorerAddress',
@@ -58,15 +55,20 @@
                   scope.row.type.toLowerCase() !== 'create2'
                 "
               >
+                <el-tooltip content="合约" placement="top" v-if="scope.row.toAddressType != 0">
+                  <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
+                </el-tooltip>
                 <short-hash :hash="scope.row.toAddress" />
               </span>
               <span v-else>
-                <img
-                  src="@/assets/images/contract-icon.png"
-                  alt=""
-                  height="16"
-                  class="contract-icon"
-                />
+                <el-tooltip content="创建合约" placement="top">
+                  <img
+                    src="@/assets/images/contract-icon.png"
+                    alt=""
+                    height="16"
+                    class="contract-icon"
+                  />
+                </el-tooltip>
                 Contract Creation
               </span>
             </router-link>

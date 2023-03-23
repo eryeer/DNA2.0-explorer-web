@@ -112,38 +112,34 @@
                   v-if="flattenInternalTxns.length"
                   v-for="item in flattenInternalTxns"
                 >
-                  <span v-if="item.value" class="inter-dsc">
+                  <span v-if="item.value !== '0'" class="inter-dsc">
                     <img
                       class="left-bottom-icon"
                       src="@/assets/images/left-bottom-icon.svg"
                       alt=""
                     />
                     <span>从&nbsp;</span>
-                    <el-tooltip placement="top" :content="item.fromAddress">
-                      <router-link
-                        :to="{
-                          name: 'explorerAddress',
-                          params: {
-                            address: item.fromAddress,
-                          },
-                        }"
-                      >
-                        <short-hash :hash="item.fromAddress"></short-hash>
-                      </router-link>
-                    </el-tooltip>
+                    <router-link
+                      :to="{
+                        name: 'explorerAddress',
+                        params: {
+                          address: item.fromAddress,
+                        },
+                      }"
+                    >
+                      <short-hash :hash="item.fromAddress"></short-hash>
+                    </router-link>
                     <span>&nbsp;到&nbsp;</span>
-                    <el-tooltip placement="top" :content="item.toAddress">
-                      <router-link
-                        :to="{
-                          name: 'explorerAddress',
-                          params: {
-                            address: item.toAddress,
-                          },
-                        }"
-                      >
-                        <short-hash :hash="item.toAddress"></short-hash>
-                      </router-link>
-                    </el-tooltip>
+                    <router-link
+                      :to="{
+                        name: 'explorerAddress',
+                        params: {
+                          address: item.toAddress,
+                        },
+                      }"
+                    >
+                      <short-hash :hash="item.toAddress"></short-hash>
+                    </router-link>
                     <span>&nbsp;转账&nbsp;{{ item.value }}&nbsp;GWEI</span>
                   </span>
                 </div>
