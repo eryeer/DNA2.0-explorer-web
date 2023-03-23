@@ -67,43 +67,89 @@
                 </router-link></span
               >
             </li>
-            <!-- <li>
+            <li>
               <span>接收地址:</span>
-              <span v-if="info.toAddress">
-                <el-tooltip content="合约" placement="top" v-if="info.toAddressType === 1">
-                  <img src="@/assets/images/contract.png" height="14" class="contract-icon mr-5" />
-                </el-tooltip>
-                <router-link
-                  :to="{
-                    name: 'explorerAddress',
-                    params: {
-                      address: info.toAddress,
-                    },
-                  }"
+              <div>
+                <span v-if="info.toAddress">
+                  <el-tooltip content="合约" placement="top" v-if="info.toAddressType === 1">
+                    <img
+                      src="@/assets/images/contract.png"
+                      height="14"
+                      class="contract-icon mr-5"
+                    />
+                  </el-tooltip>
+                  <router-link
+                    :to="{
+                      name: 'explorerAddress',
+                      params: {
+                        address: info.toAddress,
+                      },
+                    }"
+                  >
+                    {{ info.toAddress }}
+                  </router-link></span
                 >
-                  {{ info.toAddress }}
-                </router-link></span
-              >
-              <span v-else>
-                [Contract
-                <router-link
-                  :to="{
-                    name: 'explorerAddress',
-                    params: {
-                      address: info.contractAddress,
-                    },
-                  }"
-                >
-                  {{ info.contractAddress }}
-                </router-link>
-                Created]
+                <span v-else>
+                  [Contract
+                  <router-link
+                    :to="{
+                      name: 'explorerAddress',
+                      params: {
+                        address: info.contractAddress,
+                      },
+                    }"
+                  >
+                    {{ info.contractAddress }}
+                  </router-link>
+                  Created]
 
-                <el-tooltip content="ABI已上传" placement="top" v-if="abiHasUpload">
-                  <i class="el-icon-success f-18 c-succ" style="vertical-align: -2px"></i>
-                </el-tooltip>
-              </span>
-            </li> -->
-            <li class="tree-container" v-if="internalTxns.length > 0">
+                  <el-tooltip content="ABI已上传" placement="top" v-if="abiHasUpload">
+                    <i class="el-icon-success f-18 c-succ" style="vertical-align: -2px"></i>
+                  </el-tooltip>
+                </span>
+                <div
+                  class="mt-10"
+                  v-if="flattenInternalTxns.length"
+                  v-for="item in flattenInternalTxns"
+                >
+                  <span v-if="item.value" class="inter-dsc">
+                    <img
+                      class="left-bottom-icon"
+                      src="@/assets/images/left-bottom-icon.svg"
+                      alt=""
+                    />
+                    <span>从&nbsp;</span>
+                    <el-tooltip placement="top" :content="item.fromAddress">
+                      <router-link
+                        :to="{
+                          name: 'explorerAddress',
+                          params: {
+                            address: item.fromAddress,
+                          },
+                        }"
+                      >
+                        <short-hash :hash="item.fromAddress"></short-hash>
+                      </router-link>
+                    </el-tooltip>
+                    <span>&nbsp;到&nbsp;</span>
+                    <el-tooltip placement="top" :content="item.toAddress">
+                      <router-link
+                        :to="{
+                          name: 'explorerAddress',
+                          params: {
+                            address: item.toAddress,
+                          },
+                        }"
+                      >
+                        <short-hash :hash="item.toAddress"></short-hash>
+                      </router-link>
+                    </el-tooltip>
+                    <span>&nbsp;转账&nbsp;{{ item.value }}&nbsp;GWEI</span>
+                  </span>
+                </div>
+              </div>
+            </li>
+            <!-- <li class="tree-container" v-if="internalTxns.length > 0">
               <span class="tree-left">接收地址:</span>
               <span>
                 <el-tree
@@ -154,38 +200,41 @@
                       </span>
                     </span>
                     <span v-else>
-                      <span>从 </span>
-                      <el-tooltip placement="top" :content="data.fromAddress">
-                        <router-link
-                          :to="{
-                            name: 'explorerAddress',
-                            params: {
-                              address: data.fromAddress,
-                            },
-                          }"
-                        >
-                          <short-hash :hash="data.fromAddress"></short-hash>
-                        </router-link>
-                      </el-tooltip>
-                      <span> 到 </span>
-                      <el-tooltip placement="top" :content="data.toAddress">
-                        <router-link
-                          :to="{
-                            name: 'explorerAddress',
-                            params: {
-                              address: data.toAddress,
-                            },
-                          }"
-                        >
-                          <short-hash :hash="data.toAddress"></short-hash>
-                        </router-link>
-                      </el-tooltip>
-                      <span> 转账 {{ data.value }} GWEI</span>
+                      <span v-if="data.value">
+                        <span>从 </span>
+                        <el-tooltip placement="top" :content="data.fromAddress">
+                          <router-link
+                            :to="{
+                              name: 'explorerAddress',
+                              params: {
+                                address: data.fromAddress,
+                              },
+                            }"
+                          >
+                            <short-hash :hash="data.fromAddress"></short-hash>
+                          </router-link>
+                        </el-tooltip>
+                        <span> 到 </span>
+                        <el-tooltip placement="top" :content="data.toAddress">
+                          <router-link
+                            :to="{
+                              name: 'explorerAddress',
+                              params: {
+                                address: data.toAddress,
+                              },
+                            }"
+                          >
+                            <short-hash :hash="data.toAddress"></short-hash>
+                          </router-link>
+                        </el-tooltip>
+                        <span> 转账 {{ data.value }} GWEI</span>
+                      </span>
+                      <span v-else></span>
                     </span>
                   </span>
                 </el-tree>
               </span>
-            </li>
+            </li> -->
             <li><divider /></li>
             <!-- <template v-if="ERC20Transfers.length">
               <li>
@@ -492,23 +541,31 @@ export default {
           txHash: this.txHash,
         });
       });
-      if (info.txValue == 0) {
-        this.internalTxns = [
-          {
-            toAddress: info.toAddress,
-            toAddressType: 0,
-          },
-        ];
-      } else {
-        this.internalTxns = [
-          {
-            parents: info.fromAddress,
-            toAddress: info.toAddress,
-            calls: info.internalTxns,
-            toAddressType: 0,
-          },
-        ];
-      }
+      // if (info.txValue == 0) {
+      //   this.internalTxns = [
+      //     {
+      //       toAddress: info.toAddress,
+      //       toAddressType: 0,
+      //     },
+      //   ];
+      // } else {
+      //   this.internalTxns = [
+      //     {
+      //       parents: info.fromAddress,
+      //       toAddress: info.toAddress,
+      //       calls: info.internalTxns,
+      //       toAddressType: 0,
+      //     },
+      //   ];
+      // }
+      this.internalTxns = [
+        {
+          parents: info.fromAddress,
+          toAddress: info.toAddress,
+          calls: info.internalTxns,
+          toAddressType: 0,
+        },
+      ];
       this.flatten(info.internalTxns, this.level);
       let toAddressType = 0;
       if (info.txType === 1) {
@@ -704,6 +761,13 @@ MethodID: ${infoData.slice(0, 10)}`;
   }
   ::-webkit-scrollbar {
     display: none;
+  }
+  .inter-dsc {
+    display: flex;
+    align-items: flex-start;
+    img {
+      margin-right: 4px;
+    }
   }
 }
 
