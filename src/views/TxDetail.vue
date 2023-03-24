@@ -140,7 +140,7 @@
                     >
                       <short-hash :hash="item.toAddress"></short-hash>
                     </router-link>
-                    <span>&nbsp;转账&nbsp;{{ item.value }}&nbsp;GWEI</span>
+                    <span>&nbsp;转账&nbsp;{{ item.value }}&nbsp;Gwei</span>
                   </span>
                 </div>
               </div>
@@ -223,7 +223,7 @@
                             <short-hash :hash="data.toAddress"></short-hash>
                           </router-link>
                         </el-tooltip>
-                        <span> 转账 {{ data.value }} GWEI</span>
+                        <span> 转账 {{ data.value }} Gwei</span>
                       </span>
                       <span v-else></span>
                     </span>
