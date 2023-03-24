@@ -1,8 +1,29 @@
 <template>
   <div class="box">
     <div class="top-d">
-      智能合约调用从 <short-hash :hash="fromAddress"></short-hash> 到
-      <short-hash :hash="toAddress"></short-hash> 产生 {{ internalTxns.length }} 条内部交易
+      智能合约调用从
+      <router-link
+        :to="{
+          name: 'explorerAddress',
+          params: {
+            address: fromAddress,
+          },
+        }"
+      >
+        <short-hash :hash="fromAddress"></short-hash>
+      </router-link>
+      到
+      <router-link
+        :to="{
+          name: 'explorerAddress',
+          params: {
+            address: fromAddress,
+          },
+        }"
+      >
+        <short-hash :hash="toAddress"></short-hash>
+      </router-link>
+      产生 {{ internalTxns.length }} 条内部交易
     </div>
     <div class="bg-white p-20">
       <el-table :data="internalTxns" style="width: 100%">
