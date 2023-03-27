@@ -675,7 +675,6 @@ MethodID: ${infoData.slice(0, 10)}`;
       }
     },
     flatten(arr, level) {
-      this.level = level;
       for (let i = 0, length = arr.length; i < length; i++) {
         let str = {
           blockNumber: arr[i].blockNumber,
@@ -696,7 +695,7 @@ MethodID: ${infoData.slice(0, 10)}`;
         };
         this.flattenInternalTxns.push(str);
         if (Array.isArray(arr[i].calls)) {
-          this.flatten(arr[i].calls, this.level + 1);
+          this.flatten(arr[i].calls, level + 1);
         }
       }
     },
