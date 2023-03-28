@@ -17,7 +17,7 @@
         :to="{
           name: 'explorerAddress',
           params: {
-            address: fromAddress,
+            address: toAddress,
           },
         }"
       >
