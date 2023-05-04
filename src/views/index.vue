@@ -71,18 +71,29 @@
           <div class="footer-logo">Jiuquan</div>
           <div class="footer-intro">Jiuquan to the Blockchain</div>
           <div class="footer-copyright">
-            Copyright 2022 Jiuquan. <a class="footer-link">Terms</a> &
-            <a class="footer-link">Privacy</a>
+            Copyright 2023 Jiuquan.
+            <a class="footer-link" href="https://onegate.space/terms.html" target="_blank">Terms</a>
+            &
+            <a class="footer-link" href="https://onegate.space/privacy.html" target="_blank"
+              >Privacy</a
+            >
           </div>
         </div>
         <div style="margin-left: auto">
           <div class="footer-title">Help</div>
-          <div class="footer-subtitle">Wallet</div>
-          <div class="footer-subtitle">NFT</div>
+          <a
+            class="footer-subtitle"
+            href="https://onegate.gitbook.io/onegate/manage-wallets"
+            target="_blank"
+            >Wallet</a
+          >
+          <a class="footer-subtitle" href="https://onegate.gitbook.io/onegate/nfts" target="_blank"
+            >NFT</a
+          >
         </div>
         <div style="margin-left: 150px">
           <div class="footer-title">Developer</div>
-          <div class="footer-subtitle">dAPI</div>
+          <a class="footer-subtitle" href="javascript:">dAPI</a>
         </div>
         <div style="margin-left: 150px">
           <div class="footer-title">Contact Us</div>
@@ -276,8 +287,9 @@ export default {
 }
 
 .footer {
+  border-top: 1px solid white;
   width: 100% !important;
-  background-color: white;
+  background-color: #f9f9f9;
   height: 300px;
 
   &-container {
@@ -321,6 +333,7 @@ export default {
   }
 
   &-subtitle {
+    display: block;
     cursor: pointer;
     font-size: 16px;
     color: #8898aa;
