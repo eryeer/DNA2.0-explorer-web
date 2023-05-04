@@ -611,7 +611,7 @@ export default {
         try {
           const iface = new Interface(contractInfo.abi);
           const functionFragment = iface.getFunction(infoData.slice(0, 10));
-          let str = `Function: ${functionFragment.format(FormatTypes.sighash)} 
+          let str = `Function: ${functionFragment.format(FormatTypes.sighash)}
 
 MethodID: ${infoData.slice(0, 10)}`;
 
@@ -711,7 +711,7 @@ MethodID: ${infoData.slice(0, 10)}`;
   display: flex;
   height: 40px;
   line-height: 40px;
-  background-color: #0078fa;
+  background-color: #5e72e4;
   color: #fff;
   > span {
     opacity: 0.6;

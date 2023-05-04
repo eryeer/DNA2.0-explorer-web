@@ -4,7 +4,7 @@ export default [
     name: 'explorer',
     component: () => import(/* webpackChunkName: "explorer" */ '@/views'),
     redirect: '/',
-    meta: { title: '灵境元宇宙区块链浏览器', showInMenu: true, icon: 'explorer' },
+    meta: { title: 'Jiuquan Explorer', showInMenu: true, icon: 'explorer' },
     children: [
       {
         path: '/',

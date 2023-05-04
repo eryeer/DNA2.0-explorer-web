@@ -58,7 +58,7 @@ export default {
     },
     primaryColor: {
       type: String,
-      default: '#0078FA',
+      default: '#5e72e4',
     },
   },
   data() {

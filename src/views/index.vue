@@ -4,7 +4,7 @@
       <div class="header-wrapper">
         <div class="header margin-auto">
           <div class="header-logo">
-            <router-link to="/" class="header-title" tag="h2">灵境元宇宙区块链浏览器</router-link>
+            <router-link to="/" class="header-title" tag="h2">Jiuquan Explorer</router-link>
             <div
               class="dropdown-wrapper"
               ref="dropdownWrapper"
@@ -55,7 +55,7 @@
               >
               <span class="add-network" @click="switchNetwork">
                 <img src="@/assets/images/metamask.png" width="16" height="16" alt="metamask" />
-                Add Lingjing {{ isProd ? '' : 'Testnet ' }}Network
+                Add Jiuquan {{ isProd ? '' : 'Testnet ' }}Network
               </span>
             </div>
           </div>
@@ -65,14 +65,66 @@
         <router-view :key="$route.fullPath" />
       </div>
     </section>
-    <div class="footer margin-auto">
-      <div class="footer-left">Copyright © 上海分布信息科技有限公司</div>
-      <div class="footer-left">
-        沪网信备31011019336458500019号
-        <span class="ml-10 mr-10">|</span>
-        EDI&ICP备沪B2-20211760
-        <span class="ml-10 mr-10">|</span>
-        沪ICP备19046837号-3
+    <div class="margin-auto footer">
+      <div class="footer-container">
+        <div>
+          <div class="footer-logo">Jiuquan</div>
+          <div class="footer-intro">Jiuquan to the Blockchain</div>
+          <div class="footer-copyright">
+            Copyright 2022 Jiuquan. <a class="footer-link">Terms</a> &
+            <a class="footer-link">Privacy</a>
+          </div>
+        </div>
+        <div style="margin-left: auto">
+          <div class="footer-title">Help</div>
+          <div class="footer-subtitle">Wallet</div>
+          <div class="footer-subtitle">NFT</div>
+        </div>
+        <div style="margin-left: 150px">
+          <div class="footer-title">Developer</div>
+          <div class="footer-subtitle">dAPI</div>
+        </div>
+        <div style="margin-left: 150px">
+          <div class="footer-title">Contact Us</div>
+          <div style="padding-bottom: 4px">
+            <a
+              class="text-muted"
+              title="Twitter: OneGateWallet"
+              href="https://twitter.com/OneGateSpace"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                width="27"
+                height="22"
+                viewBox="0 0 27 22"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M26.1358 3.26512C25.2059 3.67759 24.2063 3.95634 23.1575 4.08168C24.228 3.43988 25.0504 2.42364 25.4375 1.21265C24.4354 1.80698 23.3257 2.23852 22.1444 2.47103C21.1985 1.46318 19.8509 0.833496 18.3593 0.833496C15.4955 0.833496 13.1734 3.15527 13.1734 6.01912C13.1734 6.42554 13.2193 6.82134 13.3078 7.20093C8.99789 6.98464 5.17673 4.92012 2.6191 1.78265C2.17269 2.54854 1.91696 3.43934 1.91696 4.38973C1.91696 6.18888 2.83243 7.77613 4.22393 8.70615C3.37394 8.67908 2.57423 8.44588 1.87512 8.05747C1.87463 8.07913 1.87463 8.10077 1.87463 8.12265C1.87463 10.6353 3.66218 12.7311 6.03445 13.2076C5.59933 13.3261 5.14119 13.3895 4.66825 13.3895C4.33409 13.3895 4.00923 13.3569 3.69254 13.2965C4.35247 15.3566 6.26758 16.856 8.53685 16.8977C6.76207 18.2887 4.52606 19.1178 2.09642 19.1178C1.67784 19.1178 1.26506 19.0931 0.859375 19.0451C3.15431 20.5165 5.88017 21.3752 8.80867 21.3752C18.3471 21.3752 23.5633 13.4733 23.5633 6.62042C23.5633 6.39562 23.5582 6.17197 23.5482 5.94952C24.5615 5.21837 25.4406 4.30506 26.1358 3.26512Z"
+                  fill="#676c6c"
+                />
+              </svg>
+            </a>
+          </div>
+          <div>
+            <a class="text-muted" href="mailto:hello@onegate.space">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21.75 3.75H2.25C1.83516 3.75 1.5 4.08516 1.5 4.5V19.5C1.5 19.9148 1.83516 20.25 2.25 20.25H21.75C22.1648 20.25 22.5 19.9148 22.5 19.5V4.5C22.5 4.08516 22.1648 3.75 21.75 3.75ZM19.8563 6.30234L12.4617 12.0563C12.2789 12.1992 12.0234 12.1992 11.8406 12.0563L4.44375 6.30234C4.41587 6.28082 4.39541 6.25112 4.38526 6.21739C4.37511 6.18367 4.37576 6.14761 4.38713 6.11427C4.3985 6.08094 4.42002 6.052 4.44867 6.0315C4.47731 6.01101 4.51165 5.99999 4.54688 6H19.7531C19.7883 5.99999 19.8227 6.01101 19.8513 6.0315C19.88 6.052 19.9015 6.08094 19.9129 6.11427C19.9242 6.14761 19.9249 6.18367 19.9147 6.21739C19.9046 6.25112 19.8841 6.28082 19.8563 6.30234Z"
+                  fill="#676c6c"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -224,22 +276,66 @@ export default {
 }
 
 .footer {
-  display: flex;
-  height: 80px;
-  line-height: 80px;
-  margin-top: -80px;
-  opacity: 0.5;
-  justify-content: space-between;
-  align-content: center;
+  width: 100% !important;
+  background-color: white;
+  height: 300px;
+
+  &-container {
+    padding-top: 48px;
+    width: 1280px;
+    display: flex;
+    margin: 0 auto;
+  }
+
+  &-logo {
+    color: black;
+    font-family: Verdana;
+    font-size: 34px;
+  }
+
+  &-intro {
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #525f7f;
+  }
+
+  &-copyright {
+    color: #525f7f;
+    margin-top: 48px;
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  &-link {
+    cursor: pointer;
+    font-size: 16px;
+    color: #8898aa;
+  }
+
+  &-title {
+    font-size: 16px;
+    color: #525f7f;
+    font-weight: bolder;
+    margin-bottom: 16px;
+  }
+
+  &-subtitle {
+    cursor: pointer;
+    font-size: 16px;
+    color: #8898aa;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
 }
 
 .header-wrapper {
-  box-shadow: 0px 1px 10px rgba(6, 8, 69, 0.06);
-  background-color: #001a35;
+  background-color: white;
   color: #fff;
   position: sticky;
   top: 0;
   z-index: 1000;
+  color: black;
 }
 
 .header {
@@ -275,15 +371,18 @@ export default {
     margin-left: 90px;
 
     a {
-      color: #fff;
+      color: #606266;
       border-bottom-width: 3px;
       border-bottom-style: solid;
       border-bottom-color: transparent;
-      font-weight: 400;
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 14px;
       padding-bottom: 5px;
       padding-top: 5px;
       &.router-link-active {
-        border-bottom-color: #0078fa;
+        border-bottom-color: #5e72e4;
         font-weight: 500;
       }
     }
@@ -331,7 +430,7 @@ export default {
   position: relative;
   width: 70px;
   height: 24px;
-  background: #0078fa;
+  background: #5e72e4;
   border-radius: 3px;
   font-weight: 500;
   font-size: 12px;
@@ -341,7 +440,7 @@ export default {
   line-height: 24px;
 
   .dropdown {
-    background: #0078fa;
+    background: #5e72e4;
   }
 
   &-test {

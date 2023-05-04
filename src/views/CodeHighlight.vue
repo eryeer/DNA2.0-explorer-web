@@ -49,7 +49,7 @@ export default {
         paramsHighlight.push(tmp.join(' ').trimRight());
       }
       const res = [
-        `<span style="color:#0078fa" >${code.slice(0, left_paren_pos)}</span>
+        `<span style="color:#5e72e4" >${code.slice(0, left_paren_pos)}</span>
 `,
         '(',
         paramsHighlight.join(', '),

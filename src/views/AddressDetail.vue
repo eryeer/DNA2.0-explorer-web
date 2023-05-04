@@ -386,7 +386,7 @@ export default {
   display: flex;
   height: 40px;
   line-height: 40px;
-  background-color: #0078fa;
+  background-color: #5e72e4;
   color: #fff;
   > span {
     opacity: 0.6;

@@ -3,7 +3,7 @@
 @import './transitions.scss';
 
 html {
-  --color-primary: #0078fa;
+  --color-primary: #5e72e4;
   height: 100%;
 }
 
@@ -12,7 +12,7 @@ html[data-theme='light'] {
 }
 
 body {
-  font-family: 'PingFang SC', 'Microsoft Yahei';
+  font-family: Open Sans, sans-serif;
   color: $--color-text-primary;
   background: #f5f7f9;
   font-size: 14px;
