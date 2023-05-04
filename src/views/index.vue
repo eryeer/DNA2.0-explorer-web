@@ -4,7 +4,11 @@
       <div class="header-wrapper">
         <div class="header margin-auto">
           <div class="header-logo">
-            <router-link to="/" class="header-title" tag="h2">Jiuquan Explorer</router-link>
+            <router-link to="/" class="header-title" tag="h2"
+              ><img src="~@/assets/images/logo.svg" height="50px" /><span
+                >Jiuquan Explorer</span
+              ></router-link
+            >
             <div
               class="dropdown-wrapper"
               ref="dropdownWrapper"
@@ -54,7 +58,7 @@
                 >地址</router-link
               >
               <span class="add-network" @click="switchNetwork">
-                <img src="@/assets/images/metamask.png" width="16" height="16" alt="metamask" />
+                <!-- <img src="@/assets/images/metamask.png" width="16" height="16" alt="metamask" /> -->
                 Add Jiuquan {{ isProd ? '' : 'Testnet ' }}Network
               </span>
             </div>
@@ -364,6 +368,9 @@ export default {
     font-style: normal;
     font-weight: 500;
     font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   &-logo {
@@ -381,7 +388,7 @@ export default {
     display: flex;
     column-gap: 30px;
     align-items: center;
-    margin-left: 90px;
+    margin-left: 250px;
 
     a {
       color: #606266;
