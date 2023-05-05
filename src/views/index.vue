@@ -6,7 +6,7 @@
           <div class="header-logo">
             <router-link to="/" class="header-title" tag="h2"
               ><img src="~@/assets/images/logo.svg" height="50px" /><span
-                >Jiuquan Explorer</span
+                >酒泉链浏览器</span
               ></router-link
             >
             <div
@@ -72,8 +72,8 @@
     <div class="margin-auto footer">
       <div class="footer-container">
         <div>
-          <div class="footer-logo">Jiuquan</div>
-          <div class="footer-intro">Jiuquan to the Blockchain</div>
+          <!-- <div class="footer-logo">Jiuquan</div>
+          <div class="footer-intro">Jiuquan to the Blockchain</div> -->
           <div class="footer-copyright">
             Copyright 2023 Jiuquan.
             <a class="footer-link" href="https://onegate.space/terms.html" target="_blank">Terms</a>
@@ -318,7 +318,7 @@ export default {
 
   &-copyright {
     color: #525f7f;
-    margin-top: 48px;
+    // margin-top: 150px;
     font-size: 16px;
     font-weight: 400;
   }
