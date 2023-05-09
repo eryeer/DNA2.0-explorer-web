@@ -30,15 +30,15 @@ export const getInterface = function (abi) {
 export const getNetworkParams = function () {
   return !IN_PRODUCTIOIN
     ? {
-        chainId: '0x440',
-        chainName: 'Lingjing Testnet Network',
+        chainId: '0x2a92',
+        chainName: 'Jiuquan Testnet Network',
         nativeCurrency: {
           name: 'eth',
           symbol: 'eth',
           decimals: 18,
         },
-        rpcUrls: ['https://test-node.lingjing-eco.com.cn/'],
-        blockExplorerUrls: ['https://test-explorer.lingjing-eco.com.cn/'],
+        rpcUrls: ['https://testgitlink.ongoing.club/'],
+        blockExplorerUrls: ['https://testgitlink.ongoing.club/'],
       }
     : {
         chainId: '0x828',
