@@ -65,16 +65,7 @@
         <router-view :key="$route.fullPath" />
       </div>
     </section>
-    <div class="footer margin-auto">
-      <div class="footer-left">Copyright © 上海分布信息科技有限公司</div>
-      <div class="footer-left">
-        沪网信备31011019336458500019号
-        <span class="ml-10 mr-10">|</span>
-        EDI&ICP备沪B2-20211760
-        <span class="ml-10 mr-10">|</span>
-        沪ICP备19046837号-3
-      </div>
-    </div>
+    <div class="footer margin-auto"></div>
   </div>
 </template>
 
