@@ -3,9 +3,10 @@ import { ethers } from 'ethers';
 const { utils, Contract } = ethers;
 
 const IN_PRODUCTIOIN = process.env.NODE_ENV === 'production';
-const WEB3_ENDPOINT = IN_PRODUCTIOIN
-  ? 'https://node.lingjing-eco.com.cn'
-  : 'https://test-node.lingjing-eco.com.cn';
+const WEB3_ENDPOINT = IN_PRODUCTIOIN ? 'http://20.102.59.34:8545' : 'http://20.102.59.34:8545';
+// const WEB3_ENDPOINT = IN_PRODUCTIOIN
+//   ? 'https://node.lingjing-eco.com.cn'
+//   : 'https://test-node.lingjing-eco.com.cn';
 const provider = new ethers.providers.JsonRpcProvider(WEB3_ENDPOINT);
 
 export const getBalance = async function (address) {

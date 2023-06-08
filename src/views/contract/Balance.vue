@@ -21,8 +21,10 @@ export default {
   watch: {
     address: {
       async handler(value) {
+        console.log('aaa', value);
         if (!value) return;
         let result = await getBalance(value);
+        console.log(result);
         this.balance = result * Math.pow(10, 9);
       },
       immediate: true,
